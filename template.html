@@ -70,6 +70,45 @@
   font-style:normal;
   font-display:block;
 }
+@font-face{
+  font-family:'Rubik Wet Paint';
+  src:url(data:font/woff2;base64,__GRAFFITI_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
+  font-family:'Heebo';
+  src:url(data:font/woff2;base64,__HEEBO_LATIN_BASE64__) format('woff2');
+  font-weight:700;
+  font-style:normal;
+  font-display:block;
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:'Heebo';
+  src:url(data:font/woff2;base64,__HEEBO_HEBREW_BASE64__) format('woff2');
+  font-weight:700;
+  font-style:normal;
+  font-display:block;
+  unicode-range:U+0307-0308,U+0590-05FF,U+200C-2010,U+20AA,U+25CC,U+FB1D-FB4F;
+}
+@font-face{
+  font-family:'Cairo';
+  src:url(data:font/woff2;base64,__CAIRO_LATIN_BASE64__) format('woff2');
+  font-weight:700;
+  font-style:normal;
+  font-display:block;
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face{
+  font-family:'Cairo';
+  src:url(data:font/woff2;base64,__CAIRO_ARABIC_BASE64__) format('woff2');
+  font-weight:700;
+  font-style:normal;
+  font-display:block;
+  unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0898-08E1,U+08E3-08FF,U+FB50-FBC1,U+FBD3-FD3D,U+FD50-FDC7,U+FDCF,U+FDF0-FDFF,U+FE70-FE74,U+FE76-FEFC,U+102E0-102FB,U+10E60-10E7E,U+10EFD-10EFF,U+1EC71-1ECB4,U+1ED01-1ED3D;
+}
 
 :root{
   --bg:#12160f;
@@ -416,6 +455,15 @@ input[type="range"]{
 }
 .fineprint a{color:var(--ink);cursor:pointer;text-decoration:underline;}
 
+.mock-frame{margin-top:16px;}
+.mock-title{
+  font-size:14px;
+  font-weight:700;
+  margin:0 0 8px;
+  letter-spacing:0.01em;
+}
+.mock-row{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;}
+.mock-article-col{flex:1;min-width:260px;}
 .mock-note{font-size:11.5px;color:var(--ink-dim);margin:0 0 14px;line-height:1.5;}
 .mock-label{
   font-size:10.5px;
@@ -501,6 +549,32 @@ input[type="range"]{
         <span id="statusText">Adjust the panel, then export.</span>
         <span class="size-fig" id="sizeFig"></span>
       </div>
+
+      <div class="stage-frame mock-frame">
+        <h2 class="mock-title">Preview in a blog</h2>
+        <p class="mock-note">Approximate mockups &mdash; a card thumbnail (often cropped tighter than the full 1200&times;500 image) and a full article hero &mdash; so you can sanity-check the safe zone before exporting.</p>
+        <div class="mock-row">
+          <div>
+            <div class="mock-label">Card thumbnail</div>
+            <div class="mock-card">
+              <div class="mock-card-media"><img id="mockCardImg" alt=""></div>
+              <div class="mock-card-body">
+                <span class="mock-pill">Sport</span>
+                <div class="mock-card-title" id="mockCardTitle">Your headline here</div>
+              </div>
+            </div>
+          </div>
+          <div class="mock-article-col">
+            <div class="mock-label">Article hero</div>
+            <div class="mock-article">
+              <div class="mock-article-logo">Ticket Insider</div>
+              <div class="mock-article-media"><img id="mockArticleImg" alt=""></div>
+              <div class="mock-article-title" id="mockArticleTitle">Your headline here</div>
+              <div class="mock-article-byline">By the content team</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="rail">
@@ -511,14 +585,21 @@ input[type="range"]{
 
       <div class="section">
         <h2>2. Background</h2>
-        <button class="upload-btn" id="uploadBtn" type="button">Upload a photo&hellip;</button>
-        <input type="file" id="fileInput" accept="image/*">
-        <p class="fineprint" id="dragHint" style="display:none;margin-top:-4px;">Drag the photo on the canvas to reposition it.</p>
-        <div class="row" id="photoActions" style="display:none;">
-          <button class="btn ghost" id="saveCustomBgBtn" type="button">Save to My Backgrounds</button>
-          <button class="btn ghost" id="removePhotoBtn" type="button">Remove photo</button>
-        </div>
         <div class="swatches" id="swatches"></div>
+      </div>
+
+      <div class="section">
+        <h2>3. Your images</h2>
+        <div class="field">
+          <label>Upload background photo</label>
+          <button class="upload-btn" id="uploadBtn" type="button">Upload a photo&hellip;</button>
+          <input type="file" id="fileInput" accept="image/*">
+          <p class="fineprint" id="dragHint" style="display:none;margin-top:-4px;">Drag the photo on the canvas to reposition it.</p>
+          <div class="row" id="photoActions" style="display:none;">
+            <button class="btn ghost" id="saveCustomBgBtn" type="button">Save to My Backgrounds</button>
+            <button class="btn ghost" id="removePhotoBtn" type="button">Remove photo</button>
+          </div>
+        </div>
         <div class="field" id="customBgsField" style="display:none;margin-top:14px;">
           <label>My backgrounds <span class="fineprint" style="display:inline;margin:0;">(saved in this browser only)</span></label>
           <div class="swatches" id="customBgs"></div>
@@ -532,27 +613,37 @@ input[type="range"]{
           </div>
         </div>
         <div class="field" style="margin-top:14px;">
-          <label>Logo overlay (optional, centered)</label>
+          <label>Logo overlay (optional)</label>
           <button class="upload-btn" id="logoUploadBtn" type="button">Upload a logo&hellip;</button>
           <input type="file" id="logoFileInput" accept="image/*">
-          <div class="row" id="logoControls" style="display:none;margin-top:8px;">
-            <div class="field">
-              <label>Logo size</label>
-              <div class="slider-row">
-                <input type="range" id="logoSize" min="60" max="400" value="160">
-                <span class="val" id="logoSizeVal">160px</span>
+          <div id="logoControls" style="display:none;margin-top:8px;">
+            <div class="row">
+              <div class="field">
+                <label>Logo size</label>
+                <div class="slider-row">
+                  <input type="range" id="logoSize" min="60" max="400" value="160">
+                  <span class="val" id="logoSizeVal">160px</span>
+                </div>
+              </div>
+              <div class="field" style="flex:none;">
+                <label>&nbsp;</label>
+                <button class="btn ghost" id="removeLogoBtn" type="button" style="margin-top:0;width:auto;padding:9px 14px;">Remove</button>
               </div>
             </div>
-            <div class="field" style="flex:none;">
-              <label>&nbsp;</label>
-              <button class="btn ghost" id="removeLogoBtn" type="button" style="margin-top:0;width:auto;padding:9px 14px;">Remove</button>
+            <div class="field" style="margin-top:12px;">
+              <label>Layer order</label>
+              <div class="seg" id="logoOrderSeg">
+                <button data-v="back" class="active">Behind text</button>
+                <button data-v="front">In front of text</button>
+              </div>
             </div>
+            <p class="fineprint" style="margin-top:8px;">Drag the logo on the canvas to reposition it.</p>
           </div>
         </div>
       </div>
 
       <div class="section">
-        <h2>3. Text</h2>
+        <h2>4. Text</h2>
         <div class="field">
           <label for="headline">Headline</label>
           <textarea id="headline" maxlength="140">Your headline here</textarea>
@@ -631,7 +722,7 @@ input[type="range"]{
       </div>
 
       <div class="section">
-        <h2>4. Effects</h2>
+        <h2>5. Effects</h2>
         <div class="row">
           <div class="field">
             <label>Text effect</label>
@@ -661,7 +752,7 @@ input[type="range"]{
       </div>
 
       <div class="section">
-        <h2>5. Export</h2>
+        <h2>6. Export</h2>
         <div class="field">
           <label for="format">File type</label>
           <select id="format">
@@ -677,26 +768,6 @@ input[type="range"]{
           <a id="switchWebp">switch to WEBP</a> to bring it under budget.
         </p>
       </div>
-
-      <div class="section">
-        <h2>6. Preview in a blog</h2>
-        <p class="mock-note">Approximate mockups &mdash; a card thumbnail (often cropped tighter than the full 1200&times;500 image) and a full article hero &mdash; so you can sanity-check the safe zone before exporting.</p>
-        <div class="mock-label">Card thumbnail</div>
-        <div class="mock-card">
-          <div class="mock-card-media"><img id="mockCardImg" alt=""></div>
-          <div class="mock-card-body">
-            <span class="mock-pill">Sport</span>
-            <div class="mock-card-title" id="mockCardTitle">Your headline here</div>
-          </div>
-        </div>
-        <div class="mock-label">Article hero</div>
-        <div class="mock-article">
-          <div class="mock-article-logo">Ticket Insider</div>
-          <div class="mock-article-media"><img id="mockArticleImg" alt=""></div>
-          <div class="mock-article-title" id="mockArticleTitle">Your headline here</div>
-          <div class="mock-article-byline">By the content team</div>
-        </div>
-      </div>
     </div>
   </div>
 </div>
@@ -705,6 +776,7 @@ input[type="range"]{
 (function(){
   const LIMIT_BYTES = 120000;
   const W = 1200, H = 500;
+  const MOBILE_CROP_RATIO = 4/3; // approximate card-thumbnail crop; update once the real ratio is known
 
   const stage = document.getElementById('stage');
   const ctx = stage.getContext('2d');
@@ -727,7 +799,7 @@ input[type="range"]{
     effectColor: '#000000',
     effectStrength: 40,
     subtitleGap: 18,
-    logo: { image: null, size: 160 }
+    logo: { image: null, size: 160, x: 0.5, y: 0.5, zOrder: 'back' }
   };
 
   const FONTS = {
@@ -740,7 +812,10 @@ input[type="range"]{
     pacifico: { label:'Pacifico - Script',           family:'Pacifico',      uppercase:false },
     playfair: { label:'Playfair Display - Elegant Serif', family:'Playfair Display', uppercase:false },
     marker:   { label:'Permanent Marker - Brush',    family:'Permanent Marker', uppercase:false },
-    caveat:   { label:'Caveat - Handwritten',        family:'Caveat',        uppercase:false }
+    caveat:   { label:'Caveat - Handwritten',        family:'Caveat',        uppercase:false },
+    graffiti: { label:'Rubik Wet Paint - Graffiti',  family:'Rubik Wet Paint', uppercase:false },
+    heebo:    { label:'Heebo - Hebrew + Latin',      family:'Heebo',         uppercase:false, rtl:true },
+    cairo:    { label:'Cairo - Arabic + Latin',       family:'Cairo',         uppercase:false, rtl:true }
   };
 
   // ---------- background presets ----------
@@ -779,16 +854,9 @@ input[type="range"]{
     c.closePath();
   }
 
-  function drawRing(c, cx, cy, rOuter, thickness, colorA, colorB){
-    const rInner = Math.max(rOuter - thickness, 1);
-    const g = c.createLinearGradient(cx-rOuter, cy-rOuter, cx+rOuter, cy+rOuter);
-    g.addColorStop(0, colorA);
-    g.addColorStop(1, colorB);
-    c.fillStyle = g;
-    c.beginPath();
-    c.arc(cx, cy, rOuter, 0, Math.PI*2);
-    c.arc(cx, cy, rInner, 0, Math.PI*2, true);
-    c.fill('evenodd');
+  function pseudoRand(seed){
+    const x = Math.sin(seed*12.9898)*43758.5453;
+    return x - Math.floor(x);
   }
 
   let grainTile = null;
@@ -829,61 +897,6 @@ input[type="range"]{
     g.addColorStop(1, hexToRgba(color,0));
     c.fillStyle = g;
     c.fillRect(0,0,W,H);
-  }
-
-  function drawMowStripes(c, angleDeg, stripeW, alpha){
-    c.save();
-    c.translate(W/2, H/2);
-    c.rotate(angleDeg * Math.PI/180);
-    c.translate(-W/2, -H/2);
-    const span = Math.max(W,H)*1.8;
-    c.fillStyle = `rgba(255,255,255,${alpha})`;
-    for (let x = -span/2; x < span/2; x += stripeW*2){
-      c.fillRect(x, -span/2, stripeW, span);
-    }
-    c.restore();
-  }
-
-  function drawSoccerPitch(c){
-    const g = c.createLinearGradient(0,0,0,H);
-    g.addColorStop(0, '#3fa32e');
-    g.addColorStop(1, '#2d7a22');
-    c.fillStyle = g; c.fillRect(0,0,W,H);
-    drawMowStripes(c, 32, 55, 0.05);
-    drawMowStripes(c, -32, 55, 0.035);
-    c.strokeStyle = 'rgba(255,255,255,0.85)';
-    c.lineWidth = 4;
-    c.strokeRect(36, 36, W-72, H-72);
-    c.beginPath(); c.moveTo(W/2,36); c.lineTo(W/2,H-36); c.stroke();
-    c.beginPath(); c.arc(W/2, H/2, 65, 0, Math.PI*2); c.stroke();
-    c.beginPath(); c.arc(W/2,H/2,4,0,Math.PI*2); c.fillStyle='rgba(255,255,255,0.85)'; c.fill();
-    c.strokeRect(36, H/2-100, 120, 200);
-    c.strokeRect(36, H/2-50, 50, 100);
-  }
-
-  function drawBaseballField(c){
-    const g = c.createLinearGradient(0,0,0,H);
-    g.addColorStop(0,'#4b9c3f'); g.addColorStop(1,'#357a2c');
-    c.fillStyle=g; c.fillRect(0,0,W,H);
-    drawMowStripes(c, 90, 50, 0.045);
-    const homeX = W/2, homeY = H+60;
-    c.fillStyle = '#b5793f';
-    c.beginPath();
-    c.moveTo(homeX, homeY);
-    c.lineTo(homeX-230, homeY-230);
-    c.lineTo(homeX, homeY-460);
-    c.lineTo(homeX+230, homeY-230);
-    c.closePath();
-    c.fill();
-    c.fillStyle = '#c98a4b';
-    c.beginPath(); c.arc(homeX, homeY-230, 26, 0, Math.PI*2); c.fill();
-    c.strokeStyle='rgba(255,255,255,0.85)'; c.lineWidth=3;
-    c.beginPath();
-    c.moveTo(homeX,homeY); c.lineTo(homeX-230,homeY-230);
-    c.moveTo(homeX,homeY); c.lineTo(homeX+230,homeY-230);
-    c.stroke();
-    c.fillStyle = '#f2f2f2';
-    c.beginPath(); c.arc(homeX, homeY-10, 10, 0, Math.PI*2); c.fill();
   }
 
   function drawStadiumCrowd(c){
@@ -927,111 +940,6 @@ input[type="range"]{
     const vg = c.createRadialGradient(W/2,H/2,H*0.25,W/2,H/2,H*0.95);
     vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.35)');
     c.fillStyle=vg; c.fillRect(0,0,W,H);
-  }
-
-  function drawBasketballCourt(c){
-    const g = c.createLinearGradient(0,0,0,H);
-    g.addColorStop(0,'#c9863f'); g.addColorStop(1,'#a8672c');
-    c.fillStyle=g; c.fillRect(0,0,W,H);
-    c.strokeStyle='rgba(0,0,0,0.08)'; c.lineWidth=1;
-    for(let x=0;x<W;x+=26){ c.beginPath(); c.moveTo(x,0); c.lineTo(x,H); c.stroke(); }
-    c.strokeStyle='rgba(255,255,255,0.85)'; c.lineWidth=4;
-    c.strokeRect(36,36,W-72,H-72);
-    c.beginPath(); c.arc(W/2,H/2,58,0,Math.PI*2); c.stroke();
-    c.strokeRect(36, H/2-88, 150, 176);
-    c.beginPath(); c.arc(186, H/2, 58, -Math.PI/2, Math.PI/2); c.stroke();
-  }
-
-  function drawTicketStub(c, base, accent){
-    c.fillStyle = base; c.fillRect(0,0,W,H);
-    const left = 60, right = W-60, top = 90, bottom = H-90;
-    roundRect(c, left, top, right-left, bottom-top, 14);
-    c.fillStyle = accent; c.fill();
-    const notchCount = 8;
-    for (let i=0;i<=notchCount;i++){
-      const y = top + (bottom-top) * (i/notchCount);
-      c.fillStyle = base;
-      c.beginPath(); c.arc(left, y, 12, 0, Math.PI*2); c.fill();
-      c.beginPath(); c.arc(right, y, 12, 0, Math.PI*2); c.fill();
-    }
-    const barX = right - (right-left)*0.22;
-    c.strokeStyle = 'rgba(0,0,0,0.25)';
-    c.lineWidth = 2;
-    c.setLineDash([6,6]);
-    c.beginPath(); c.moveTo(barX, top+10); c.lineTo(barX, bottom-10); c.stroke();
-    c.setLineDash([]);
-    let bx = barX + 18, seedI = 0;
-    while (bx < right-18){
-      const bw = 2 + pseudoRand(seedI)*5;
-      c.fillStyle = 'rgba(0,0,0,0.35)';
-      c.fillRect(bx, top+16, bw, bottom-top-32);
-      bx += bw + 4 + pseudoRand(seedI+1)*6;
-      seedI += 2;
-    }
-  }
-
-  function drawTicketMark(c, cx, cy, w, h, markColor, cutColor){
-    roundRect(c, cx-w/2, cy-h/2, w, h, h*0.16);
-    c.fillStyle = markColor;
-    c.fill();
-    const notchR = h*0.22;
-    c.fillStyle = cutColor;
-    c.beginPath(); c.arc(cx-w/2, cy, notchR, 0, Math.PI*2); c.fill();
-    c.beginPath(); c.arc(cx+w/2, cy, notchR, 0, Math.PI*2); c.fill();
-  }
-
-  function pseudoRand(seed){
-    const x = Math.sin(seed*12.9898)*43758.5453;
-    return x - Math.floor(x);
-  }
-
-  function drawRetroSun(c, cx, cy, r, stripeCount){
-    c.save();
-    c.beginPath(); c.arc(cx, cy, r, 0, Math.PI*2); c.clip();
-    const sg = c.createLinearGradient(0, cy-r, 0, cy+r);
-    sg.addColorStop(0, '#ffe27a');
-    sg.addColorStop(1, '#ff4d6d');
-    c.fillStyle = sg;
-    c.fillRect(cx-r, cy-r, r*2, r*2);
-    c.globalCompositeOperation = 'destination-out';
-    const stripeH = r*0.11, gap = r*0.09;
-    let y = cy - r*0.05;
-    for (let i=0; i<stripeCount; i++){
-      c.fillRect(cx-r, y, r*2, stripeH);
-      y += stripeH + gap;
-    }
-    c.restore();
-  }
-
-  function drawDuotoneSplit(c, colorA, colorB){
-    c.save();
-    c.translate(W/2, H/2);
-    c.rotate(-0.15);
-    c.translate(-W/2, -H/2);
-    const span = Math.max(W,H)*1.7;
-    const g = c.createLinearGradient(0,0,span,0);
-    g.addColorStop(0, colorA);
-    g.addColorStop(0.42, colorA);
-    g.addColorStop(0.58, colorB);
-    g.addColorStop(1, colorB);
-    c.fillStyle = g;
-    c.fillRect(-span*0.35, -span*0.35, span*1.7, span*1.7);
-    c.restore();
-    addGrain(c, 0.06);
-  }
-
-  function drawHalftone(c, dotColor){
-    const cols = 24, rows = 10;
-    const cellW = W/cols, cellH = H/rows;
-    c.fillStyle = dotColor;
-    for (let row=0; row<rows; row++){
-      for (let col=0; col<cols; col++){
-        const t = col/(cols-1);
-        const r = (cellW*0.42) * (1-t) + 1.5;
-        const cx = col*cellW + cellW/2, cy = row*cellH + cellH/2;
-        c.beginPath(); c.arc(cx, cy, r, 0, Math.PI*2); c.fill();
-      }
-    }
   }
 
   function drawBubbleCluster(c){
@@ -1091,104 +999,11 @@ input[type="range"]{
       text:'#0b1200', sub:'#0b1200',
       draw(c){ c.fillStyle = '#3fae2a'; c.fillRect(0,0,W,H); addGrain(c, 0.045); }
     },
-    maroonFade: {
-      label:'Maroon Fade',
-      swatch:'linear-gradient(180deg,#3b0a1a,#c81e3a)',
-      text:'#ffffff', sub:'#eaff7a',
-      draw(c){
-        const g = c.createLinearGradient(0,0,0,H);
-        g.addColorStop(0,'#3b0a1a'); g.addColorStop(1,'#c81e3a');
-        c.fillStyle = g; c.fillRect(0,0,W,H);
-        ribbonStack(c, -40, -60, 30, 560, 34, 8, '#7cff4d', 3);
-        ribbonStack(c, W+40, H+60, -150, 560, 34, 8, '#7cff4d', 3);
-        addGrain(c, 0.045);
-      }
-    },
-    royalBlue: {
-      label:'Royal Blue',
-      swatch:'linear-gradient(135deg,#ffe873 0%,#3e52e8 26%,#3e52e8 74%,#ffe873 100%)',
-      text:'#ffffff', sub:'#ffe873',
-      draw(c){
-        c.fillStyle = '#3e52e8';
-        c.fillRect(0,0,W,H);
-        ribbonStack(c, -40, -60, 30, 560, 40, 9, '#ffe873', 3);
-        ribbonStack(c, W+40, H+60, -150, 560, 40, 9, '#ffe873', 3);
-        addGrain(c, 0.045);
-      }
-    },
-    crimsonArc: {
-      label:'Crimson Arc',
-      swatch:'radial-gradient(circle at 15% 50%, #ffce45, #e22138 60%)',
-      text:'#ffffff', sub:'#ffe08a',
-      draw(c){
-        const g = c.createLinearGradient(0,0,0,H);
-        g.addColorStop(0,'#7a0e1e'); g.addColorStop(1,'#e22138');
-        c.fillStyle = g; c.fillRect(0,0,W,H);
-        drawSunArc(c, -40, H/2, 260);
-        drawSunArc(c, W+40, H/2, 260);
-        addGrain(c, 0.045);
-      }
-    },
     solidBlack: {
       label:'Minimal Black',
       swatch:'#0a0a0a',
       text:'#a6ff3d', sub:'#ffffff',
       draw(c){ c.fillStyle = '#0a0a0a'; c.fillRect(0,0,W,H); addGrain(c, 0.05); }
-    },
-    cyanRing: {
-      label:'Cyan Ring',
-      swatch:'radial-gradient(circle,#ffe066,#8ce27a 55%,#00d4f5 70%)',
-      text:'#062b33', sub:'#0a3d47',
-      draw(c){
-        c.fillStyle = '#00d4f5';
-        c.fillRect(0,0,W,H);
-        drawRing(c, W*0.16, H*0.5, 190, 55, '#ffe066', '#8ce27a');
-        drawRing(c, W*0.88, H*0.5, 150, 45, '#ffe066', '#8ce27a');
-        addGrain(c, 0.045);
-      }
-    },
-    coralCorner: {
-      label:'Coral Corner',
-      swatch:'linear-gradient(135deg,#ffd23f,#ff5a3c 60%)',
-      text:'#ffffff', sub:'#ffe3d1',
-      draw(c){
-        c.fillStyle = '#ff5a3c';
-        c.fillRect(0,0,W,H);
-        drawRing(c, -20, -20, 230, 60, '#ffd23f', '#ff8a3d');
-        drawRing(c, W+20, H+20, 200, 55, '#ffd23f', '#ff8a3d');
-        addGrain(c, 0.045);
-      }
-    },
-    retroSunset: {
-      label:'Retro Sunset',
-      swatch:'linear-gradient(180deg,#ff9d5c,#ff5d8f 55%,#5a2c8f)',
-      text:'#fff4d6', sub:'#ffd9a0',
-      draw(c){
-        const g = c.createLinearGradient(0,0,0,H);
-        g.addColorStop(0, '#ff9d5c');
-        g.addColorStop(0.55, '#ff5d8f');
-        g.addColorStop(1, '#5a2c8f');
-        c.fillStyle = g; c.fillRect(0,0,W,H);
-        drawRetroSun(c, W/2, H*0.66, 175, 5);
-        addGrain(c, 0.045);
-      }
-    },
-    duotoneSplit: {
-      label:'Duotone Split',
-      swatch:'linear-gradient(115deg,#ffb400 40%,#0b1a3a 60%)',
-      text:'#ffffff', sub:'#ffe27a',
-      draw(c){ drawDuotoneSplit(c, '#ffb400', '#0b1a3a'); }
-    },
-    halftoneFade: {
-      label:'Halftone Fade',
-      swatch:'linear-gradient(90deg,#3fd3c6,#101820)',
-      text:'#3fd3c6', sub:'#ffffff',
-      draw(c){
-        c.fillStyle = '#101820';
-        c.fillRect(0,0,W,H);
-        drawHalftone(c, '#3fd3c6');
-        addGrain(c, 0.045);
-      }
     },
     bubbleCluster: {
       label:'Bubble Cluster',
@@ -1294,45 +1109,11 @@ input[type="range"]{
         addGrain(c, 0.06);
       }
     },
-    soccerPitch: {
-      label:'Soccer Pitch',
-      swatch:'linear-gradient(160deg,#3fa32e,#2d7a22)',
-      text:'#ffffff', sub:'#eaff7a',
-      draw(c){ drawSoccerPitch(c); }
-    },
-    baseballField: {
-      label:'Baseball Field',
-      swatch:'linear-gradient(180deg,#4b9c3f,#b5793f 85%)',
-      text:'#ffffff', sub:'#ffe27a',
-      draw(c){ drawBaseballField(c); }
-    },
     stadiumCrowd: {
       label:'Stadium Crowd',
       swatch:'linear-gradient(180deg,#141a33,#241633)',
       text:'#ffffff', sub:'#ffd23f',
       draw(c){ drawStadiumCrowd(c); }
-    },
-    basketballCourt: {
-      label:'Basketball Court',
-      swatch:'linear-gradient(180deg,#c9863f,#a8672c)',
-      text:'#ffffff', sub:'#ffb400',
-      draw(c){ drawBasketballCourt(c); }
-    },
-    ticketStub: {
-      label:'Ticket Stub',
-      swatch:'#ff6fae',
-      text:'#151116', sub:'#4a1025',
-      draw(c){ drawTicketStub(c, '#ffd7ea', '#ff6fae'); }
-    },
-    brandBlue: {
-      label:'Brand Blue',
-      swatch:'#003BDE',
-      text:'#ffffff', sub:'#ccdbff',
-      draw(c){
-        c.fillStyle = '#003BDE';
-        c.fillRect(0,0,W,H);
-        drawTicketMark(c, W*0.84, H*0.5, 150, 195, 'rgba(255,255,255,0.14)', '#003BDE');
-      }
     },
     brandNavy: {
       label:'Brand Navy',
@@ -1378,19 +1159,9 @@ input[type="range"]{
     }
   };
 
-  function drawSunArc(c, cx, cy, r){
-    const g = c.createRadialGradient(cx,cy,r*0.15,cx,cy,r);
-    g.addColorStop(0,'#ffce45');
-    g.addColorStop(1,'#ff7a3d');
-    c.fillStyle = g;
-    c.beginPath();
-    c.arc(cx,cy,r,0,Math.PI*2);
-    c.fill();
-  }
-
   // ---------- text layout ----------
 
-  function wrapLines(c, text, maxWidth){
+  function wrapParagraph(c, text, maxWidth){
     const words = text.trim().split(/\s+/).filter(Boolean);
     if (!words.length) return [];
     const lines = [];
@@ -1408,6 +1179,12 @@ input[type="range"]{
     return lines;
   }
 
+  function wrapLines(c, text, maxWidth){
+    return text.replace(/\r\n/g,'\n').split('\n').flatMap(paragraph =>
+      paragraph.trim() ? wrapParagraph(c, paragraph, maxWidth) : ['']
+    );
+  }
+
   function render(target, gtarget, forExport){
     const c = target;
     const preset = state.bg.type === 'preset' ? PRESETS[state.bg.key] : null;
@@ -1421,13 +1198,16 @@ input[type="range"]{
       preset.draw(c);
     }
 
-    if (state.logo.image){
+    function drawLogo(){
+      if (!state.logo.image) return;
       const img = state.logo.image;
       const maxDim = state.logo.size;
       const scale = Math.min(maxDim/img.width, maxDim/img.height);
       const lw = img.width*scale, lh = img.height*scale;
-      c.drawImage(img, W/2 - lw/2, H/2 - lh/2, lw, lh);
+      c.drawImage(img, state.logo.x*W - lw/2, state.logo.y*H - lh/2, lw, lh);
     }
+
+    if (state.logo.zOrder !== 'front') drawLogo();
 
     // headline
     const marginX = 140, marginTop = 60, marginBottom = 60;
@@ -1456,12 +1236,13 @@ input[type="range"]{
 
     const xPos = state.align === 'left' ? marginX : W/2;
     c.textAlign = state.align === 'left' ? 'left' : 'center';
+    c.direction = FONTS[state.font].rtl ? 'rtl' : 'ltr';
 
     c.font = `${size}px "${family}", sans-serif`;
     c.fillStyle = state.headlineColor;
 
-    let badgeMaxLineW = 0;
     if (state.badge){
+      let badgeMaxLineW = 0;
       headlineLines.forEach(line => { badgeMaxLineW = Math.max(badgeMaxLineW, c.measureText(line).width); });
       const padX = size*0.5, padY = size*0.32;
       const blockW = badgeMaxLineW + padX*2;
@@ -1496,22 +1277,15 @@ input[type="range"]{
     });
     clearTextEffect(c);
 
-    if (state.badge){
-      const underlineW = Math.max(badgeMaxLineW * 0.7, 30);
-      const underlineCenterX = state.align === 'left' ? xPos + badgeMaxLineW/2 : xPos;
-      const underlineY = y - lineHeight + size*0.24;
-      const underlineH = Math.max(3, size*0.07);
-      roundRect(c, underlineCenterX - underlineW/2, underlineY, underlineW, underlineH, underlineH/2);
-      c.fillStyle = state.headlineColor;
-      c.fill();
-    }
-
     if (hasSub){
       y += state.subtitleGap - lineHeight + subLineHeight*0.1;
       c.font = `italic ${subSize}px -apple-system, "Segoe UI", sans-serif`;
       c.fillStyle = state.subtitleColor;
       subLines.forEach(line => { c.fillText(line, xPos, y); y += subLineHeight; });
     }
+    c.direction = 'ltr';
+
+    if (state.logo.zOrder === 'front') drawLogo();
 
     if (!forExport && gtarget){
       gtarget.clearRect(0,0,W,H);
@@ -1519,6 +1293,14 @@ input[type="range"]{
       gtarget.setLineDash([8,7]);
       gtarget.lineWidth = 2;
       gtarget.strokeRect(marginX, marginTop, W - marginX*2, H - marginTop - marginBottom);
+      gtarget.setLineDash([]);
+
+      const mobileW = MOBILE_CROP_RATIO * H;
+      const mobileX = (W - mobileW) / 2;
+      gtarget.strokeStyle = 'rgba(255,180,60,0.75)';
+      gtarget.setLineDash([4,4]);
+      gtarget.lineWidth = 2;
+      gtarget.strokeRect(mobileX, 4, mobileW, H-8);
       gtarget.setLineDash([]);
     }
   }
@@ -1604,8 +1386,9 @@ input[type="range"]{
 
   function updateCanvasMode(){
     const isImage = state.bg.type === 'image';
+    const draggable = isImage || !!state.logo.image;
     dragHint.style.display = isImage ? 'block' : 'none';
-    stage.style.cursor = isImage ? 'grab' : 'default';
+    stage.style.cursor = draggable ? 'grab' : 'default';
     photoActions.style.display = isImage ? 'flex' : 'none';
   }
 
@@ -1660,10 +1443,28 @@ input[type="range"]{
     };
   }
 
+  function logoBounds(){
+    if (!state.logo.image) return null;
+    const img = state.logo.image;
+    const maxDim = state.logo.size;
+    const scale = Math.min(maxDim/img.width, maxDim/img.height);
+    const lw = img.width*scale, lh = img.height*scale;
+    const cx = state.logo.x*W, cy = state.logo.y*H;
+    return { left: cx-lw/2, top: cy-lh/2, right: cx+lw/2, bottom: cy+lh/2 };
+  }
+
   function startDrag(e){
-    if (state.bg.type !== 'image') return;
     const p = canvasPointFromEvent(e);
+    const lb = logoBounds();
+    if (lb && p.x >= lb.left && p.x <= lb.right && p.y >= lb.top && p.y <= lb.bottom){
+      dragState = { mode:'logo', startX:p.x, startY:p.y, startLogoX: state.logo.x, startLogoY: state.logo.y };
+      stage.style.cursor = 'grabbing';
+      e.preventDefault();
+      return;
+    }
+    if (state.bg.type !== 'image') return;
     dragState = {
+      mode:'photo',
       startX: p.x, startY: p.y,
       startFocusX: state.bg.focusX ?? 0.5,
       startFocusY: state.bg.focusY ?? 0.5
@@ -1675,6 +1476,13 @@ input[type="range"]{
   function moveDrag(e){
     if (!dragState) return;
     const p = canvasPointFromEvent(e);
+    if (dragState.mode === 'logo'){
+      const dx = p.x - dragState.startX, dy = p.y - dragState.startY;
+      state.logo.x = Math.min(1, Math.max(0, dragState.startLogoX + dx/W));
+      state.logo.y = Math.min(1, Math.max(0, dragState.startLogoY + dy/H));
+      redraw();
+      return;
+    }
     const img = state.bg.image;
     const { sw, sh } = coverFitSize(img);
     const dCanvasX = p.x - dragState.startX, dCanvasY = p.y - dragState.startY;
@@ -1688,7 +1496,7 @@ input[type="range"]{
   function endDrag(){
     if (!dragState) return;
     dragState = null;
-    stage.style.cursor = state.bg.type === 'image' ? 'grab' : 'default';
+    stage.style.cursor = (state.bg.type === 'image' || state.logo.image) ? 'grab' : 'default';
   }
 
   stage.addEventListener('mousedown', startDrag);
@@ -1842,9 +1650,12 @@ input[type="range"]{
     const img = new Image();
     img.onload = () => {
       state.logo.image = img;
+      state.logo.x = 0.5;
+      state.logo.y = 0.5;
       logoUploadBtn.classList.add('has-file');
       logoUploadBtn.textContent = file.name.length > 26 ? file.name.slice(0,23)+'...' : file.name;
       logoControls.style.display = 'flex';
+      updateCanvasMode();
       redraw();
     };
     img.src = URL.createObjectURL(file);
@@ -1861,8 +1672,11 @@ input[type="range"]{
     logoUploadBtn.classList.remove('has-file');
     logoUploadBtn.textContent = 'Upload a logo...';
     logoControls.style.display = 'none';
+    updateCanvasMode();
     redraw();
   });
+
+  wireSeg('logoOrderSeg', v => state.logo.zOrder = v);
 
   const headlineInput = document.getElementById('headline');
   const subtitleInput = document.getElementById('subtitle');
@@ -1980,53 +1794,16 @@ input[type="range"]{
   };
 
   const TEMPLATES = [
-    { key:'bigQuestion', name:'Big Question', desc:'Pitch Green + Anton',
-      bg:'pitchGreen', font:'anton', headlineColor:'#a6ff3d', subtitleColor:'#ffffff' },
-    { key:'countdown', name:'Countdown Stat', desc:'Maroon Fade + Anton',
-      bg:'maroonFade', font:'anton', headlineColor:'#ffffff', subtitleColor:'#eaff7a' },
-    { key:'breaking', name:'Breaking Update', desc:'Royal Blue + Bebas Neue',
-      bg:'royalBlue', font:'bebas', headlineColor:'#ffffff', subtitleColor:'#ffe873' },
-    { key:'ranking', name:'Ranking List', desc:'Crimson Arc + Anton',
-      bg:'crimsonArc', font:'anton', headlineColor:'#ffffff', subtitleColor:'#ffe08a' },
-    { key:'playfulBadge', name:'Playful Badge', desc:'Ink Duotone + Fredoka badge',
-      bg:'inkDuotone', font:'fredoka', headlineColor:'#ffffff', subtitleColor:'#ffd9c2', badge:true },
     { key:'boldStatement', name:'Bold Statement', desc:'Minimal Black + Archivo Black',
       bg:'solidBlack', font:'archivo', headlineColor:'#a6ff3d', subtitleColor:'#ffffff' },
     { key:'feature', name:'Feature Spotlight', desc:'Mesh Aurora + Fredoka',
       bg:'meshAurora', font:'fredoka', headlineColor:'#ffe066', subtitleColor:'#ffffff' },
     { key:'calmRecap', name:'Calm Recap', desc:'Soft Wave + Archivo Black',
       bg:'softWave', font:'archivo', headlineColor:'#22263a', subtitleColor:'#5b4a6b' },
-    { key:'soccerMatch', name:'Soccer Match', desc:'Soccer Pitch + Anton',
-      bg:'soccerPitch', font:'anton', headlineColor:'#ffffff', subtitleColor:'#eaff7a' },
-    { key:'basketballRecap', name:'Basketball Recap', desc:'Basketball Court + Bebas Neue',
-      bg:'basketballCourt', font:'bebas', headlineColor:'#ffffff', subtitleColor:'#ffb400' },
-    { key:'musicFeature', name:'Music Feature', desc:'Spotlight Glow + Fredoka',
-      bg:'spotlightGlow', font:'fredoka', headlineColor:'#ffffff', subtitleColor:'#ffd166' },
-    { key:'championship', name:'Championship', desc:'Maroon Fade + Anton + glow',
-      bg:'maroonFade', font:'anton', headlineColor:'#ffffff', subtitleColor:'#eaff7a',
-      effect:'glow', effectColor:'#eaff7a', effectStrength:45 },
-    { key:'ticketDrop', name:'Ticket Drop', desc:'Royal Blue + Archivo Black + outline',
-      bg:'royalBlue', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#ffe873',
-      effect:'outline', effectColor:'#1a2a8f', effectStrength:30 },
-    { key:'travelGuide', name:'Travel Guide', desc:'Cyan Ring + Fredoka',
-      bg:'cyanRing', font:'fredoka', headlineColor:'#062b33', subtitleColor:'#0a3d47' },
-    { key:'retroPoster', name:'Retro Poster', desc:'Retro Sunset + Bangers + extrude',
-      bg:'retroSunset', font:'bangers', headlineColor:'#fff4d6', subtitleColor:'#ffd9a0',
-      effect:'extrude', effectColor:'#5a2c8f', effectStrength:45 },
-    { key:'bubbleParty', name:'Bubble Party', desc:'Bubble Cluster + Chewy',
-      bg:'bubbleCluster', font:'chewy', headlineColor:'#ffffff', subtitleColor:'#fff0f5' },
-    { key:'elegantAnnounce', name:'Elegant Announce', desc:'Duotone Split + Playfair Display',
-      bg:'duotoneSplit', font:'playfair', headlineColor:'#ffffff', subtitleColor:'#ffe27a' },
     { key:'handwrittenNote', name:'Handwritten Note', desc:'Grain Paper + Pacifico',
       bg:'grainPaper', font:'pacifico', headlineColor:'#2b2318', subtitleColor:'#6b5a3f' },
     { key:'fanZone', name:'Fan Zone', desc:'Stadium Crowd + Archivo Black',
       bg:'stadiumCrowd', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#ffd23f' },
-    { key:'diamondClassic', name:'Diamond Classic', desc:'Baseball Field + Anton',
-      bg:'baseballField', font:'anton', headlineColor:'#ffffff', subtitleColor:'#ffe27a' },
-    { key:'ticketAlert', name:'Ticket Alert', desc:'Ticket Stub + Archivo Black',
-      bg:'ticketStub', font:'archivo', headlineColor:'#151116', subtitleColor:'#4a1025' },
-    { key:'seatpickBlue', name:'SeatPick Blue', desc:'Brand Blue + Anton',
-      bg:'brandBlue', font:'anton', headlineColor:'#ffffff', subtitleColor:'#ccdbff' },
     { key:'quietStatement', name:'Quiet Statement', desc:'Quiet Arc + Archivo Black',
       bg:'quietArc', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#a6ff3d' },
     { key:'afterDark', name:'After Dark', desc:'Deep Glow + Bangers',
@@ -2257,7 +2034,10 @@ input[type="range"]{
       document.fonts.load('400 100px Pacifico'),
       document.fonts.load('400 100px "Playfair Display"'),
       document.fonts.load('400 100px "Permanent Marker"'),
-      document.fonts.load('400 100px Caveat')
+      document.fonts.load('400 100px Caveat'),
+      document.fonts.load('400 100px "Rubik Wet Paint"'),
+      document.fonts.load('700 100px Heebo'),
+      document.fonts.load('700 100px Cairo')
     ]).then(boot).catch(boot);
   } else {
     boot();
