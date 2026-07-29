@@ -26,15 +26,33 @@ runtime (everything — including all 8 display fonts — is inlined).
   serves. Don't hand-edit either generated file — edit `template.html`
   and regenerate both (see below).
 
-**Backgrounds** — 20 presets drawn live on `<canvas>` with gradients/shapes
-(Pitch Green, Flat Pitch, Maroon Fade, Royal Blue, Pink Chevron, Crimson
-Arc, Sky Burst, Minimal Black, Purple Bloom, Wave Blobs, Cyan Ring, Pill
-Grid, Zen Stack, Coral Corner, Retro Sunset, Confetti Pop, Duotone Split,
-Halftone Fade, Checker Pop, Bubble Cluster) — no image assets to manage.
-Users can also upload their own photo as a background (cover-fit cropped
-to 1200x500). Confetti Pop uses a deterministic sine-based pseudo-random
-hash (`pseudoRand`) for stable scatter placement — never `Math.random()`,
-which would reshuffle the pattern on every keystroke/redraw.
+**Backgrounds** — 27 presets drawn live on `<canvas>` with gradients/shapes:
+the original 20 abstract ones (Pitch Green, Flat Pitch, Maroon Fade, Royal
+Blue, Pink Chevron, Crimson Arc, Sky Burst, Minimal Black, Purple Bloom,
+Wave Blobs, Cyan Ring, Pill Grid, Zen Stack, Coral Corner, Retro Sunset,
+Confetti Pop, Duotone Split, Halftone Fade, Checker Pop, Bubble Cluster),
+plus realistic sports/venue textures (Soccer Pitch — crosshatch mow
+pattern + touchline/center-circle/penalty-box markings; Baseball Field —
+dirt diamond + mound + baselines; Stadium Crowd — tiered seating bands of
+small deterministic dots with a floodlight glow and vignette; Basketball
+Court — wood grain + key/free-throw arc), a Ticket Stub (notched ticket
+shape + dashed perforation + barcode, inspired by a past cover), and two
+SeatPick brand backgrounds (Brand Blue, with a redrawn ticket-notch mark
+echoing the logo shape at low opacity; Brand Navy, flat). No image assets
+to manage — everything is vector/gradient. Users can also upload their own
+photo as a background (cover-fit cropped to 1200x500, **now draggable** —
+click and drag directly on the canvas preview to reposition the crop;
+touch drag works too). Confetti Pop and Stadium Crowd use a deterministic
+sine-based pseudo-random hash (`pseudoRand`) for stable placement — never
+`Math.random()`, which would reshuffle the pattern on every keystroke.
+
+**Solid color backgrounds** — a "Solid color" row in the Background section
+has one-click chips for the 8 exact SeatPick brand colors (White, Navy
+#19213D, Blue #003BDE, Red #D31626, Amber #FFB60D, Green #0A9D58, Sky
+#3E8DF7, Purple #A82FF4) plus a native color picker for any custom hex.
+Picking a color auto-sets headline/subtitle text to black or white based
+on the color's luminance (`autoContrastColor`), so it's always readable
+without extra steps.
 
 **Fonts** — a dropdown in the Text section switches the headline typeface:
 Anton (sport bold), Bebas Neue (tall condensed), Archivo Black (grotesk),
@@ -61,16 +79,27 @@ Note: an earlier version also had an icon picker/overlay (soccer ball,
 trophy, etc.) — removed per feedback to keep the tool to backgrounds +
 fonts + effects only.
 
-**Templates** — an 18-entry "Quick start" gallery of one-click combos
+**Templates** — a 22-entry "Quick start" gallery of one-click combos
 (background + font + colors + alignment + badge + text effect): 8 general
 styles (Big Question, Countdown Stat, Breaking Update, Ranking List,
 Playful Badge, Bold Statement, Feature Spotlight, Calm Recap), 6
-sport/category styles (Soccer Match, Basketball Recap, Music Feature,
-Championship, Ticket Drop, Travel Guide), and 4 showcasing the newer
-fonts/effect (Retro Poster, Bubble Party, Elegant Announce, Handwritten
-Note). Picking a template fills in every control at once; any control can
-still be overridden manually afterward (this clears the template's
-highlighted state but doesn't reset anything).
+sport/category styles (Soccer Match and Basketball Recap now use the
+realistic pitch/court backgrounds, plus Music Feature, Championship,
+Ticket Drop, Travel Guide), 4 showcasing the newer fonts/effect (Retro
+Poster, Bubble Party, Elegant Announce, Handwritten Note), and 4 more
+sports/brand ones (Fan Zone, Diamond Classic, Ticket Alert, SeatPick
+Blue). **All templates default to center/middle alignment with no drop
+shadow** — per feedback that off-center text and drop shadow read as
+dated/risky defaults; the effects that survived in templates (glow,
+outline, 3D extrude) are used more sparingly and only where they suit the
+specific look. Picking a template fills in every control at once; any
+control can still be overridden manually afterward (this clears the
+template's highlighted state but doesn't reset anything).
+
+**Safe-zone margin** — top/bottom margin is 42px (was 56px), matching the
+same proportion as the 100px left/right margin on the 1200×500 canvas
+(100/1200 ≈ 42/500), so the safe-zone guide reads as an even border on all
+sides instead of looking disproportionately thick top/bottom.
 
 Export uses a binary search over JPEG/WEBP quality to land just under the
 120,000-byte budget; PNG has no quality lever, so if a PNG export comes out
