@@ -301,6 +301,16 @@ input[type="range"]{
   letter-spacing:0.01em;
 }
 
+.color-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.color-chip{
+  width:30px;height:30px;
+  border-radius:50%;
+  border:2px solid var(--line);
+  cursor:pointer;
+  padding:0;
+}
+.color-chip.active{border-color:var(--accent);}
+
 .tpl-grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
@@ -421,7 +431,16 @@ input[type="range"]{
         <h2>2. Background</h2>
         <button class="upload-btn" id="uploadBtn" type="button">Upload a photo&hellip;</button>
         <input type="file" id="fileInput" accept="image/*">
+        <p class="fineprint" id="dragHint" style="display:none;margin-top:-4px;">Drag the photo on the canvas to reposition it.</p>
         <div class="swatches" id="swatches"></div>
+        <div class="field" style="margin-top:14px;">
+          <label>Solid color (incl. SeatPick brand colors)</label>
+          <div class="color-chips" id="brandColors"></div>
+          <div class="colorfield" style="margin-top:8px;">
+            <input type="color" id="customBgColor" value="#003BDE">
+            <span class="hex" id="customBgColorHex">Custom color&hellip;</span>
+          </div>
+        </div>
       </div>
 
       <div class="section">
@@ -683,6 +702,155 @@ input[type="range"]{
     c.beginPath(); c.arc(cx, cy-95*scale, 40*scale, 0, Math.PI*2); c.fill();
     c.beginPath(); c.arc(cx, cy-10*scale, 76*scale, Math.PI, 0); c.fill();
     c.beginPath(); c.arc(cx, cy+72*scale, 104*scale, Math.PI, 0); c.fill();
+  }
+
+  function drawMowStripes(c, angleDeg, stripeW, alpha){
+    c.save();
+    c.translate(W/2, H/2);
+    c.rotate(angleDeg * Math.PI/180);
+    c.translate(-W/2, -H/2);
+    const span = Math.max(W,H)*1.8;
+    c.fillStyle = `rgba(255,255,255,${alpha})`;
+    for (let x = -span/2; x < span/2; x += stripeW*2){
+      c.fillRect(x, -span/2, stripeW, span);
+    }
+    c.restore();
+  }
+
+  function drawSoccerPitch(c){
+    const g = c.createLinearGradient(0,0,0,H);
+    g.addColorStop(0, '#3fa32e');
+    g.addColorStop(1, '#2d7a22');
+    c.fillStyle = g; c.fillRect(0,0,W,H);
+    drawMowStripes(c, 32, 55, 0.05);
+    drawMowStripes(c, -32, 55, 0.035);
+    c.strokeStyle = 'rgba(255,255,255,0.85)';
+    c.lineWidth = 4;
+    c.strokeRect(36, 36, W-72, H-72);
+    c.beginPath(); c.moveTo(W/2,36); c.lineTo(W/2,H-36); c.stroke();
+    c.beginPath(); c.arc(W/2, H/2, 65, 0, Math.PI*2); c.stroke();
+    c.beginPath(); c.arc(W/2,H/2,4,0,Math.PI*2); c.fillStyle='rgba(255,255,255,0.85)'; c.fill();
+    c.strokeRect(36, H/2-100, 120, 200);
+    c.strokeRect(36, H/2-50, 50, 100);
+  }
+
+  function drawBaseballField(c){
+    const g = c.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#4b9c3f'); g.addColorStop(1,'#357a2c');
+    c.fillStyle=g; c.fillRect(0,0,W,H);
+    drawMowStripes(c, 90, 50, 0.045);
+    const homeX = W/2, homeY = H+60;
+    c.fillStyle = '#b5793f';
+    c.beginPath();
+    c.moveTo(homeX, homeY);
+    c.lineTo(homeX-230, homeY-230);
+    c.lineTo(homeX, homeY-460);
+    c.lineTo(homeX+230, homeY-230);
+    c.closePath();
+    c.fill();
+    c.fillStyle = '#c98a4b';
+    c.beginPath(); c.arc(homeX, homeY-230, 26, 0, Math.PI*2); c.fill();
+    c.strokeStyle='rgba(255,255,255,0.85)'; c.lineWidth=3;
+    c.beginPath();
+    c.moveTo(homeX,homeY); c.lineTo(homeX-230,homeY-230);
+    c.moveTo(homeX,homeY); c.lineTo(homeX+230,homeY-230);
+    c.stroke();
+    c.fillStyle = '#f2f2f2';
+    c.beginPath(); c.arc(homeX, homeY-10, 10, 0, Math.PI*2); c.fill();
+  }
+
+  function drawStadiumCrowd(c){
+    const g = c.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#0d1226'); g.addColorStop(1,'#1c1030');
+    c.fillStyle=g; c.fillRect(0,0,W,H);
+
+    const tiers = 6;
+    const tierH = H/tiers;
+    for (let t=0; t<tiers; t++){
+      const y0 = t*tierH;
+      c.fillStyle = 'rgba(0,0,0,0.25)';
+      c.fillRect(0, y0, W, tierH*0.12);
+
+      const seatTop = y0 + tierH*0.16;
+      const seatH = tierH*0.78;
+      const rows = 5;
+      for (let r=0; r<rows; r++){
+        const ry = seatTop + (seatH/rows)*r;
+        const dotsInRow = 130;
+        for (let i=0;i<dotsInRow;i++){
+          const seed = t*971 + r*137.3 + i*13.7;
+          const x = ((i + pseudoRand(seed)*0.6) / dotsInRow) * W;
+          const dy = ry + pseudoRand(seed+3)*(seatH/rows)*0.7;
+          const tone = pseudoRand(seed+9);
+          const bright = 0.35 + pseudoRand(seed+7)*0.4;
+          const shade = tone<0.5 ? `rgba(255,235,210,${bright})` : tone<0.8 ? `rgba(180,195,255,${bright})` : `rgba(255,200,190,${bright})`;
+          c.fillStyle = shade;
+          c.beginPath(); c.arc(x, dy, 2.1, 0, Math.PI*2); c.fill();
+        }
+      }
+    }
+
+    const glow1 = c.createRadialGradient(100,0,5,100,0,260);
+    glow1.addColorStop(0,'rgba(255,244,214,0.22)'); glow1.addColorStop(1,'rgba(255,244,214,0)');
+    c.fillStyle=glow1; c.fillRect(0,0,W,H*0.6);
+    const glow2 = c.createRadialGradient(W-100,0,5,W-100,0,260);
+    glow2.addColorStop(0,'rgba(255,244,214,0.22)'); glow2.addColorStop(1,'rgba(255,244,214,0)');
+    c.fillStyle=glow2; c.fillRect(0,0,W,H*0.6);
+
+    const vg = c.createRadialGradient(W/2,H/2,H*0.25,W/2,H/2,H*0.95);
+    vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.35)');
+    c.fillStyle=vg; c.fillRect(0,0,W,H);
+  }
+
+  function drawBasketballCourt(c){
+    const g = c.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#c9863f'); g.addColorStop(1,'#a8672c');
+    c.fillStyle=g; c.fillRect(0,0,W,H);
+    c.strokeStyle='rgba(0,0,0,0.08)'; c.lineWidth=1;
+    for(let x=0;x<W;x+=26){ c.beginPath(); c.moveTo(x,0); c.lineTo(x,H); c.stroke(); }
+    c.strokeStyle='rgba(255,255,255,0.85)'; c.lineWidth=4;
+    c.strokeRect(36,36,W-72,H-72);
+    c.beginPath(); c.arc(W/2,H/2,58,0,Math.PI*2); c.stroke();
+    c.strokeRect(36, H/2-88, 150, 176);
+    c.beginPath(); c.arc(186, H/2, 58, -Math.PI/2, Math.PI/2); c.stroke();
+  }
+
+  function drawTicketStub(c, base, accent){
+    c.fillStyle = base; c.fillRect(0,0,W,H);
+    const left = 60, right = W-60, top = 90, bottom = H-90;
+    roundRect(c, left, top, right-left, bottom-top, 14);
+    c.fillStyle = accent; c.fill();
+    const notchCount = 8;
+    for (let i=0;i<=notchCount;i++){
+      const y = top + (bottom-top) * (i/notchCount);
+      c.fillStyle = base;
+      c.beginPath(); c.arc(left, y, 12, 0, Math.PI*2); c.fill();
+      c.beginPath(); c.arc(right, y, 12, 0, Math.PI*2); c.fill();
+    }
+    const barX = right - (right-left)*0.22;
+    c.strokeStyle = 'rgba(0,0,0,0.25)';
+    c.lineWidth = 2;
+    c.setLineDash([6,6]);
+    c.beginPath(); c.moveTo(barX, top+10); c.lineTo(barX, bottom-10); c.stroke();
+    c.setLineDash([]);
+    let bx = barX + 18, seedI = 0;
+    while (bx < right-18){
+      const bw = 2 + pseudoRand(seedI)*5;
+      c.fillStyle = 'rgba(0,0,0,0.35)';
+      c.fillRect(bx, top+16, bw, bottom-top-32);
+      bx += bw + 4 + pseudoRand(seedI+1)*6;
+      seedI += 2;
+    }
+  }
+
+  function drawTicketMark(c, cx, cy, w, h, markColor, cutColor){
+    roundRect(c, cx-w/2, cy-h/2, w, h, h*0.16);
+    c.fillStyle = markColor;
+    c.fill();
+    const notchR = h*0.22;
+    c.fillStyle = cutColor;
+    c.beginPath(); c.arc(cx-w/2, cy, notchR, 0, Math.PI*2); c.fill();
+    c.beginPath(); c.arc(cx+w/2, cy, notchR, 0, Math.PI*2); c.fill();
   }
 
   function pseudoRand(seed){
@@ -1003,6 +1171,52 @@ input[type="range"]{
         c.fillRect(0,0,W,H);
         drawBubbleCluster(c);
       }
+    },
+    soccerPitch: {
+      label:'Soccer Pitch',
+      swatch:'linear-gradient(160deg,#3fa32e,#2d7a22)',
+      text:'#ffffff', sub:'#eaff7a',
+      draw(c){ drawSoccerPitch(c); }
+    },
+    baseballField: {
+      label:'Baseball Field',
+      swatch:'linear-gradient(180deg,#4b9c3f,#b5793f 85%)',
+      text:'#ffffff', sub:'#ffe27a',
+      draw(c){ drawBaseballField(c); }
+    },
+    stadiumCrowd: {
+      label:'Stadium Crowd',
+      swatch:'linear-gradient(180deg,#141a33,#241633)',
+      text:'#ffffff', sub:'#ffd23f',
+      draw(c){ drawStadiumCrowd(c); }
+    },
+    basketballCourt: {
+      label:'Basketball Court',
+      swatch:'linear-gradient(180deg,#c9863f,#a8672c)',
+      text:'#ffffff', sub:'#ffb400',
+      draw(c){ drawBasketballCourt(c); }
+    },
+    ticketStub: {
+      label:'Ticket Stub',
+      swatch:'#ff6fae',
+      text:'#151116', sub:'#4a1025',
+      draw(c){ drawTicketStub(c, '#ffd7ea', '#ff6fae'); }
+    },
+    brandBlue: {
+      label:'Brand Blue',
+      swatch:'#003BDE',
+      text:'#ffffff', sub:'#ccdbff',
+      draw(c){
+        c.fillStyle = '#003BDE';
+        c.fillRect(0,0,W,H);
+        drawTicketMark(c, W*0.84, H*0.5, 150, 195, 'rgba(255,255,255,0.14)', '#003BDE');
+      }
+    },
+    brandNavy: {
+      label:'Brand Navy',
+      swatch:'#19213D',
+      text:'#ffffff', sub:'#a2a7ba',
+      draw(c){ c.fillStyle = '#19213D'; c.fillRect(0,0,W,H); }
     }
   };
 
@@ -1077,13 +1291,16 @@ input[type="range"]{
     const preset = state.bg.type === 'preset' ? PRESETS[state.bg.key] : null;
 
     if (state.bg.type === 'image' && state.bg.image){
-      drawCoverImage(c, state.bg.image);
+      drawCoverImage(c, state.bg.image, state.bg.focusX, state.bg.focusY);
+    } else if (state.bg.type === 'color'){
+      c.fillStyle = state.bg.color;
+      c.fillRect(0,0,W,H);
     } else if (preset){
       preset.draw(c);
     }
 
     // headline
-    const marginX = 100, marginTop = 56, marginBottom = 56;
+    const marginX = 100, marginTop = 42, marginBottom = 42;
     const maxWidth = W - marginX*2;
     const size = state.fontSize;
     const family = FONTS[state.font].family;
@@ -1176,11 +1393,19 @@ input[type="range"]{
     }
   }
 
-  function drawCoverImage(c, img){
+  function coverFitSize(img){
     const ir = img.width/img.height, cr = W/H;
-    let sw, sh, sx, sy;
-    if (ir > cr){ sh = img.height; sw = sh*cr; sy = 0; sx = (img.width-sw)/2; }
-    else { sw = img.width; sh = sw/cr; sx = 0; sy = (img.height-sh)/2; }
+    if (ir > cr) return { sw: img.height*cr, sh: img.height };
+    return { sw: img.width, sh: img.width/cr };
+  }
+
+  function drawCoverImage(c, img, focusX, focusY){
+    focusX = focusX == null ? 0.5 : focusX;
+    focusY = focusY == null ? 0.5 : focusY;
+    const { sw, sh } = coverFitSize(img);
+    const maxSx = Math.max(img.width - sw, 0), maxSy = Math.max(img.height - sh, 0);
+    const sx = Math.min(Math.max(focusX*img.width - sw/2, 0), maxSx);
+    const sy = Math.min(Math.max(focusY*img.height - sh/2, 0), maxSy);
     c.drawImage(img, sx, sy, sw, sh, 0, 0, W, H);
   }
 
@@ -1210,8 +1435,10 @@ input[type="range"]{
       uploadBtn.classList.remove('has-file');
       uploadBtn.textContent = 'Upload a photo...';
       document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+      document.querySelectorAll('.color-chip').forEach(s=>s.classList.remove('active'));
       btn.classList.add('active');
       clearTemplateActive();
+      updateCanvasMode();
       redraw();
     });
     swatchesEl.appendChild(btn);
@@ -1225,20 +1452,141 @@ input[type="range"]{
 
   const uploadBtn = document.getElementById('uploadBtn');
   const fileInput = document.getElementById('fileInput');
+  const dragHint = document.getElementById('dragHint');
+
+  function updateCanvasMode(){
+    const isImage = state.bg.type === 'image';
+    dragHint.style.display = isImage ? 'block' : 'none';
+    stage.style.cursor = isImage ? 'grab' : 'default';
+  }
+
   uploadBtn.addEventListener('click', () => fileInput.click());
   fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const img = new Image();
     img.onload = () => {
-      state.bg = { type:'image', key:null, image: img };
+      state.bg = { type:'image', key:null, image: img, focusX:0.5, focusY:0.5 };
       uploadBtn.classList.add('has-file');
       uploadBtn.textContent = file.name.length > 26 ? file.name.slice(0,23)+'...' : file.name;
       document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+      document.querySelectorAll('.color-chip').forEach(s=>s.classList.remove('active'));
       clearTemplateActive();
+      updateCanvasMode();
       redraw();
     };
     img.src = URL.createObjectURL(file);
+  });
+
+  // ---------- drag to reposition uploaded photo ----------
+
+  let dragState = null;
+
+  function canvasPointFromEvent(e){
+    const rect = stage.getBoundingClientRect();
+    const p = e.touches ? e.touches[0] : e;
+    return {
+      x: (p.clientX - rect.left) * (W / rect.width),
+      y: (p.clientY - rect.top) * (H / rect.height)
+    };
+  }
+
+  function startDrag(e){
+    if (state.bg.type !== 'image') return;
+    const p = canvasPointFromEvent(e);
+    dragState = {
+      startX: p.x, startY: p.y,
+      startFocusX: state.bg.focusX ?? 0.5,
+      startFocusY: state.bg.focusY ?? 0.5
+    };
+    stage.style.cursor = 'grabbing';
+    e.preventDefault();
+  }
+
+  function moveDrag(e){
+    if (!dragState) return;
+    const p = canvasPointFromEvent(e);
+    const img = state.bg.image;
+    const { sw, sh } = coverFitSize(img);
+    const dCanvasX = p.x - dragState.startX, dCanvasY = p.y - dragState.startY;
+    const dFocusX = -(dCanvasX * (sw / W)) / img.width;
+    const dFocusY = -(dCanvasY * (sh / H)) / img.height;
+    state.bg.focusX = Math.min(1, Math.max(0, dragState.startFocusX + dFocusX));
+    state.bg.focusY = Math.min(1, Math.max(0, dragState.startFocusY + dFocusY));
+    redraw();
+  }
+
+  function endDrag(){
+    if (!dragState) return;
+    dragState = null;
+    stage.style.cursor = state.bg.type === 'image' ? 'grab' : 'default';
+  }
+
+  stage.addEventListener('mousedown', startDrag);
+  window.addEventListener('mousemove', moveDrag);
+  window.addEventListener('mouseup', endDrag);
+  stage.addEventListener('touchstart', startDrag, { passive:false });
+  window.addEventListener('touchmove', moveDrag, { passive:true });
+  window.addEventListener('touchend', endDrag);
+
+  // ---------- solid color background (incl. SeatPick brand colors) ----------
+
+  const BRAND_COLORS = [
+    { name:'White',  hex:'#FFFFFF' },
+    { name:'Navy',   hex:'#19213D' },
+    { name:'Blue',   hex:'#003BDE' },
+    { name:'Red',    hex:'#D31626' },
+    { name:'Amber',  hex:'#FFB60D' },
+    { name:'Green',  hex:'#0A9D58' },
+    { name:'Sky',    hex:'#3E8DF7' },
+    { name:'Purple', hex:'#A82FF4' }
+  ];
+
+  function autoContrastColor(hex){
+    const v = hex.replace('#','');
+    const r = parseInt(v.substring(0,2),16), g = parseInt(v.substring(2,4),16), b = parseInt(v.substring(4,6),16);
+    const luminance = (0.299*r + 0.587*g + 0.114*b) / 255;
+    return luminance > 0.6 ? '#111111' : '#ffffff';
+  }
+
+  function applyColorBg(hex){
+    state.bg = { type:'color', color:hex, image:null };
+    const auto = autoContrastColor(hex);
+    state.headlineColor = auto;
+    state.subtitleColor = auto;
+    headlineColorInput.value = auto;
+    subtitleColorInput.value = auto;
+    headlineColorHex.textContent = auto.toUpperCase();
+    subtitleColorHex.textContent = auto.toUpperCase();
+    uploadBtn.classList.remove('has-file');
+    uploadBtn.textContent = 'Upload a photo...';
+    document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.color-chip').forEach(s=>s.classList.remove('active'));
+    clearTemplateActive();
+    updateCanvasMode();
+    redraw();
+  }
+
+  const brandColorsEl = document.getElementById('brandColors');
+  BRAND_COLORS.forEach(bc => {
+    const btn = document.createElement('button');
+    btn.className = 'color-chip';
+    btn.type = 'button';
+    btn.title = bc.name;
+    btn.style.background = bc.hex;
+    btn.addEventListener('click', () => {
+      applyColorBg(bc.hex);
+      document.querySelectorAll('.color-chip').forEach(s=>s.classList.remove('active'));
+      btn.classList.add('active');
+    });
+    brandColorsEl.appendChild(btn);
+  });
+
+  const customBgColorInput = document.getElementById('customBgColor');
+  const customBgColorHex = document.getElementById('customBgColorHex');
+  customBgColorInput.addEventListener('input', () => {
+    applyColorBg(customBgColorInput.value);
+    customBgColorHex.textContent = customBgColorInput.value.toUpperCase();
   });
 
   const headlineInput = document.getElementById('headline');
@@ -1341,65 +1689,59 @@ input[type="range"]{
   // ---------- templates ----------
 
   const TPL_DEFAULTS = {
+    align:'center', vAlign:'middle',
     badge:false, badgeColor:'#fff3c4',
     effect:'none', effectColor:'#000000', effectStrength:40
   };
 
   const TEMPLATES = [
     { key:'bigQuestion', name:'Big Question', desc:'Pitch Green + Anton',
-      bg:'pitchGreen', font:'anton', headlineColor:'#a6ff3d', subtitleColor:'#ffffff',
-      align:'center', vAlign:'middle' },
+      bg:'pitchGreen', font:'anton', headlineColor:'#a6ff3d', subtitleColor:'#ffffff' },
     { key:'countdown', name:'Countdown Stat', desc:'Maroon Fade + Anton',
-      bg:'maroonFade', font:'anton', headlineColor:'#ffffff', subtitleColor:'#eaff7a',
-      align:'center', vAlign:'middle' },
+      bg:'maroonFade', font:'anton', headlineColor:'#ffffff', subtitleColor:'#eaff7a' },
     { key:'breaking', name:'Breaking Update', desc:'Royal Blue + Bebas Neue',
-      bg:'royalBlue', font:'bebas', headlineColor:'#ffffff', subtitleColor:'#ffe873',
-      align:'left', vAlign:'top' },
+      bg:'royalBlue', font:'bebas', headlineColor:'#ffffff', subtitleColor:'#ffe873' },
     { key:'ranking', name:'Ranking List', desc:'Crimson Arc + Anton',
-      bg:'crimsonArc', font:'anton', headlineColor:'#ffffff', subtitleColor:'#ffe08a',
-      align:'center', vAlign:'middle' },
+      bg:'crimsonArc', font:'anton', headlineColor:'#ffffff', subtitleColor:'#ffe08a' },
     { key:'playfulBadge', name:'Playful Badge', desc:'Pill Grid + Fredoka badge',
-      bg:'pillGrid', font:'fredoka', headlineColor:'#e0146f', subtitleColor:'#ffffff',
-      align:'center', vAlign:'middle', badge:true },
+      bg:'pillGrid', font:'fredoka', headlineColor:'#e0146f', subtitleColor:'#ffffff', badge:true },
     { key:'boldStatement', name:'Bold Statement', desc:'Minimal Black + Archivo Black',
-      bg:'solidBlack', font:'archivo', headlineColor:'#a6ff3d', subtitleColor:'#ffffff',
-      align:'left', vAlign:'top' },
+      bg:'solidBlack', font:'archivo', headlineColor:'#a6ff3d', subtitleColor:'#ffffff' },
     { key:'feature', name:'Feature Spotlight', desc:'Purple Bloom + Fredoka',
-      bg:'purpleButterfly', font:'fredoka', headlineColor:'#ffe066', subtitleColor:'#ffffff',
-      align:'center', vAlign:'middle' },
+      bg:'purpleButterfly', font:'fredoka', headlineColor:'#ffe066', subtitleColor:'#ffffff' },
     { key:'calmRecap', name:'Calm Recap', desc:'Zen Stack + Archivo Black',
-      bg:'zenStack', font:'archivo', headlineColor:'#3b2e73', subtitleColor:'#6659a3',
-      align:'center', vAlign:'middle' },
-    { key:'soccerMatch', name:'Soccer Match', desc:'Pitch Green + Anton + shadow',
-      bg:'pitchGreen', font:'anton', headlineColor:'#ffffff', subtitleColor:'#ffffff',
-      align:'center', vAlign:'top', effect:'shadow', effectColor:'#0b1200', effectStrength:35 },
-    { key:'basketballRecap', name:'Basketball Recap', desc:'Coral Corner + Bebas Neue + shadow',
-      bg:'coralCorner', font:'bebas', headlineColor:'#ffffff', subtitleColor:'#ffe3d1',
-      align:'left', vAlign:'top', effect:'shadow', effectColor:'#000000', effectStrength:35 },
+      bg:'zenStack', font:'archivo', headlineColor:'#3b2e73', subtitleColor:'#6659a3' },
+    { key:'soccerMatch', name:'Soccer Match', desc:'Soccer Pitch + Anton',
+      bg:'soccerPitch', font:'anton', headlineColor:'#ffffff', subtitleColor:'#eaff7a' },
+    { key:'basketballRecap', name:'Basketball Recap', desc:'Basketball Court + Bebas Neue',
+      bg:'basketballCourt', font:'bebas', headlineColor:'#ffffff', subtitleColor:'#ffb400' },
     { key:'musicFeature', name:'Music Feature', desc:'Purple Bloom + Fredoka',
-      bg:'purpleButterfly', font:'fredoka', headlineColor:'#ffe066', subtitleColor:'#ffffff',
-      align:'center', vAlign:'middle' },
+      bg:'purpleButterfly', font:'fredoka', headlineColor:'#ffe066', subtitleColor:'#ffffff' },
     { key:'championship', name:'Championship', desc:'Maroon Fade + Anton + glow',
       bg:'maroonFade', font:'anton', headlineColor:'#ffffff', subtitleColor:'#eaff7a',
-      align:'center', vAlign:'middle', effect:'glow', effectColor:'#eaff7a', effectStrength:45 },
+      effect:'glow', effectColor:'#eaff7a', effectStrength:45 },
     { key:'ticketDrop', name:'Ticket Drop', desc:'Royal Blue + Archivo Black + outline',
       bg:'royalBlue', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#ffe873',
-      align:'left', vAlign:'top', effect:'outline', effectColor:'#1a2a8f', effectStrength:30 },
+      effect:'outline', effectColor:'#1a2a8f', effectStrength:30 },
     { key:'travelGuide', name:'Travel Guide', desc:'Cyan Ring + Fredoka',
-      bg:'cyanRing', font:'fredoka', headlineColor:'#062b33', subtitleColor:'#0a3d47',
-      align:'center', vAlign:'middle' },
+      bg:'cyanRing', font:'fredoka', headlineColor:'#062b33', subtitleColor:'#0a3d47' },
     { key:'retroPoster', name:'Retro Poster', desc:'Retro Sunset + Bangers + extrude',
       bg:'retroSunset', font:'bangers', headlineColor:'#fff4d6', subtitleColor:'#ffd9a0',
-      align:'center', vAlign:'middle', effect:'extrude', effectColor:'#5a2c8f', effectStrength:45 },
+      effect:'extrude', effectColor:'#5a2c8f', effectStrength:45 },
     { key:'bubbleParty', name:'Bubble Party', desc:'Bubble Cluster + Chewy',
-      bg:'bubbleCluster', font:'chewy', headlineColor:'#ffffff', subtitleColor:'#fff0f5',
-      align:'center', vAlign:'middle' },
+      bg:'bubbleCluster', font:'chewy', headlineColor:'#ffffff', subtitleColor:'#fff0f5' },
     { key:'elegantAnnounce', name:'Elegant Announce', desc:'Duotone Split + Playfair Display',
-      bg:'duotoneSplit', font:'playfair', headlineColor:'#ffffff', subtitleColor:'#ffe27a',
-      align:'center', vAlign:'middle' },
+      bg:'duotoneSplit', font:'playfair', headlineColor:'#ffffff', subtitleColor:'#ffe27a' },
     { key:'handwrittenNote', name:'Handwritten Note', desc:'Checker Pop + Pacifico',
-      bg:'checkerPop', font:'pacifico', headlineColor:'#7a1f3d', subtitleColor:'#4a1025',
-      align:'center', vAlign:'middle' }
+      bg:'checkerPop', font:'pacifico', headlineColor:'#7a1f3d', subtitleColor:'#4a1025' },
+    { key:'fanZone', name:'Fan Zone', desc:'Stadium Crowd + Archivo Black',
+      bg:'stadiumCrowd', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#ffd23f' },
+    { key:'diamondClassic', name:'Diamond Classic', desc:'Baseball Field + Anton',
+      bg:'baseballField', font:'anton', headlineColor:'#ffffff', subtitleColor:'#ffe27a' },
+    { key:'ticketAlert', name:'Ticket Alert', desc:'Ticket Stub + Archivo Black',
+      bg:'ticketStub', font:'archivo', headlineColor:'#151116', subtitleColor:'#4a1025' },
+    { key:'seatpickBlue', name:'SeatPick Blue', desc:'Brand Blue + Anton',
+      bg:'brandBlue', font:'anton', headlineColor:'#ffffff', subtitleColor:'#ccdbff' }
   ].map(t => Object.assign({}, TPL_DEFAULTS, t));
 
   const templatesEl = document.getElementById('templates');
@@ -1443,11 +1785,13 @@ input[type="range"]{
       uploadBtn.textContent = 'Upload a photo...';
 
       document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+      document.querySelectorAll('.color-chip').forEach(s=>s.classList.remove('active'));
       const matchSwatch = document.querySelector(`.swatch[data-key="${tpl.bg}"]`);
       if (matchSwatch) matchSwatch.classList.add('active');
 
       clearTemplateActive();
       btn.classList.add('active');
+      updateCanvasMode();
 
       redraw();
     });
@@ -1495,10 +1839,12 @@ input[type="range"]{
     uploadBtn.textContent = 'Upload a photo...';
     document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
     document.querySelector('.swatch').classList.add('active');
+    document.querySelectorAll('.color-chip').forEach(s=>s.classList.remove('active'));
     document.querySelectorAll('#alignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v==='center'));
     document.querySelectorAll('#vAlignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v==='middle'));
     document.querySelectorAll('#badgeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v==='plain'));
     clearTemplateActive();
+    updateCanvasMode();
     redraw();
   });
 
