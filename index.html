@@ -420,6 +420,68 @@ input[type="range"]{
   line-height:1.5;
 }
 .fineprint a{color:var(--ink);cursor:pointer;text-decoration:underline;}
+
+.mock-note{font-size:11.5px;color:var(--ink-dim);margin:0 0 14px;line-height:1.5;}
+.mock-label{
+  font-size:10.5px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:var(--ink-dim);
+  margin:0 0 8px;
+}
+.mock-card{
+  width:230px;
+  border-radius:14px;
+  overflow:hidden;
+  background:#fff;
+  box-shadow:0 2px 8px rgba(0,0,0,0.35);
+  margin-bottom:20px;
+}
+.mock-card-media{aspect-ratio:4/3;overflow:hidden;background:#000;}
+.mock-card-media img{width:100%;height:100%;object-fit:cover;display:block;}
+.mock-card-body{padding:10px 12px 14px;}
+.mock-pill{
+  display:inline-block;
+  background:#eef2ff;
+  color:#1a4fd6;
+  font-size:10px;
+  font-weight:700;
+  padding:3px 8px;
+  border-radius:999px;
+  margin-bottom:7px;
+}
+.mock-card-title{
+  font-size:13px;
+  font-weight:700;
+  color:#15161a;
+  line-height:1.35;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+.mock-article{
+  background:#fff;
+  border-radius:10px;
+  padding:18px;
+}
+.mock-article-logo{
+  color:#1a4fd6;
+  font-weight:800;
+  font-size:14px;
+  text-align:center;
+  margin-bottom:12px;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+.mock-article-media{border-radius:10px;overflow:hidden;aspect-ratio:1200/500;background:#000;}
+.mock-article-media img{width:100%;height:100%;object-fit:cover;display:block;}
+.mock-article-title{
+  font-size:17px;
+  font-weight:800;
+  color:#15161a;
+  margin-top:12px;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  line-height:1.3;
+}
+.mock-article-byline{font-size:11px;color:#767a85;margin-top:5px;}
 </style>
 
 </head>
@@ -621,6 +683,26 @@ input[type="range"]{
           This PNG is over 120&nbsp;KB and can't be compressed further &mdash;
           <a id="switchWebp">switch to WEBP</a> to bring it under budget.
         </p>
+      </div>
+
+      <div class="section">
+        <h2>6. Preview in a blog</h2>
+        <p class="mock-note">Approximate mockups &mdash; a card thumbnail (often cropped tighter than the full 1200&times;500 image) and a full article hero &mdash; so you can sanity-check the safe zone before exporting.</p>
+        <div class="mock-label">Card thumbnail</div>
+        <div class="mock-card">
+          <div class="mock-card-media"><img id="mockCardImg" alt=""></div>
+          <div class="mock-card-body">
+            <span class="mock-pill">Sport</span>
+            <div class="mock-card-title" id="mockCardTitle">Your headline here</div>
+          </div>
+        </div>
+        <div class="mock-label">Article hero</div>
+        <div class="mock-article">
+          <div class="mock-article-logo">Ticket Insider</div>
+          <div class="mock-article-media"><img id="mockArticleImg" alt=""></div>
+          <div class="mock-article-title" id="mockArticleTitle">Your headline here</div>
+          <div class="mock-article-byline">By the content team</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1355,7 +1437,7 @@ input[type="range"]{
     }
 
     // headline
-    const marginX = 100, marginTop = 42, marginBottom = 42;
+    const marginX = 140, marginTop = 60, marginBottom = 60;
     const maxWidth = W - marginX*2;
     const size = state.fontSize;
     const family = FONTS[state.font].family;
@@ -1467,8 +1549,23 @@ input[type="range"]{
   function coverFitSize(img){ return coverFitSizeFor(img, W, H); }
   function drawCoverImage(c, img, focusX, focusY){ drawCoverImageInto(c, img, focusX, focusY, W, H); }
 
+  const mockCardImg = document.getElementById('mockCardImg');
+  const mockArticleImg = document.getElementById('mockArticleImg');
+  const mockCardTitle = document.getElementById('mockCardTitle');
+  const mockArticleTitle = document.getElementById('mockArticleTitle');
+
+  function updateMockups(){
+    const url = stage.toDataURL('image/png');
+    mockCardImg.src = url;
+    mockArticleImg.src = url;
+    const headline = state.headline.trim() || 'Your headline here';
+    mockCardTitle.textContent = headline;
+    mockArticleTitle.textContent = headline;
+  }
+
   function redraw(){
     render(ctx, gctx, false);
+    updateMockups();
     updateSizeEstimate();
   }
 
