@@ -1,0 +1,1691 @@
+<title>Cover Maker</title>
+<style>
+@font-face{
+  font-family:'Anton';
+  src:url(data:font/woff2;base64,__FONT_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
+  font-family:'Bebas Neue';
+  src:url(data:font/woff2;base64,__BEBAS_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
+  font-family:'Archivo Black';
+  src:url(data:font/woff2;base64,__ARCHIVO_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
+  font-family:'Fredoka';
+  src:url(data:font/woff2;base64,__FREDOKA_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
+
+:root{
+  --bg:#12160f;
+  --panel:#1a2013;
+  --panel-2:#212a18;
+  --line:#333d26;
+  --line-soft:#252e1c;
+  --ink:#eceee4;
+  --ink-dim:#93a184;
+  --accent:#a6ff3d;
+  --accent-ink:#0b1200;
+  --danger:#ff6b6b;
+  --warn:#ffb84d;
+}
+
+*{box-sizing:border-box;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  min-height:100vh;
+  padding:28px 28px 60px;
+}
+
+.wrap{max-width:1280px;margin:0 auto;}
+
+.masthead{
+  display:flex;
+  align-items:baseline;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-bottom:22px;
+  padding-bottom:18px;
+  border-bottom:1px solid var(--line);
+}
+.masthead h1{
+  font-size:20px;
+  font-weight:700;
+  letter-spacing:0.02em;
+  margin:0;
+}
+.masthead p{
+  margin:0;
+  color:var(--ink-dim);
+  font-size:13.5px;
+}
+
+.layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.35fr) minmax(320px,0.85fr);
+  gap:26px;
+  align-items:start;
+}
+@media (max-width:880px){
+  .layout{grid-template-columns:1fr;}
+}
+
+.stage-col{
+  position:sticky;
+  top:28px;
+}
+@media (max-width:880px){ .stage-col{position:static;} }
+
+.stage-frame{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px;
+}
+.canvas-shell{
+  position:relative;
+  width:100%;
+  aspect-ratio:1200/500;
+  border-radius:8px;
+  overflow:hidden;
+  background:#000;
+  box-shadow:0 1px 0 rgba(255,255,255,0.04) inset;
+}
+.canvas-shell canvas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+}
+#guide{pointer-events:none;display:none;}
+
+.stage-meta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:12px;
+  font-size:12.5px;
+  color:var(--ink-dim);
+  font-variant-numeric:tabular-nums;
+}
+.stage-meta label{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  cursor:pointer;
+  user-select:none;
+}
+.stage-meta input[type="checkbox"]{accent-color:var(--accent);}
+
+.status-bar{
+  margin-top:14px;
+  padding:12px 14px;
+  border-radius:10px;
+  background:var(--panel-2);
+  border:1px solid var(--line-soft);
+  font-size:13px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  font-variant-numeric:tabular-nums;
+}
+.status-bar .size-fig{font-weight:700;letter-spacing:0.01em;}
+.status-bar.ok .size-fig{color:var(--accent);}
+.status-bar.bad .size-fig{color:var(--danger);}
+.status-bar .hint{color:var(--ink-dim);font-size:12px;}
+
+.rail{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+.section{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:16px 16px 18px;
+}
+.section h2{
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.09em;
+  color:var(--ink-dim);
+  margin:0 0 12px;
+}
+.field{margin-bottom:12px;}
+.field:last-child{margin-bottom:0;}
+.field label{
+  display:block;
+  font-size:12.5px;
+  color:var(--ink-dim);
+  margin-bottom:6px;
+}
+.row{display:flex;gap:10px;}
+.row .field{flex:1;margin-bottom:0;}
+
+input[type="text"],textarea,select{
+  width:100%;
+  background:var(--panel-2);
+  border:1px solid var(--line);
+  color:var(--ink);
+  border-radius:8px;
+  padding:9px 10px;
+  font-size:14px;
+  font-family:inherit;
+}
+textarea{resize:vertical;min-height:52px;line-height:1.35;}
+input[type="text"]:focus,textarea:focus,select:focus{
+  outline:2px solid var(--accent);
+  outline-offset:1px;
+  border-color:transparent;
+}
+select{appearance:none;cursor:pointer;}
+
+.colorfield{display:flex;align-items:center;gap:8px;}
+input[type="color"]{
+  -webkit-appearance:none;
+  appearance:none;
+  width:34px;height:34px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:0;
+  background:none;
+  cursor:pointer;
+  flex:none;
+}
+input[type="color"]::-webkit-color-swatch-wrapper{padding:2px;}
+input[type="color"]::-webkit-color-swatch{border-radius:5px;border:none;}
+.colorfield .hex{color:var(--ink-dim);font-size:12px;font-variant-numeric:tabular-nums;}
+
+.slider-row{display:flex;align-items:center;gap:10px;}
+input[type="range"]{
+  flex:1;accent-color:var(--accent);
+}
+.slider-row .val{
+  width:44px;text-align:right;font-size:12.5px;color:var(--ink-dim);
+  font-variant-numeric:tabular-nums;
+}
+
+.seg{
+  display:flex;
+  border:1px solid var(--line);
+  border-radius:8px;
+  overflow:hidden;
+}
+.seg button{
+  flex:1;
+  background:var(--panel-2);
+  color:var(--ink-dim);
+  border:none;
+  padding:8px 6px;
+  font-size:12.5px;
+  cursor:pointer;
+  border-right:1px solid var(--line);
+}
+.seg button:last-child{border-right:none;}
+.seg button.active{background:var(--accent);color:var(--accent-ink);font-weight:700;}
+
+.swatches{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+}
+.swatch{
+  aspect-ratio:12/8;
+  border-radius:8px;
+  border:2px solid transparent;
+  cursor:pointer;
+  position:relative;
+  padding:0;
+}
+.swatch.active{border-color:var(--accent);}
+.swatch span{
+  position:absolute;
+  left:5px;bottom:4px;
+  font-size:9.5px;
+  color:rgba(255,255,255,0.92);
+  text-shadow:0 1px 2px rgba(0,0,0,0.6);
+  font-weight:600;
+  letter-spacing:0.01em;
+}
+
+.tpl-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+}
+.tpl-card{
+  position:relative;
+  border-radius:10px;
+  border:2px solid transparent;
+  cursor:pointer;
+  padding:9px 10px 32px;
+  min-height:58px;
+  text-align:left;
+  overflow:hidden;
+}
+.tpl-card.active{border-color:var(--accent);}
+.tpl-card .tpl-name{
+  position:relative;
+  z-index:1;
+  display:block;
+  font-size:12px;
+  font-weight:700;
+  color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,0.55);
+}
+.tpl-card .tpl-desc{
+  position:relative;
+  z-index:1;
+  display:block;
+  font-size:10px;
+  margin-top:2px;
+  color:rgba(255,255,255,0.85);
+  text-shadow:0 1px 3px rgba(0,0,0,0.55);
+}
+
+.icon-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:8px;
+}
+.icon-btn{
+  aspect-ratio:1/1;
+  border-radius:8px;
+  border:2px solid var(--line);
+  background:var(--panel-2);
+  color:var(--ink-dim);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  line-height:1;
+  padding:0;
+}
+.icon-btn span{font-size:9px;display:none;}
+.icon-btn.active{border-color:var(--accent);color:var(--ink);}
+
+.upload-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  width:100%;
+  background:var(--panel-2);
+  border:1px dashed var(--line);
+  color:var(--ink-dim);
+  border-radius:8px;
+  padding:11px;
+  font-size:13px;
+  cursor:pointer;
+  margin-bottom:10px;
+}
+.upload-btn:hover{border-color:var(--accent);color:var(--ink);}
+.upload-btn.has-file{border-style:solid;color:var(--ink);}
+#fileInput{display:none;}
+
+.btn{
+  width:100%;
+  background:var(--accent);
+  color:var(--accent-ink);
+  border:none;
+  border-radius:9px;
+  padding:12px;
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:0.01em;
+  cursor:pointer;
+}
+.btn:disabled{opacity:0.6;cursor:progress;}
+.btn.ghost{
+  background:transparent;
+  color:var(--ink-dim);
+  border:1px solid var(--line);
+  font-weight:600;
+  margin-top:8px;
+}
+
+.fineprint{
+  font-size:11.5px;
+  color:var(--ink-dim);
+  margin-top:10px;
+  line-height:1.5;
+}
+.fineprint a{color:var(--ink);cursor:pointer;text-decoration:underline;}
+</style>
+
+<div class="wrap">
+  <div class="masthead">
+    <h1>Cover Maker</h1>
+    <p>1200 &times; 500 social covers &mdash; PNG, JPG or WEBP, kept under 120&nbsp;KB. For the content team.</p>
+  </div>
+
+  <div class="layout">
+    <div class="stage-col">
+      <div class="stage-frame">
+        <div class="canvas-shell">
+          <canvas id="stage" width="1200" height="500"></canvas>
+          <canvas id="guide" width="1200" height="500"></canvas>
+        </div>
+        <div class="stage-meta">
+          <span>1200 &times; 500 px</span>
+          <label><input type="checkbox" id="guideToggle"> Show safe zone</label>
+        </div>
+      </div>
+      <div class="status-bar ok" id="statusBar">
+        <span id="statusText">Adjust the panel, then export.</span>
+        <span class="size-fig" id="sizeFig"></span>
+      </div>
+    </div>
+
+    <div class="rail">
+      <div class="section">
+        <h2>1. Quick start &mdash; templates</h2>
+        <div class="tpl-grid" id="templates"></div>
+      </div>
+
+      <div class="section">
+        <h2>2. Background</h2>
+        <button class="upload-btn" id="uploadBtn" type="button">Upload a photo&hellip;</button>
+        <input type="file" id="fileInput" accept="image/*">
+        <div class="swatches" id="swatches"></div>
+      </div>
+
+      <div class="section">
+        <h2>3. Text</h2>
+        <div class="field">
+          <label for="headline">Headline</label>
+          <textarea id="headline" maxlength="140">Your headline here</textarea>
+        </div>
+        <div class="field">
+          <label for="subtitle">Subtitle (optional)</label>
+          <input type="text" id="subtitle" maxlength="140" placeholder="A short supporting line">
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Headline color</label>
+            <div class="colorfield">
+              <input type="color" id="headlineColor" value="#a6ff3d">
+              <span class="hex" id="headlineColorHex">#A6FF3D</span>
+            </div>
+          </div>
+          <div class="field">
+            <label>Subtitle color</label>
+            <div class="colorfield">
+              <input type="color" id="subtitleColor" value="#ffffff">
+              <span class="hex" id="subtitleColorHex">#FFFFFF</span>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fontSelect">Font</label>
+          <select id="fontSelect"></select>
+        </div>
+        <div class="field">
+          <label>Headline size</label>
+          <div class="slider-row">
+            <input type="range" id="fontSize" min="44" max="150" value="92">
+            <span class="val" id="fontSizeVal">92px</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Align</label>
+            <div class="seg" id="alignSeg">
+              <button data-v="left">Left</button>
+              <button data-v="center" class="active">Center</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Vertical</label>
+            <div class="seg" id="vAlignSeg">
+              <button data-v="top">Top</button>
+              <button data-v="middle" class="active">Middle</button>
+              <button data-v="bottom">Bottom</button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Headline style</label>
+            <div class="seg" id="badgeSeg">
+              <button data-v="plain" class="active">Plain</button>
+              <button data-v="badge">Pill badge</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Badge color</label>
+            <div class="colorfield">
+              <input type="color" id="badgeColor" value="#fff3c4">
+              <span class="hex" id="badgeColorHex">#FFF3C4</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>4. Icon &amp; effects</h2>
+        <div class="row">
+          <div class="field">
+            <label>Text effect</label>
+            <select id="effectSelect">
+              <option value="none">None</option>
+              <option value="shadow">Drop shadow</option>
+              <option value="outline">Outline</option>
+              <option value="glow">Glow</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Effect color</label>
+            <div class="colorfield">
+              <input type="color" id="effectColor" value="#000000">
+              <span class="hex" id="effectColorHex">#000000</span>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Effect strength</label>
+          <div class="slider-row">
+            <input type="range" id="effectStrength" min="0" max="100" value="40">
+            <span class="val" id="effectStrengthVal">40</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Icon</label>
+          <div class="icon-grid" id="icons"></div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Icon color</label>
+            <div class="colorfield">
+              <input type="color" id="iconColor" value="#ffffff">
+              <span class="hex" id="iconColorHex">#FFFFFF</span>
+            </div>
+          </div>
+          <div class="field">
+            <label>Icon size</label>
+            <div class="slider-row">
+              <input type="range" id="iconSize" min="30" max="220" value="90">
+              <span class="val" id="iconSizeVal">90px</span>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="iconPosSelect">Icon position</label>
+          <select id="iconPosSelect">
+            <option value="topLeft">Top left</option>
+            <option value="topRight">Top right</option>
+            <option value="bottomLeft">Bottom left</option>
+            <option value="bottomRight" selected>Bottom right</option>
+            <option value="inline">Next to headline</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>5. Export</h2>
+        <div class="field">
+          <label for="format">File type</label>
+          <select id="format">
+            <option value="webp">WEBP &mdash; smallest, recommended</option>
+            <option value="jpeg">JPG</option>
+            <option value="png">PNG &mdash; lossless, largest</option>
+          </select>
+        </div>
+        <button class="btn" id="downloadBtn" type="button">Download cover.webp</button>
+        <button class="btn ghost" id="resetBtn" type="button">Reset to defaults</button>
+        <p class="fineprint" id="pngWarning" style="display:none;">
+          This PNG is over 120&nbsp;KB and can't be compressed further &mdash;
+          <a id="switchWebp">switch to WEBP</a> to bring it under budget.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const LIMIT_BYTES = 120000;
+  const W = 1200, H = 500;
+
+  const stage = document.getElementById('stage');
+  const ctx = stage.getContext('2d');
+  const guide = document.getElementById('guide');
+  const gctx = guide.getContext('2d');
+
+  const state = {
+    bg: { type:'preset', key:'pitchGreen', image:null },
+    headline: 'Your headline here',
+    subtitle: '',
+    headlineColor: '#a6ff3d',
+    subtitleColor: '#ffffff',
+    font: 'anton',
+    fontSize: 92,
+    align: 'center',
+    vAlign: 'middle',
+    badge: false,
+    badgeColor: '#fff3c4',
+    effect: 'none',
+    effectColor: '#000000',
+    effectStrength: 40,
+    icon: 'none',
+    iconColor: '#ffffff',
+    iconSize: 90,
+    iconPosition: 'bottomRight'
+  };
+
+  const FONTS = {
+    anton:   { label:'Anton - Sport Bold',          family:'Anton' },
+    bebas:   { label:'Bebas Neue - Tall Condensed', family:'Bebas Neue' },
+    archivo: { label:'Archivo Black - Grotesk',     family:'Archivo Black' },
+    fredoka: { label:'Fredoka - Rounded Friendly',  family:'Fredoka' }
+  };
+
+  // ---------- background presets ----------
+
+  function ribbonStack(c, x, y, angle, len, thickness, gap, colorFrom, count){
+    c.save();
+    c.translate(x, y);
+    c.rotate(angle * Math.PI / 180);
+    for (let i = 0; i < count; i++){
+      const grad = c.createLinearGradient(0, 0, len, 0);
+      const alpha = 0.85 - i * 0.25;
+      grad.addColorStop(0, hexToRgba(colorFrom, Math.max(alpha, 0.12)));
+      grad.addColorStop(1, hexToRgba(colorFrom, 0));
+      c.fillStyle = grad;
+      c.fillRect(0, i * (thickness + gap), len, thickness);
+    }
+    c.restore();
+  }
+
+  function hexToRgba(hex, a){
+    const v = hex.replace('#','');
+    const r = parseInt(v.substring(0,2),16);
+    const g = parseInt(v.substring(2,4),16);
+    const b = parseInt(v.substring(4,6),16);
+    return `rgba(${r},${g},${b},${a})`;
+  }
+
+  function roundRect(c, x, y, w, h, r){
+    r = Math.max(0, Math.min(r, w/2, h/2));
+    c.beginPath();
+    c.moveTo(x+r, y);
+    c.arcTo(x+w, y, x+w, y+h, r);
+    c.arcTo(x+w, y+h, x, y+h, r);
+    c.arcTo(x, y+h, x, y, r);
+    c.arcTo(x, y, x+w, y, r);
+    c.closePath();
+  }
+
+  function drawRing(c, cx, cy, rOuter, thickness, colorA, colorB){
+    const rInner = Math.max(rOuter - thickness, 1);
+    const g = c.createLinearGradient(cx-rOuter, cy-rOuter, cx+rOuter, cy+rOuter);
+    g.addColorStop(0, colorA);
+    g.addColorStop(1, colorB);
+    c.fillStyle = g;
+    c.beginPath();
+    c.arc(cx, cy, rOuter, 0, Math.PI*2);
+    c.arc(cx, cy, rInner, 0, Math.PI*2, true);
+    c.fill('evenodd');
+  }
+
+  function drawBloom(c, cx, cy, r){
+    const offs = [[-r*0.55,-r*0.55],[r*0.55,-r*0.55],[-r*0.55,r*0.55],[r*0.55,r*0.55]];
+    offs.forEach(([dx,dy]) => {
+      const g = c.createRadialGradient(cx+dx, cy+dy, r*0.05, cx+dx, cy+dy, r*0.62);
+      g.addColorStop(0, '#ffe066');
+      g.addColorStop(1, 'rgba(139,110,240,0)');
+      c.fillStyle = g;
+      c.beginPath();
+      c.arc(cx+dx, cy+dy, r*0.62, 0, Math.PI*2);
+      c.fill();
+    });
+  }
+
+  function drawWaveBand(c){
+    const cy = H*0.64, R = 150, step = R*1.05;
+    const g = c.createLinearGradient(0, cy-R, 0, cy+R);
+    g.addColorStop(0, '#b9a6ff');
+    g.addColorStop(1, '#7c5cf0');
+    c.fillStyle = g;
+    for (let x = -R; x < W+R; x += step){
+      c.beginPath(); c.arc(x, cy, R, 0, Math.PI*2); c.fill();
+    }
+    for (let x = -R*0.5; x < W+R; x += step){
+      c.beginPath(); c.arc(x, cy-R*0.98, R*0.4, 0, Math.PI*2); c.fill();
+    }
+  }
+
+  function drawPillGrid(c){
+    const rows = 5, cols = 4, pad = 10;
+    const cellW = W/cols, cellH = H/rows;
+    for (let r=0;r<rows;r++){
+      for (let col=0; col<cols; col++){
+        const x = col*cellW+pad, y = r*cellH+pad;
+        const w = cellW-pad*2, h = cellH-pad*2;
+        roundRect(c, x, y, w, h, h/2);
+        c.fillStyle = (r+col)%2===0 ? 'rgba(255,255,255,0.16)' : 'rgba(255,255,255,0.09)';
+        c.fill();
+      }
+    }
+  }
+
+  function drawZenStack(c, cx, cy, scale){
+    scale = scale || 1;
+    const g = c.createLinearGradient(cx, cy-160*scale, cx, cy+90*scale);
+    g.addColorStop(0, '#c9bbff');
+    g.addColorStop(1, '#7c5cf0');
+    c.fillStyle = g;
+    c.beginPath(); c.arc(cx, cy-95*scale, 40*scale, 0, Math.PI*2); c.fill();
+    c.beginPath(); c.arc(cx, cy-10*scale, 76*scale, Math.PI, 0); c.fill();
+    c.beginPath(); c.arc(cx, cy+72*scale, 104*scale, Math.PI, 0); c.fill();
+  }
+
+  // ---------- icons ----------
+
+  function drawIconSoccer(c, cx, cy, size, color){
+    const r = size/2;
+    c.strokeStyle = color;
+    c.lineWidth = Math.max(2, size*0.045);
+    c.beginPath(); c.arc(cx, cy, r, 0, Math.PI*2); c.stroke();
+    c.fillStyle = color;
+    const pr = r*0.34;
+    c.beginPath();
+    for (let i=0;i<5;i++){
+      const a = -Math.PI/2 + i*(Math.PI*2/5);
+      const px = cx + pr*Math.cos(a), py = cy + pr*Math.sin(a);
+      i===0 ? c.moveTo(px,py) : c.lineTo(px,py);
+    }
+    c.closePath(); c.fill();
+    for (let i=0;i<5;i++){
+      const a = -Math.PI/2 + i*(Math.PI*2/5) + Math.PI/5;
+      c.beginPath();
+      c.moveTo(cx+pr*0.9*Math.cos(a), cy+pr*0.9*Math.sin(a));
+      c.lineTo(cx+r*0.85*Math.cos(a), cy+r*0.85*Math.sin(a));
+      c.stroke();
+    }
+  }
+
+  function drawIconBasketball(c, cx, cy, size, color){
+    const r = size/2;
+    c.strokeStyle = color;
+    c.lineWidth = Math.max(2, size*0.045);
+    c.beginPath(); c.arc(cx, cy, r, 0, Math.PI*2); c.stroke();
+    c.beginPath(); c.moveTo(cx, cy-r); c.lineTo(cx, cy+r); c.stroke();
+    c.beginPath(); c.moveTo(cx-r, cy); c.lineTo(cx+r, cy); c.stroke();
+    c.beginPath(); c.arc(cx-r*0.5, cy, r*0.95, -0.6, 0.6); c.stroke();
+    c.beginPath(); c.arc(cx+r*0.5, cy, r*0.95, Math.PI-0.6, Math.PI+0.6); c.stroke();
+  }
+
+  function drawIconMusic(c, cx, cy, size, color){
+    c.fillStyle = color;
+    const noteR = size*0.16;
+    const x1 = cx - size*0.22, x2 = cx + size*0.22;
+    const y1 = cy + size*0.28, y2 = cy + size*0.20;
+    c.beginPath(); c.arc(x1, y1, noteR, 0, Math.PI*2); c.fill();
+    c.beginPath(); c.arc(x2, y2, noteR, 0, Math.PI*2); c.fill();
+    const sx1 = x1 + noteR*0.7, sx2 = x2 + noteR*0.7;
+    c.fillRect(sx1, cy - size*0.32, size*0.045, size*0.62);
+    c.fillRect(sx2, cy - size*0.40, size*0.045, size*0.62);
+    c.beginPath();
+    c.moveTo(sx1, cy - size*0.32);
+    c.lineTo(sx2, cy - size*0.40);
+    c.lineTo(sx2, cy - size*0.28);
+    c.lineTo(sx1, cy - size*0.20);
+    c.closePath(); c.fill();
+  }
+
+  function drawIconTrophy(c, cx, cy, size, color){
+    c.fillStyle = color;
+    const w = size*0.5, cupTop = cy - size*0.4;
+    roundRect(c, cx-w/2, cupTop, w, size*0.42, size*0.06); c.fill();
+    c.lineWidth = Math.max(2, size*0.045);
+    c.strokeStyle = color;
+    c.beginPath(); c.arc(cx-w/2, cupTop+size*0.12, size*0.14, Math.PI*0.3, Math.PI*1.7); c.stroke();
+    c.beginPath(); c.arc(cx+w/2, cupTop+size*0.12, size*0.14, Math.PI*1.3, Math.PI*2.7); c.stroke();
+    c.fillRect(cx-size*0.04, cupTop+size*0.42, size*0.08, size*0.16);
+    roundRect(c, cx-size*0.22, cupTop+size*0.56, size*0.44, size*0.1, size*0.03); c.fill();
+    roundRect(c, cx-size*0.3, cupTop+size*0.66, size*0.6, size*0.08, size*0.03); c.fill();
+  }
+
+  function drawIconTicket(c, cx, cy, size, color){
+    c.save();
+    c.translate(cx, cy);
+    c.rotate(-0.18);
+    const w = size*0.9, h = size*0.5;
+    roundRect(c, -w/2, -h/2, w, h, size*0.06);
+    c.fillStyle = color; c.fill();
+    c.strokeStyle = 'rgba(0,0,0,0.28)';
+    c.lineWidth = Math.max(2, size*0.02);
+    c.setLineDash([size*0.035, size*0.035]);
+    c.beginPath(); c.moveTo(0,-h/2+2); c.lineTo(0,h/2-2); c.stroke();
+    c.setLineDash([]);
+    c.restore();
+  }
+
+  function drawIconSparkle(c, cx, cy, size, color){
+    c.save();
+    c.translate(cx, cy);
+    c.fillStyle = color;
+    const r = size*0.5;
+    for (let i=0;i<4;i++){
+      c.save();
+      c.rotate((Math.PI/2)*i + Math.PI/4);
+      c.beginPath();
+      c.moveTo(0,-r);
+      c.lineTo(r*0.09,0);
+      c.lineTo(0,r);
+      c.lineTo(-r*0.09,0);
+      c.closePath();
+      c.fill();
+      c.restore();
+    }
+    c.beginPath(); c.arc(0,0,r*0.1,0,Math.PI*2); c.fill();
+    c.restore();
+  }
+
+  function drawIconPin(c, cx, cy, size, color){
+    const r = size*0.28, topY = cy - size*0.18;
+    c.fillStyle = color;
+    c.beginPath();
+    c.arc(cx, topY, r, 0, Math.PI*2);
+    c.moveTo(cx - r*0.62, topY + r*0.55);
+    c.lineTo(cx, topY + r*2.3);
+    c.lineTo(cx + r*0.62, topY + r*0.55);
+    c.closePath();
+    c.fill();
+    c.fillStyle = 'rgba(255,255,255,0.55)';
+    c.beginPath(); c.arc(cx, topY, r*0.36, 0, Math.PI*2); c.fill();
+  }
+
+  function drawIconClock(c, cx, cy, size, color){
+    const r = size*0.42;
+    c.strokeStyle = color;
+    c.lineWidth = Math.max(2, size*0.05);
+    c.beginPath(); c.arc(cx, cy, r, 0, Math.PI*2); c.stroke();
+    c.beginPath(); c.moveTo(cx, cy); c.lineTo(cx, cy-r*0.55); c.stroke();
+    c.beginPath(); c.moveTo(cx, cy); c.lineTo(cx+r*0.4, cy+r*0.15); c.stroke();
+    c.fillStyle = color;
+    c.beginPath(); c.arc(cx, cy, size*0.035, 0, Math.PI*2); c.fill();
+  }
+
+  const ICONS = {
+    none:       { label:'None',        emoji:'\u2014',     draw:null },
+    soccer:     { label:'Soccer ball', emoji:'\u26BD',     draw:drawIconSoccer },
+    basketball: { label:'Basketball',  emoji:'\u{1F3C0}',  draw:drawIconBasketball },
+    music:      { label:'Music note',  emoji:'\u{1F3B5}',  draw:drawIconMusic },
+    trophy:     { label:'Trophy',      emoji:'\u{1F3C6}',  draw:drawIconTrophy },
+    ticket:     { label:'Ticket',      emoji:'\u{1F3AB}',  draw:drawIconTicket },
+    sparkle:    { label:'Sparkle',     emoji:'\u2728',     draw:drawIconSparkle },
+    pin:        { label:'Map pin',     emoji:'\u{1F4CD}',  draw:drawIconPin },
+    clock:      { label:'Clock',       emoji:'\u{1F550}',  draw:drawIconClock }
+  };
+
+  function drawIconAt(c, key, position, size, color){
+    const def = ICONS[key];
+    if (!def || !def.draw) return;
+    const margin = 50;
+    let cx, cy;
+    if (position === 'topLeft'){ cx = margin+size/2; cy = margin+size/2; }
+    else if (position === 'topRight'){ cx = W-margin-size/2; cy = margin+size/2; }
+    else if (position === 'bottomLeft'){ cx = margin+size/2; cy = H-margin-size/2; }
+    else { cx = W-margin-size/2; cy = H-margin-size/2; }
+    def.draw(c, cx, cy, size, color);
+  }
+
+  function applyTextEffect(c, effect, color, strength){
+    c.shadowColor = 'transparent';
+    c.shadowBlur = 0;
+    c.shadowOffsetX = 0;
+    c.shadowOffsetY = 0;
+    if (effect === 'shadow'){
+      c.shadowColor = hexToRgba(color, 0.6);
+      c.shadowBlur = 3 + strength*0.12;
+      c.shadowOffsetX = 2 + strength*0.05;
+      c.shadowOffsetY = 3 + strength*0.07;
+    } else if (effect === 'glow'){
+      c.shadowColor = color;
+      c.shadowBlur = 12 + strength*0.5;
+    }
+  }
+
+  function clearTextEffect(c){
+    c.shadowColor = 'transparent';
+    c.shadowBlur = 0;
+    c.shadowOffsetX = 0;
+    c.shadowOffsetY = 0;
+  }
+
+  const PRESETS = {
+    pitchGreen: {
+      label:'Pitch Green',
+      swatch:'linear-gradient(135deg,#eaff7a 0%,#3fae2a 28%,#3fae2a 72%,#eaff7a 100%)',
+      text:'#a6ff3d', sub:'#ffffff',
+      draw(c){
+        c.fillStyle = '#3fae2a';
+        c.fillRect(0,0,W,H);
+        ribbonStack(c, W+40, -60, 135, 620, 46, 10, '#f3ffb0', 3);
+        ribbonStack(c, -40, H+60, -45, 620, 46, 10, '#f3ffb0', 3);
+      }
+    },
+    solidPitch: {
+      label:'Flat Pitch',
+      swatch:'#3fae2a',
+      text:'#0b1200', sub:'#0b1200',
+      draw(c){ c.fillStyle = '#3fae2a'; c.fillRect(0,0,W,H); }
+    },
+    maroonFade: {
+      label:'Maroon Fade',
+      swatch:'linear-gradient(180deg,#3b0a1a,#c81e3a)',
+      text:'#ffffff', sub:'#eaff7a',
+      draw(c){
+        const g = c.createLinearGradient(0,0,0,H);
+        g.addColorStop(0,'#3b0a1a'); g.addColorStop(1,'#c81e3a');
+        c.fillStyle = g; c.fillRect(0,0,W,H);
+        ribbonStack(c, -40, -60, 30, 560, 34, 8, '#7cff4d', 3);
+        ribbonStack(c, W+40, H+60, -150, 560, 34, 8, '#7cff4d', 3);
+      }
+    },
+    royalBlue: {
+      label:'Royal Blue',
+      swatch:'linear-gradient(135deg,#ffe873 0%,#3e52e8 26%,#3e52e8 74%,#ffe873 100%)',
+      text:'#ffffff', sub:'#ffe873',
+      draw(c){
+        c.fillStyle = '#3e52e8';
+        c.fillRect(0,0,W,H);
+        ribbonStack(c, -40, -60, 30, 560, 40, 9, '#ffe873', 3);
+        ribbonStack(c, W+40, H+60, -150, 560, 40, 9, '#ffe873', 3);
+      }
+    },
+    pinkChevron: {
+      label:'Pink Chevron',
+      swatch:'linear-gradient(90deg,#e8368b 0%,#4cc22c 22%,#4cc22c 78%,#e8368b 100%)',
+      text:'#ffffff', sub:'#ffffff',
+      draw(c){
+        c.fillStyle = '#4cc22c';
+        c.fillRect(0,0,W,H);
+        drawChevronEdge(c, 'left');
+        drawChevronEdge(c, 'right');
+      }
+    },
+    crimsonArc: {
+      label:'Crimson Arc',
+      swatch:'radial-gradient(circle at 15% 50%, #ffce45, #e22138 60%)',
+      text:'#ffffff', sub:'#ffe08a',
+      draw(c){
+        const g = c.createLinearGradient(0,0,0,H);
+        g.addColorStop(0,'#7a0e1e'); g.addColorStop(1,'#e22138');
+        c.fillStyle = g; c.fillRect(0,0,W,H);
+        drawSunArc(c, -40, H/2, 260);
+        drawSunArc(c, W+40, H/2, 260);
+      }
+    },
+    skyBurst: {
+      label:'Sky Burst',
+      swatch:'#bfe0ff',
+      text:'#0b1200', sub:'#2a3b6b',
+      draw(c){
+        c.fillStyle = '#bfe0ff';
+        c.fillRect(0,0,W,H);
+        drawBurst(c, W-150, 110, 130);
+      }
+    },
+    solidBlack: {
+      label:'Minimal Black',
+      swatch:'#0a0a0a',
+      text:'#a6ff3d', sub:'#ffffff',
+      draw(c){ c.fillStyle = '#0a0a0a'; c.fillRect(0,0,W,H); }
+    },
+    purpleButterfly: {
+      label:'Purple Bloom',
+      swatch:'radial-gradient(circle at 50% 50%, #ffe066, #8b6ef0 65%)',
+      text:'#ffe066', sub:'#ffffff',
+      draw(c){
+        c.fillStyle = '#8b6ef0';
+        c.fillRect(0,0,W,H);
+        drawBloom(c, W*0.5, H*0.5, 190);
+        drawBloom(c, -30, H*0.5, 130);
+        drawBloom(c, W+30, H*0.5, 130);
+      }
+    },
+    waveBlobs: {
+      label:'Wave Blobs',
+      swatch:'linear-gradient(180deg,#bfe0ff 45%,#8b7bf0 100%)',
+      text:'#2a1b6b', sub:'#4a3a8b',
+      draw(c){
+        c.fillStyle = '#bfe0ff';
+        c.fillRect(0,0,W,H);
+        drawWaveBand(c);
+      }
+    },
+    cyanRing: {
+      label:'Cyan Ring',
+      swatch:'radial-gradient(circle,#ffe066,#8ce27a 55%,#00d4f5 70%)',
+      text:'#062b33', sub:'#0a3d47',
+      draw(c){
+        c.fillStyle = '#00d4f5';
+        c.fillRect(0,0,W,H);
+        drawRing(c, W*0.16, H*0.5, 190, 55, '#ffe066', '#8ce27a');
+        drawRing(c, W*0.88, H*0.5, 150, 45, '#ffe066', '#8ce27a');
+      }
+    },
+    pillGrid: {
+      label:'Pill Grid',
+      swatch:'#e0146f',
+      text:'#ffffff', sub:'#ffe3f2',
+      draw(c){
+        c.fillStyle = '#e0146f';
+        c.fillRect(0,0,W,H);
+        drawPillGrid(c);
+      }
+    },
+    zenStack: {
+      label:'Zen Stack',
+      swatch:'linear-gradient(180deg,#bfe0ff,#a996f5)',
+      text:'#3b2e73', sub:'#6659a3',
+      draw(c){
+        c.fillStyle = '#bfe0ff';
+        c.fillRect(0,0,W,H);
+        drawZenStack(c, W*0.5, H*0.68, 1);
+        drawZenStack(c, W*0.08, H*0.9, 0.5);
+        drawZenStack(c, W*0.95, H*0.28, 0.45);
+      }
+    },
+    coralCorner: {
+      label:'Coral Corner',
+      swatch:'linear-gradient(135deg,#ffd23f,#ff5a3c 60%)',
+      text:'#ffffff', sub:'#ffe3d1',
+      draw(c){
+        c.fillStyle = '#ff5a3c';
+        c.fillRect(0,0,W,H);
+        drawRing(c, -20, -20, 230, 60, '#ffd23f', '#ff8a3d');
+        drawRing(c, W+20, H+20, 200, 55, '#ffd23f', '#ff8a3d');
+      }
+    }
+  };
+
+  function drawChevronEdge(c, side){
+    const step = 34, cols = 4;
+    const colors = ['#e8368b','#f6a6cc'];
+    for (let row = 0; row < Math.ceil(H/step)+2; row++){
+      for (let col = 0; col < cols; col++){
+        const depth = cols - col;
+        const y = row*step - (row%2)*step/2 - step;
+        const x = side==='left' ? col*step - depth*6 : W - col*step - step + depth*6;
+        c.fillStyle = colors[(row+col)%2];
+        c.beginPath();
+        c.moveTo(x, y);
+        c.lineTo(x+step, y+step/2);
+        c.lineTo(x, y+step);
+        c.closePath();
+        c.fill();
+      }
+    }
+  }
+
+  function drawSunArc(c, cx, cy, r){
+    const g = c.createRadialGradient(cx,cy,r*0.15,cx,cy,r);
+    g.addColorStop(0,'#ffce45');
+    g.addColorStop(1,'#ff7a3d');
+    c.fillStyle = g;
+    c.beginPath();
+    c.arc(cx,cy,r,0,Math.PI*2);
+    c.fill();
+  }
+
+  function drawBurst(c, cx, cy, r){
+    c.save();
+    c.translate(cx,cy);
+    const g = c.createRadialGradient(0,0,r*0.1,0,0,r);
+    g.addColorStop(0,'#ffdd55');
+    g.addColorStop(1,'#fffaf0');
+    c.fillStyle = g;
+    const arms = 8;
+    for (let i=0;i<arms;i++){
+      c.save();
+      c.rotate((Math.PI*2/arms)*i);
+      c.fillRect(-r*0.16, -r, r*0.32, r*2);
+      c.restore();
+    }
+    c.restore();
+  }
+
+  // ---------- text layout ----------
+
+  function wrapLines(c, text, maxWidth){
+    const words = text.trim().split(/\s+/).filter(Boolean);
+    if (!words.length) return [];
+    const lines = [];
+    let line = words[0];
+    for (let i=1;i<words.length;i++){
+      const test = line + ' ' + words[i];
+      if (c.measureText(test).width <= maxWidth){
+        line = test;
+      } else {
+        lines.push(line);
+        line = words[i];
+      }
+    }
+    lines.push(line);
+    return lines;
+  }
+
+  function render(target, gtarget, forExport){
+    const c = target;
+    const preset = state.bg.type === 'preset' ? PRESETS[state.bg.key] : null;
+
+    if (state.bg.type === 'image' && state.bg.image){
+      drawCoverImage(c, state.bg.image);
+    } else if (preset){
+      preset.draw(c);
+    }
+
+    // headline
+    const marginX = 100, marginTop = 56, marginBottom = 56;
+    const maxWidth = W - marginX*2;
+    const size = state.fontSize;
+    const family = FONTS[state.font].family;
+    c.font = `${size}px "${family}", sans-serif`;
+    c.textBaseline = 'alphabetic';
+    const headlineLines = wrapLines(c, (state.headline || '').toUpperCase(), maxWidth);
+    const lineHeight = size * 1.06;
+
+    const subSize = Math.max(16, Math.round(size * 0.28));
+    c.font = `italic ${subSize}px -apple-system, "Segoe UI", sans-serif`;
+    const hasSub = !!state.subtitle.trim();
+    const subLines = hasSub ? wrapLines(c, state.subtitle, maxWidth) : [];
+    const subLineHeight = subSize * 1.3;
+
+    const blockHeight = headlineLines.length * lineHeight
+      + (hasSub ? (18 + subLines.length * subLineHeight) : 0);
+
+    let startY;
+    if (state.vAlign === 'top') startY = marginTop + lineHeight*0.82;
+    else if (state.vAlign === 'bottom') startY = H - marginBottom - blockHeight + lineHeight*0.82;
+    else startY = (H - blockHeight)/2 + lineHeight*0.82;
+
+    const xPos = state.align === 'left' ? marginX : W/2;
+    c.textAlign = state.align === 'left' ? 'left' : 'center';
+
+    if (state.icon !== 'none' && state.iconPosition !== 'inline'){
+      drawIconAt(c, state.icon, state.iconPosition, state.iconSize, state.iconColor);
+    }
+
+    c.font = `${size}px "${family}", sans-serif`;
+    c.fillStyle = state.headlineColor;
+
+    let badgeMaxLineW = 0;
+    if (state.badge){
+      headlineLines.forEach(line => { badgeMaxLineW = Math.max(badgeMaxLineW, c.measureText(line).width); });
+      const padX = size*0.5, padY = size*0.32;
+      const blockW = badgeMaxLineW + padX*2;
+      const blockH = headlineLines.length*lineHeight + padY*2;
+      const blockTop = startY - size*0.86 - padY;
+      const blockLeft = state.align === 'left' ? xPos - padX : xPos - blockW/2;
+      roundRect(c, blockLeft, blockTop, blockW, blockH, blockH/2);
+      c.fillStyle = state.badgeColor;
+      c.fill();
+      c.fillStyle = state.headlineColor;
+    }
+
+    applyTextEffect(c, state.effect, state.effectColor, state.effectStrength);
+    let y = startY;
+    headlineLines.forEach(line => {
+      if (state.effect === 'outline'){
+        c.lineJoin = 'round';
+        c.lineWidth = 2 + state.effectStrength*0.12;
+        c.strokeStyle = state.effectColor;
+        c.strokeText(line, xPos, y);
+      }
+      c.fillText(line, xPos, y);
+      y += lineHeight;
+    });
+    clearTextEffect(c);
+
+    if (state.badge){
+      const underlineW = Math.max(badgeMaxLineW * 0.7, 30);
+      const underlineCenterX = state.align === 'left' ? xPos + badgeMaxLineW/2 : xPos;
+      const underlineY = y - lineHeight + size*0.24;
+      const underlineH = Math.max(3, size*0.07);
+      roundRect(c, underlineCenterX - underlineW/2, underlineY, underlineW, underlineH, underlineH/2);
+      c.fillStyle = state.headlineColor;
+      c.fill();
+    }
+
+    if (state.icon !== 'none' && state.iconPosition === 'inline' && headlineLines.length && ICONS[state.icon].draw){
+      c.font = `${size}px "${family}", sans-serif`;
+      const lastLine = headlineLines[headlineLines.length-1];
+      const lastLineWidth = c.measureText(lastLine).width;
+      const lastLineEndX = state.align === 'left' ? xPos + lastLineWidth : xPos + lastLineWidth/2;
+      const lastLineBaselineY = y - lineHeight;
+      const iconCx = lastLineEndX + state.iconSize*0.65;
+      const iconCy = lastLineBaselineY - size*0.32;
+      ICONS[state.icon].draw(c, iconCx, iconCy, state.iconSize, state.iconColor);
+    }
+
+    if (hasSub){
+      y += 18 - lineHeight + subLineHeight*0.1;
+      c.font = `italic ${subSize}px -apple-system, "Segoe UI", sans-serif`;
+      c.fillStyle = state.subtitleColor;
+      subLines.forEach(line => { c.fillText(line, xPos, y); y += subLineHeight; });
+    }
+
+    if (!forExport && gtarget){
+      gtarget.clearRect(0,0,W,H);
+      gtarget.strokeStyle = 'rgba(255,255,255,0.55)';
+      gtarget.setLineDash([8,7]);
+      gtarget.lineWidth = 2;
+      gtarget.strokeRect(marginX, marginTop, W - marginX*2, H - marginTop - marginBottom);
+      gtarget.setLineDash([]);
+    }
+  }
+
+  function drawCoverImage(c, img){
+    const ir = img.width/img.height, cr = W/H;
+    let sw, sh, sx, sy;
+    if (ir > cr){ sh = img.height; sw = sh*cr; sy = 0; sx = (img.width-sw)/2; }
+    else { sw = img.width; sh = sw/cr; sx = 0; sy = (img.height-sh)/2; }
+    c.drawImage(img, sx, sy, sw, sh, 0, 0, W, H);
+  }
+
+  function redraw(){
+    render(ctx, gctx, false);
+    updateSizeEstimate();
+  }
+
+  // ---------- swatches ----------
+
+  const swatchesEl = document.getElementById('swatches');
+  Object.keys(PRESETS).forEach(key => {
+    const btn = document.createElement('button');
+    btn.className = 'swatch' + (state.bg.key===key && state.bg.type==='preset' ? ' active':'');
+    btn.style.background = PRESETS[key].swatch;
+    btn.type = 'button';
+    btn.dataset.key = key;
+    btn.innerHTML = `<span>${PRESETS[key].label}</span>`;
+    btn.addEventListener('click', () => {
+      state.bg = { type:'preset', key, image:null };
+      state.headlineColor = PRESETS[key].text;
+      state.subtitleColor = PRESETS[key].sub;
+      headlineColorInput.value = state.headlineColor;
+      subtitleColorInput.value = state.subtitleColor;
+      headlineColorHex.textContent = state.headlineColor.toUpperCase();
+      subtitleColorHex.textContent = state.subtitleColor.toUpperCase();
+      uploadBtn.classList.remove('has-file');
+      uploadBtn.textContent = 'Upload a photo...';
+      document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+      btn.classList.add('active');
+      clearTemplateActive();
+      redraw();
+    });
+    swatchesEl.appendChild(btn);
+  });
+
+  // ---------- controls wiring ----------
+
+  function clearTemplateActive(){
+    document.querySelectorAll('.tpl-card').forEach(x=>x.classList.remove('active'));
+  }
+
+  const uploadBtn = document.getElementById('uploadBtn');
+  const fileInput = document.getElementById('fileInput');
+  uploadBtn.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const img = new Image();
+    img.onload = () => {
+      state.bg = { type:'image', key:null, image: img };
+      uploadBtn.classList.add('has-file');
+      uploadBtn.textContent = file.name.length > 26 ? file.name.slice(0,23)+'...' : file.name;
+      document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+      clearTemplateActive();
+      redraw();
+    };
+    img.src = URL.createObjectURL(file);
+  });
+
+  const headlineInput = document.getElementById('headline');
+  const subtitleInput = document.getElementById('subtitle');
+  headlineInput.addEventListener('input', () => { state.headline = headlineInput.value; redraw(); });
+  subtitleInput.addEventListener('input', () => { state.subtitle = subtitleInput.value; redraw(); });
+
+  const headlineColorInput = document.getElementById('headlineColor');
+  const subtitleColorInput = document.getElementById('subtitleColor');
+  const headlineColorHex = document.getElementById('headlineColorHex');
+  const subtitleColorHex = document.getElementById('subtitleColorHex');
+  headlineColorInput.addEventListener('input', () => {
+    state.headlineColor = headlineColorInput.value;
+    headlineColorHex.textContent = state.headlineColor.toUpperCase();
+    clearTemplateActive();
+    redraw();
+  });
+  subtitleColorInput.addEventListener('input', () => {
+    state.subtitleColor = subtitleColorInput.value;
+    subtitleColorHex.textContent = state.subtitleColor.toUpperCase();
+    clearTemplateActive();
+    redraw();
+  });
+
+  const fontSizeInput = document.getElementById('fontSize');
+  const fontSizeVal = document.getElementById('fontSizeVal');
+  fontSizeInput.addEventListener('input', () => {
+    state.fontSize = parseInt(fontSizeInput.value,10);
+    fontSizeVal.textContent = state.fontSize + 'px';
+    clearTemplateActive();
+    redraw();
+  });
+
+  function wireSeg(id, onPick){
+    const el = document.getElementById(id);
+    el.querySelectorAll('button').forEach(b => {
+      b.addEventListener('click', () => {
+        el.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+        b.classList.add('active');
+        onPick(b.dataset.v);
+        clearTemplateActive();
+        redraw();
+      });
+    });
+  }
+  wireSeg('alignSeg', v => state.align = v);
+  wireSeg('vAlignSeg', v => state.vAlign = v);
+  wireSeg('badgeSeg', v => state.badge = (v === 'badge'));
+
+  const fontSelect = document.getElementById('fontSelect');
+  Object.keys(FONTS).forEach(key => {
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = FONTS[key].label;
+    fontSelect.appendChild(opt);
+  });
+  fontSelect.value = state.font;
+  fontSelect.addEventListener('change', () => {
+    state.font = fontSelect.value;
+    clearTemplateActive();
+    redraw();
+  });
+
+  const badgeColorInput = document.getElementById('badgeColor');
+  const badgeColorHex = document.getElementById('badgeColorHex');
+  badgeColorInput.addEventListener('input', () => {
+    state.badgeColor = badgeColorInput.value;
+    badgeColorHex.textContent = state.badgeColor.toUpperCase();
+    clearTemplateActive();
+    redraw();
+  });
+
+  document.getElementById('guideToggle').addEventListener('change', (e) => {
+    guide.style.display = e.target.checked ? 'block' : 'none';
+  });
+
+  const effectSelect = document.getElementById('effectSelect');
+  const effectColorInput = document.getElementById('effectColor');
+  const effectColorHex = document.getElementById('effectColorHex');
+  const effectStrengthInput = document.getElementById('effectStrength');
+  const effectStrengthVal = document.getElementById('effectStrengthVal');
+  effectSelect.addEventListener('change', () => {
+    state.effect = effectSelect.value;
+    clearTemplateActive();
+    redraw();
+  });
+  effectColorInput.addEventListener('input', () => {
+    state.effectColor = effectColorInput.value;
+    effectColorHex.textContent = state.effectColor.toUpperCase();
+    clearTemplateActive();
+    redraw();
+  });
+  effectStrengthInput.addEventListener('input', () => {
+    state.effectStrength = parseInt(effectStrengthInput.value,10);
+    effectStrengthVal.textContent = state.effectStrength;
+    clearTemplateActive();
+    redraw();
+  });
+
+  const iconsEl = document.getElementById('icons');
+  Object.keys(ICONS).forEach(key => {
+    const btn = document.createElement('button');
+    btn.className = 'icon-btn' + (state.icon===key ? ' active' : '');
+    btn.type = 'button';
+    btn.title = ICONS[key].label;
+    btn.dataset.key = key;
+    btn.textContent = ICONS[key].emoji;
+    btn.addEventListener('click', () => {
+      state.icon = key;
+      document.querySelectorAll('.icon-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      clearTemplateActive();
+      redraw();
+    });
+    iconsEl.appendChild(btn);
+  });
+
+  const iconColorInput = document.getElementById('iconColor');
+  const iconColorHex = document.getElementById('iconColorHex');
+  iconColorInput.addEventListener('input', () => {
+    state.iconColor = iconColorInput.value;
+    iconColorHex.textContent = state.iconColor.toUpperCase();
+    clearTemplateActive();
+    redraw();
+  });
+
+  const iconSizeInput = document.getElementById('iconSize');
+  const iconSizeVal = document.getElementById('iconSizeVal');
+  iconSizeInput.addEventListener('input', () => {
+    state.iconSize = parseInt(iconSizeInput.value,10);
+    iconSizeVal.textContent = state.iconSize + 'px';
+    clearTemplateActive();
+    redraw();
+  });
+
+  const iconPosSelect = document.getElementById('iconPosSelect');
+  iconPosSelect.addEventListener('change', () => {
+    state.iconPosition = iconPosSelect.value;
+    clearTemplateActive();
+    redraw();
+  });
+
+  // ---------- templates ----------
+
+  const TPL_DEFAULTS = {
+    badge:false, badgeColor:'#fff3c4',
+    icon:'none', iconColor:'#ffffff', iconSize:100, iconPosition:'bottomRight',
+    effect:'none', effectColor:'#000000', effectStrength:40
+  };
+
+  const TEMPLATES = [
+    { key:'bigQuestion', name:'Big Question', desc:'Pitch Green + Anton',
+      bg:'pitchGreen', font:'anton', headlineColor:'#a6ff3d', subtitleColor:'#ffffff',
+      align:'center', vAlign:'middle' },
+    { key:'countdown', name:'Countdown Stat', desc:'Maroon Fade + Anton',
+      bg:'maroonFade', font:'anton', headlineColor:'#ffffff', subtitleColor:'#eaff7a',
+      align:'center', vAlign:'middle' },
+    { key:'breaking', name:'Breaking Update', desc:'Royal Blue + Bebas Neue',
+      bg:'royalBlue', font:'bebas', headlineColor:'#ffffff', subtitleColor:'#ffe873',
+      align:'left', vAlign:'top' },
+    { key:'ranking', name:'Ranking List', desc:'Crimson Arc + Anton',
+      bg:'crimsonArc', font:'anton', headlineColor:'#ffffff', subtitleColor:'#ffe08a',
+      align:'center', vAlign:'middle' },
+    { key:'playfulBadge', name:'Playful Badge', desc:'Pill Grid + Fredoka badge',
+      bg:'pillGrid', font:'fredoka', headlineColor:'#e0146f', subtitleColor:'#ffffff',
+      align:'center', vAlign:'middle', badge:true },
+    { key:'boldStatement', name:'Bold Statement', desc:'Minimal Black + Archivo Black',
+      bg:'solidBlack', font:'archivo', headlineColor:'#a6ff3d', subtitleColor:'#ffffff',
+      align:'left', vAlign:'top' },
+    { key:'feature', name:'Feature Spotlight', desc:'Purple Bloom + Fredoka',
+      bg:'purpleButterfly', font:'fredoka', headlineColor:'#ffe066', subtitleColor:'#ffffff',
+      align:'center', vAlign:'middle' },
+    { key:'calmRecap', name:'Calm Recap', desc:'Zen Stack + Archivo Black',
+      bg:'zenStack', font:'archivo', headlineColor:'#3b2e73', subtitleColor:'#6659a3',
+      align:'center', vAlign:'middle' },
+    { key:'soccerMatch', name:'Soccer Match', desc:'Pitch Green + soccer icon',
+      bg:'pitchGreen', font:'anton', headlineColor:'#ffffff', subtitleColor:'#ffffff',
+      align:'center', vAlign:'top', icon:'soccer', iconColor:'#ffffff', iconSize:120, iconPosition:'bottomRight',
+      effect:'shadow', effectColor:'#0b1200', effectStrength:35 },
+    { key:'basketballRecap', name:'Basketball Recap', desc:'Coral Corner + Bebas Neue',
+      bg:'coralCorner', font:'bebas', headlineColor:'#ffffff', subtitleColor:'#ffe3d1',
+      align:'left', vAlign:'top', icon:'basketball', iconColor:'#ffffff', iconSize:130, iconPosition:'bottomRight',
+      effect:'shadow', effectColor:'#000000', effectStrength:35 },
+    { key:'musicFeature', name:'Music Feature', desc:'Purple Bloom + Fredoka',
+      bg:'purpleButterfly', font:'fredoka', headlineColor:'#ffe066', subtitleColor:'#ffffff',
+      align:'center', vAlign:'middle', icon:'music', iconColor:'#ffe066', iconSize:100, iconPosition:'topRight' },
+    { key:'championship', name:'Championship', desc:'Maroon Fade + Anton + trophy',
+      bg:'maroonFade', font:'anton', headlineColor:'#ffffff', subtitleColor:'#eaff7a',
+      align:'center', vAlign:'middle', icon:'trophy', iconColor:'#eaff7a', iconSize:110, iconPosition:'bottomRight',
+      effect:'glow', effectColor:'#eaff7a', effectStrength:45 },
+    { key:'ticketDrop', name:'Ticket Drop', desc:'Royal Blue + Archivo Black',
+      bg:'royalBlue', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#ffe873',
+      align:'left', vAlign:'top', icon:'ticket', iconColor:'#ffe873', iconSize:100, iconPosition:'bottomRight',
+      effect:'outline', effectColor:'#1a2a8f', effectStrength:30 },
+    { key:'travelGuide', name:'Travel Guide', desc:'Cyan Ring + Fredoka + pin',
+      bg:'cyanRing', font:'fredoka', headlineColor:'#062b33', subtitleColor:'#0a3d47',
+      align:'center', vAlign:'middle', icon:'pin', iconColor:'#062b33', iconSize:100, iconPosition:'topLeft' }
+  ].map(t => Object.assign({}, TPL_DEFAULTS, t));
+
+  const templatesEl = document.getElementById('templates');
+  TEMPLATES.forEach(tpl => {
+    const btn = document.createElement('button');
+    btn.className = 'tpl-card';
+    btn.type = 'button';
+    btn.style.background = PRESETS[tpl.bg].swatch;
+    btn.innerHTML = `<span class="tpl-name">${tpl.name}</span><span class="tpl-desc">${tpl.desc}</span>`;
+    btn.addEventListener('click', () => {
+      state.bg = { type:'preset', key: tpl.bg, image:null };
+      state.font = tpl.font;
+      state.headlineColor = tpl.headlineColor;
+      state.subtitleColor = tpl.subtitleColor;
+      state.align = tpl.align;
+      state.vAlign = tpl.vAlign;
+      state.badge = tpl.badge;
+      state.badgeColor = tpl.badgeColor;
+      state.icon = tpl.icon;
+      state.iconColor = tpl.iconColor;
+      state.iconSize = tpl.iconSize;
+      state.iconPosition = tpl.iconPosition;
+      state.effect = tpl.effect;
+      state.effectColor = tpl.effectColor;
+      state.effectStrength = tpl.effectStrength;
+
+      fontSelect.value = tpl.font;
+      headlineColorInput.value = tpl.headlineColor;
+      subtitleColorInput.value = tpl.subtitleColor;
+      headlineColorHex.textContent = tpl.headlineColor.toUpperCase();
+      subtitleColorHex.textContent = tpl.subtitleColor.toUpperCase();
+      badgeColorInput.value = tpl.badgeColor;
+      badgeColorHex.textContent = tpl.badgeColor.toUpperCase();
+      iconColorInput.value = tpl.iconColor;
+      iconColorHex.textContent = tpl.iconColor.toUpperCase();
+      iconSizeInput.value = tpl.iconSize;
+      iconSizeVal.textContent = tpl.iconSize + 'px';
+      iconPosSelect.value = tpl.iconPosition;
+      effectSelect.value = tpl.effect;
+      effectColorInput.value = tpl.effectColor;
+      effectColorHex.textContent = tpl.effectColor.toUpperCase();
+      effectStrengthInput.value = tpl.effectStrength;
+      effectStrengthVal.textContent = tpl.effectStrength;
+
+      document.querySelectorAll('#alignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v===tpl.align));
+      document.querySelectorAll('#vAlignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v===tpl.vAlign));
+      document.querySelectorAll('#badgeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v===(tpl.badge?'badge':'plain')));
+      document.querySelectorAll('.icon-btn').forEach(b=>b.classList.toggle('active', b.dataset.key===tpl.icon));
+
+      uploadBtn.classList.remove('has-file');
+      uploadBtn.textContent = 'Upload a photo...';
+
+      document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+      const matchSwatch = document.querySelector(`.swatch[data-key="${tpl.bg}"]`);
+      if (matchSwatch) matchSwatch.classList.add('active');
+
+      clearTemplateActive();
+      btn.classList.add('active');
+
+      redraw();
+    });
+    templatesEl.appendChild(btn);
+  });
+
+  const formatSelect = document.getElementById('format');
+  const downloadBtn = document.getElementById('downloadBtn');
+  formatSelect.addEventListener('change', () => {
+    downloadBtn.textContent = 'Download cover.' + (formatSelect.value==='jpeg' ? 'jpg' : formatSelect.value);
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    state.bg = { type:'preset', key:'pitchGreen', image:null };
+    state.headline = 'Your headline here';
+    state.subtitle = '';
+    state.headlineColor = '#a6ff3d';
+    state.subtitleColor = '#ffffff';
+    state.font = 'anton';
+    state.fontSize = 92;
+    state.align = 'center';
+    state.vAlign = 'middle';
+    state.badge = false;
+    state.badgeColor = '#fff3c4';
+    state.effect = 'none';
+    state.effectColor = '#000000';
+    state.effectStrength = 40;
+    state.icon = 'none';
+    state.iconColor = '#ffffff';
+    state.iconSize = 90;
+    state.iconPosition = 'bottomRight';
+    headlineInput.value = state.headline;
+    subtitleInput.value = '';
+    headlineColorInput.value = state.headlineColor;
+    subtitleColorInput.value = state.subtitleColor;
+    headlineColorHex.textContent = state.headlineColor.toUpperCase();
+    subtitleColorHex.textContent = state.subtitleColor.toUpperCase();
+    fontSelect.value = state.font;
+    fontSizeInput.value = 92;
+    fontSizeVal.textContent = '92px';
+    badgeColorInput.value = state.badgeColor;
+    badgeColorHex.textContent = state.badgeColor.toUpperCase();
+    effectSelect.value = state.effect;
+    effectColorInput.value = state.effectColor;
+    effectColorHex.textContent = state.effectColor.toUpperCase();
+    effectStrengthInput.value = state.effectStrength;
+    effectStrengthVal.textContent = state.effectStrength;
+    iconColorInput.value = state.iconColor;
+    iconColorHex.textContent = state.iconColor.toUpperCase();
+    iconSizeInput.value = state.iconSize;
+    iconSizeVal.textContent = state.iconSize + 'px';
+    iconPosSelect.value = state.iconPosition;
+    uploadBtn.classList.remove('has-file');
+    uploadBtn.textContent = 'Upload a photo...';
+    document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+    document.querySelector('.swatch').classList.add('active');
+    document.querySelectorAll('#alignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v==='center'));
+    document.querySelectorAll('#vAlignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v==='middle'));
+    document.querySelectorAll('#badgeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v==='plain'));
+    document.querySelectorAll('.icon-btn').forEach(b=>b.classList.toggle('active', b.dataset.key==='none'));
+    clearTemplateActive();
+    redraw();
+  });
+
+  // ---------- size estimate + export ----------
+
+  let sizeTimer = null;
+  function updateSizeEstimate(){
+    clearTimeout(sizeTimer);
+    sizeTimer = setTimeout(async () => {
+      const mime = mimeFor(formatSelect.value);
+      const blob = await toBlobAsync(stage, mime, formatSelect.value === 'png' ? undefined : 0.85);
+      setStatus(blob.size, false);
+    }, 150);
+  }
+
+  function mimeFor(fmt){
+    return fmt==='png' ? 'image/png' : fmt==='jpeg' ? 'image/jpeg' : 'image/webp';
+  }
+
+  function toBlobAsync(canvasEl, mime, quality){
+    return new Promise(resolve => canvasEl.toBlob(resolve, mime, quality));
+  }
+
+  function setStatus(bytes, isFinal){
+    const bar = document.getElementById('statusBar');
+    const text = document.getElementById('statusText');
+    const fig = document.getElementById('sizeFig');
+    const kb = (bytes/1000).toFixed(1);
+    const over = bytes > LIMIT_BYTES;
+    bar.classList.toggle('ok', !over);
+    bar.classList.toggle('bad', over);
+    fig.textContent = kb + ' KB';
+    text.textContent = isFinal
+      ? (over ? 'Over budget - try WEBP or a lower-detail background.' : 'Exported - within the 120 KB limit.')
+      : (over ? 'Estimated size is over 120 KB at current quality.' : 'Estimated export size.');
+  }
+
+  async function findBestBlob(mime){
+    if (mime === 'image/png'){
+      const blob = await toBlobAsync(stage, mime);
+      return { blob, quality:null };
+    }
+    let lo = 0.3, hi = 0.95, best = null, bestQ = null;
+    for (let i=0;i<7;i++){
+      const mid = (lo+hi)/2;
+      const blob = await toBlobAsync(stage, mime, mid);
+      if (blob.size <= LIMIT_BYTES){ best = blob; bestQ = mid; lo = mid; }
+      else { hi = mid; }
+    }
+    if (!best){
+      best = await toBlobAsync(stage, mime, lo);
+      bestQ = lo;
+    }
+    return { blob: best, quality: bestQ };
+  }
+
+  downloadBtn.addEventListener('click', async () => {
+    clearTimeout(sizeTimer);
+    downloadBtn.disabled = true;
+    downloadBtn.textContent = 'Rendering...';
+    const wasGuideOn = guide.style.display === 'block';
+    guide.style.display = 'none';
+
+    const fmt = formatSelect.value;
+    const mime = mimeFor(fmt);
+    const { blob } = await findBestBlob(mime);
+
+    const ext = fmt === 'jpeg' ? 'jpg' : fmt;
+    const slug = (state.headline.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'') || 'cover');
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${slug}.${ext}`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+
+    setStatus(blob.size, true);
+    document.getElementById('pngWarning').style.display = (fmt==='png' && blob.size>LIMIT_BYTES) ? 'block' : 'none';
+
+    downloadBtn.disabled = false;
+    downloadBtn.textContent = 'Download cover.' + ext;
+    if (wasGuideOn) guide.style.display = 'block';
+  });
+
+  document.getElementById('switchWebp').addEventListener('click', () => {
+    formatSelect.value = 'webp';
+    downloadBtn.textContent = 'Download cover.webp';
+    document.getElementById('pngWarning').style.display = 'none';
+    updateSizeEstimate();
+  });
+
+  // ---------- boot ----------
+
+  document.querySelector('.swatch').classList.add('active');
+
+  function boot(){ redraw(); }
+  if (document.fonts && document.fonts.load){
+    Promise.all([
+      document.fonts.load('400 100px Anton'),
+      document.fonts.load('400 100px "Bebas Neue"'),
+      document.fonts.load('400 100px "Archivo Black"'),
+      document.fonts.load('400 100px Fredoka')
+    ]).then(boot).catch(boot);
+  } else {
+    boot();
+  }
+})();
+</script>
