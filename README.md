@@ -11,12 +11,13 @@ with a headline/subtitle overlay, exported as PNG/JPG/WEBP under 120 KB.
 ## How it works
 
 Single self-contained HTML file, no build step, no external requests at
-runtime (everything — including all 10 display fonts — is inlined).
+runtime (everything — including all 13 display fonts — is inlined).
 
 - `template.html` — the actual source. Edit this one.
 - `fonts/*.b64` — base64 of each embedded font (all Google Fonts, OFL
   license): `anton`, `bebas`, `archivo`, `fredoka`, `chewy`, `bangers`,
-  `pacifico`, `playfair`, `marker` (Permanent Marker), `caveat`.
+  `pacifico`, `playfair`, `marker` (Permanent Marker), `caveat`, `graffiti`
+  (Rubik Wet Paint), `heebo-latin`/`heebo-hebrew`, `cairo-latin`/`cairo-arabic`.
 - `artifact.html` — generated bare fragment (no doctype/head/body — the
   Claude Artifact tool supplies its own skeleton). Publish this one via
   the Artifact tool.
@@ -25,107 +26,134 @@ runtime (everything — including all 10 display fonts — is inlined).
   serves. Don't hand-edit either generated file — edit `template.html`
   and regenerate both (see below).
 
-**Backgrounds** — 32 presets drawn live on `<canvas>`, organized into a few
-families:
+## Layout / sections (rail, top to bottom)
 
-- *Sports/venue realism*: Soccer Pitch (crosshatch mow pattern + touchline/
-  center-circle/penalty-box), Baseball Field (dirt diamond + mound),
-  Stadium Crowd (tiered seating bands of small deterministic dots, a
-  floodlight glow, and a vignette), Basketball Court (wood grain + key/
-  free-throw arc).
-- *Premium/editorial* (mesh gradients + film grain, added after the first
-  background pass read as "clip art" rather than stylish): Mesh Aurora,
-  Grain Paper, Spotlight Glow, Quiet Arc, Ink Duotone, Deep Glow, Soft
-  Wave. Built from two primitives — `softBlob()` (a blurred radial-gradient
-  color blob, for the mesh-gradient look) and `addGrain()` (a small noise
-  tile drawn as a repeating pattern with `globalCompositeOperation =
-  'overlay'` — proper film grain; an earlier per-pixel-dot version aliased
-  into ugly static at display scale and was replaced).
-- *Pastel minimalism* (flat muted color + grain only, no shapes — Danish/
-  Japanese minimalist poster style): Sage Minimal, Dusty Blue, Blush
-  Minimal, Warm Sand, Olive Note, Stone Gray.
-- *Ticket Stub*: a big notched ticket shape + dashed perforation + barcode,
-  inspired by a past cover.
-- *SeatPick brand*: Brand Blue (with a redrawn ticket-notch mark echoing
-  the logo shape, low-opacity watermark) and Brand Navy.
-- *Original abstract set* (gradients + ribbons/rings/arcs): Pitch Green,
-  Flat Pitch, Maroon Fade, Royal Blue, Crimson Arc, Minimal Black, Cyan
-  Ring, Coral Corner, Retro Sunset, Duotone Split (now a soft blurred
-  diagonal blend, not a hard-edge cut), Halftone Fade, Bubble Cluster.
+1. **Quick start — templates**: 11 curated one-click combos (background +
+   font + colors + alignment + badge + text effect + subtitle spacing).
+   Cut down from 28 after direct feedback ("remove X, Y, Z...") — see the
+   list below for what survived. All default to center/middle alignment
+   with no drop shadow effect. Picking a template fills every control;
+   any control can still be overridden after (clears the template's
+   highlighted state, doesn't reset anything). Logo overlay and uploaded/
+   saved photos are untouched by template clicks — those are user content,
+   not style.
+2. **Background**: just the preset swatch gallery (19 presets, cut down
+   from 32 — see below).
+3. **Your images**: upload a background photo (+ Remove photo, + Save to
+   My Backgrounds), the My Backgrounds gallery, solid color picker
+   (including SeatPick brand-color chips), and the logo overlay controls.
+   Deliberately separated from "2. Background" so user-supplied content
+   isn't mixed with curated presets.
+4. **Text**: headline (textarea — supports Enter for manual line breaks),
+   subtitle, colors, font picker, size, align, vertical position, subtitle
+   spacing, pill badge toggle.
+5. **Effects**: text effect (shadow/outline/glow/3D extrude) + color +
+   strength.
+6. **Export**: format picker, download, reset.
 
-(Removed in a later pass, after feedback that they read as clip-art rather
-than stylish: Pink Chevron, Sky Burst, Purple Bloom, Wave Blobs, Pill Grid,
-Zen Stack, Confetti Pop, Checker Pop.)
+The stage column (left) has the canvas, safe-zone toggle, size estimate,
+and (below all of that) the "Preview in a blog" mockups.
 
-Users can also **upload their own photo** as a background (cover-fit
-cropped to 1200x500, **draggable** — click/touch-drag directly on the
-canvas to reposition the crop, backed by a `focusX`/`focusY` state pair), or
-**pick a solid color** — one-click chips for the 8 exact SeatPick brand
-colors (White, Navy #19213D, Blue #003BDE, Red #D31626, Amber #FFB60D,
-Green #0A9D58, Sky #3E8DF7, Purple #A82FF4) plus a native color picker for
-any custom hex, with headline/subtitle text auto-set to black or white
-based on the color's luminance (`autoContrastColor`).
+## Backgrounds
 
-**My Backgrounds** — once a photo is uploaded, "Save to My Backgrounds"
-stores a compressed 480×200 JPEG thumbnail in `localStorage`
-(`coverMakerCustomBackgrounds`) so it can be reused later without
-re-uploading. Each saved swatch has a small × to delete it. This is
-**personal/browser-local, not shared with the team** — the tool is fully
-static with no backend, so there's no way to make an uploaded image visible
-to other people using the tool without adding real server infrastructure.
-"Remove photo" reverts the background to the default preset without
-touching anything saved.
+19 presets (down from 32 — removed Brand Blue, Maroon Fade, Royal Blue,
+Crimson Arc, Cyan Ring, Coral Corner, Retro Sunset, Duotone Split,
+Halftone Fade, Soccer Pitch, Baseball Field, Basketball Court, Ticket
+Stub per direct feedback; their now-orphaned draw functions were deleted
+too, not left as dead code):
 
-**Logo overlay** — a separate upload (independent of background choice) is
-centered on the canvas, drawn after the background but before the headline
-text (so text always stays legible on top of it), with a size slider and a
-Remove button. Persists across background/template switches since it's a
-constant brand element, not a style choice — only clicking Remove clears it.
+- *Premium/editorial* (mesh gradients + film grain): Mesh Aurora, Grain
+  Paper, Spotlight Glow, Quiet Arc, Ink Duotone, Deep Glow, Soft Wave.
+  Built from `softBlob()` (blurred radial-gradient color blob) and
+  `addGrain()` (a small noise tile drawn as a repeating pattern with
+  `globalCompositeOperation = 'overlay'` — proper film grain; an earlier
+  per-pixel-dot version aliased into ugly static at display scale).
+- *Pastel minimalism* (flat muted color + grain only): Sage Minimal,
+  Dusty Blue, Blush Minimal, Warm Sand, Olive Note, Stone Gray.
+- *SeatPick brand*: Brand Navy (flat).
+- *Sports*: Stadium Crowd (tiered seating bands of small deterministic
+  dots, floodlight glow, vignette).
+- *Original set*: Pitch Green, Flat Pitch, Minimal Black, Bubble Cluster.
 
-**Fonts** — a dropdown in the Text section switches the headline typeface:
-Anton (sport bold), Bebas Neue (tall condensed), Archivo Black (grotesk),
-Fredoka (rounded/friendly), Chewy (bubble), Bangers (comic shout), Pacifico
-(script), Playfair Display (elegant serif), Permanent Marker (brush/
-sharpie), Caveat (handwritten). Each font has an `uppercase` flag in the
-`FONTS` registry — true for the bold display faces, false for the
-script/serif/handwritten ones, since forcing all-caps on those collapses
-their natural connecting letterforms (a real bug caught in testing:
-Pacifico headlines looked blocky and wrong until the per-font case flag
-was added — worth checking again whenever a new font is added).
+Users can also **upload their own photo** (cover-fit cropped to 1200x500,
+**draggable** — click/touch-drag directly on the canvas to reposition the
+crop), or **pick a solid color** — one-click chips for the 8 exact
+SeatPick brand colors (White, Navy #19213D, Blue #003BDE, Red #D31626,
+Amber #FFB60D, Green #0A9D58, Sky #3E8DF7, Purple #A82FF4) plus a custom
+color input, with headline/subtitle text auto-set to black or white based
+on luminance (`autoContrastColor`).
 
-**Headline style** — Plain (default) or Pill badge, which draws a rounded
-chip behind the headline with an underline rule, recreating the cream-pill
-"LIGA DAS NAÇÕES" treatment from the source reference decks.
+**My Backgrounds** — "Save to My Backgrounds" stores a compressed 480×200
+JPEG thumbnail in `localStorage` (`coverMakerCustomBackgrounds`) for reuse
+without re-uploading. **Personal/browser-local, not shared with the
+team** — no backend to store shared files. "Remove photo" reverts to the
+default preset without touching anything saved.
 
-**Text effects** — None, Drop shadow, Outline, Glow, or 3D Extrude, with an
-effect color and a strength slider. Shadow/Glow use canvas `shadow*`
-properties; Outline does a `strokeText` pass before `fillText`; 3D Extrude
-draws ~8 diagonally-offset copies of the fill color behind the main text
-(retro poster look). All reset after the headline draws so they never
-bleed into the badge underline or subtitle.
+## Logo overlay
 
-**Subtitle spacing** — a slider (`state.subtitleGap`, default 18px, range
-0–60) controls the gap between the headline block and the subtitle; it was
-previously a hardcoded constant.
+A separate upload, independent of background choice. Has:
+- **Size** slider.
+- **Drag to reposition** — click/touch-drag the logo directly on the
+  canvas (hit-tests the logo's own bounding box first, falls through to
+  background-photo dragging if the click misses it).
+- **Layer order**: Behind text (default) or In front of text.
+- Persists across background/template switches (only Remove clears it),
+  since it's a constant brand element, not a per-cover style choice.
 
-Note: an earlier version also had an icon picker/overlay (soccer ball,
-trophy, etc.) — removed per feedback to keep the tool to backgrounds +
-fonts + effects only.
+## Fonts
 
-**Templates** — a 28-entry "Quick start" gallery of one-click combos
-(background + font + colors + alignment + badge + text effect + subtitle
-spacing). **All templates default to center/middle alignment with no drop
-shadow** — per feedback that off-center text and drop shadow read as
-dated/risky defaults. Picking a template fills in every control at once;
-any control can still be overridden manually afterward (this clears the
-template's highlighted state but doesn't reset anything). Logo overlay and
-uploaded/saved photos are untouched by template clicks, since those are
-user content, not style.
+13 options via the Text section dropdown: Anton, Bebas Neue, Archivo
+Black, Fredoka, Chewy, Bangers, Pacifico, Playfair Display, Permanent
+Marker, Caveat, **Rubik Wet Paint** (graffiti/spray-paint style), **Heebo**
+(Hebrew + Latin), **Cairo** (Arabic + Latin).
 
-**Safe-zone margin** — top/bottom margin is 42px (was 56px), matching the
-same proportion as the 100px left/right margin on the 1200×500 canvas
-(100/1200 ≈ 42/500), so the safe-zone guide reads as an even border on all
-sides instead of looking disproportionately thick top/bottom.
+Each font has an `uppercase` flag in the `FONTS` registry — true for bold
+display faces, false for script/serif/handwritten/Hebrew/Arabic ones,
+since forcing all-caps on those collapses their natural letterforms (a
+real bug caught in testing with Pacifico).
+
+**RTL support**: Heebo and Cairo have `rtl:true` in `FONTS`, which sets
+`ctx.direction = 'rtl'` before drawing the headline/subtitle (reset to
+`'ltr'` afterward). Each is embedded as two `@font-face` blocks sharing
+the same family name with different `unicode-range` (Latin subset +
+script-specific subset), matching Google's own subsetting technique —
+this is necessary because a single font file/src can't easily cover two
+disjoint Unicode blocks with different glyph sets otherwise. Verified
+both Hebrew and Arabic render with correct shaping and direction.
+
+**Headline text**: the textarea supports Enter for manual line breaks —
+`wrapLines()` splits on `\n` into paragraphs first, then word-wraps each
+paragraph independently, instead of collapsing all whitespace like a
+single greedy word-wrap would.
+
+## Headline style & effects
+
+- **Pill badge**: rounded chip behind the headline (no underline — that
+  was removed per feedback).
+- **Text effects**: None, Drop shadow, Outline, Glow, 3D Extrude, with a
+  color + strength slider. All reset after the headline draws so they
+  never bleed into the subtitle.
+- **Subtitle spacing**: slider (`state.subtitleGap`, default 18px, range
+  0–60), was a hardcoded constant.
+
+## Safe zone
+
+Two guide layers when "Show safe zone" is on:
+1. The main safe-zone rectangle — margin 140px sides / 60px top-bottom
+   (tightened from 100/42 after a real published cover showed headline
+   text getting clipped in a blog's card-thumbnail crop).
+2. A second, tighter dashed rectangle (`MOBILE_CROP_RATIO`, currently a
+   **4:3 placeholder** — the real ratio from the CMS hasn't been
+   confirmed yet) approximating a mobile card-thumbnail crop.
+
+**"Preview in a blog"** (in the stage column, under the canvas): two live
+mockups built from the actual canvas via `stage.toDataURL()` — a
+4:3-cropped card thumbnail and a native-aspect full article hero, styled
+to resemble the real blog ("Ticket Insider" wordmark, byline, pill
+category tag). Confirmed this reproduces the real clipping bug from the
+reference screenshots. **Update `MOBILE_CROP_RATIO` and the `.mock-card-media`
+CSS `aspect-ratio` once the actual crop ratio is known** — both currently
+assume 4:3.
 
 Export uses a binary search over JPEG/WEBP quality to land just under the
 120,000-byte budget; PNG has no quality lever, so if a PNG export comes out
@@ -152,7 +180,12 @@ over budget the tool shows a warning with a one-click "switch to WEBP".
        .replace('__PACIFICO_BASE64__', load_b64('fonts/pacifico.b64'))
        .replace('__PLAYFAIR_BASE64__', load_b64('fonts/playfair.b64'))
        .replace('__MARKER_BASE64__', load_b64('fonts/marker.b64'))
-       .replace('__CAVEAT_BASE64__', load_b64('fonts/caveat.b64')))
+       .replace('__CAVEAT_BASE64__', load_b64('fonts/caveat.b64'))
+       .replace('__GRAFFITI_BASE64__', load_b64('fonts/graffiti.b64'))
+       .replace('__HEEBO_LATIN_BASE64__', load_b64('fonts/heebo-latin.b64'))
+       .replace('__HEEBO_HEBREW_BASE64__', load_b64('fonts/heebo-hebrew.b64'))
+       .replace('__CAIRO_LATIN_BASE64__', load_b64('fonts/cairo-latin.b64'))
+       .replace('__CAIRO_ARABIC_BASE64__', load_b64('fonts/cairo-arabic.b64')))
    open('artifact.html', 'w', encoding='utf-8').write(fragment)
 
    marker = '<div class="wrap">'
@@ -182,9 +215,7 @@ over budget the tool shows a warning with a one-click "switch to WEBP".
 for visible text, `\uXXXX`/`\u{XXXXX}` JS escapes for any literal special
 character in a JS string literal). An earlier version had literal Unicode
 characters inside `<script>` string literals which rendered as mojibake
-when served without an explicit charset — not worth re-introducing that
-risk, especially now that the raw file is also served directly (not just
-through the Artifact tool's own wrapper). Run this check after editing,
+when served without an explicit charset. Run this check after editing,
 before regenerating the outputs:
 ```
 python3 -c "print(len([c for c in open('template.html', encoding='utf-8').read() if ord(c) > 127]))"
