@@ -28,6 +28,34 @@
   font-style:normal;
   font-display:block;
 }
+@font-face{
+  font-family:'Chewy';
+  src:url(data:font/woff2;base64,__CHEWY_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
+  font-family:'Bangers';
+  src:url(data:font/woff2;base64,__BANGERS_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
+  font-family:'Pacifico';
+  src:url(data:font/woff2;base64,__PACIFICO_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
+  font-family:'Playfair Display';
+  src:url(data:font/woff2;base64,__PLAYFAIR_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
 
 :root{
   --bg:#12160f;
@@ -303,28 +331,6 @@ input[type="range"]{
   text-shadow:0 1px 3px rgba(0,0,0,0.55);
 }
 
-.icon-grid{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:8px;
-}
-.icon-btn{
-  aspect-ratio:1/1;
-  border-radius:8px;
-  border:2px solid var(--line);
-  background:var(--panel-2);
-  color:var(--ink-dim);
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:18px;
-  line-height:1;
-  padding:0;
-}
-.icon-btn span{font-size:9px;display:none;}
-.icon-btn.active{border-color:var(--accent);color:var(--ink);}
-
 .upload-btn{
   display:flex;
   align-items:center;
@@ -484,7 +490,7 @@ input[type="range"]{
       </div>
 
       <div class="section">
-        <h2>4. Icon &amp; effects</h2>
+        <h2>4. Effects</h2>
         <div class="row">
           <div class="field">
             <label>Text effect</label>
@@ -493,6 +499,7 @@ input[type="range"]{
               <option value="shadow">Drop shadow</option>
               <option value="outline">Outline</option>
               <option value="glow">Glow</option>
+              <option value="extrude">3D Extrude</option>
             </select>
           </div>
           <div class="field">
@@ -509,36 +516,6 @@ input[type="range"]{
             <input type="range" id="effectStrength" min="0" max="100" value="40">
             <span class="val" id="effectStrengthVal">40</span>
           </div>
-        </div>
-        <div class="field">
-          <label>Icon</label>
-          <div class="icon-grid" id="icons"></div>
-        </div>
-        <div class="row">
-          <div class="field">
-            <label>Icon color</label>
-            <div class="colorfield">
-              <input type="color" id="iconColor" value="#ffffff">
-              <span class="hex" id="iconColorHex">#FFFFFF</span>
-            </div>
-          </div>
-          <div class="field">
-            <label>Icon size</label>
-            <div class="slider-row">
-              <input type="range" id="iconSize" min="30" max="220" value="90">
-              <span class="val" id="iconSizeVal">90px</span>
-            </div>
-          </div>
-        </div>
-        <div class="field">
-          <label for="iconPosSelect">Icon position</label>
-          <select id="iconPosSelect">
-            <option value="topLeft">Top left</option>
-            <option value="topRight">Top right</option>
-            <option value="bottomLeft">Bottom left</option>
-            <option value="bottomRight" selected>Bottom right</option>
-            <option value="inline">Next to headline</option>
-          </select>
         </div>
       </div>
 
@@ -587,18 +564,18 @@ input[type="range"]{
     badgeColor: '#fff3c4',
     effect: 'none',
     effectColor: '#000000',
-    effectStrength: 40,
-    icon: 'none',
-    iconColor: '#ffffff',
-    iconSize: 90,
-    iconPosition: 'bottomRight'
+    effectStrength: 40
   };
 
   const FONTS = {
-    anton:   { label:'Anton - Sport Bold',          family:'Anton' },
-    bebas:   { label:'Bebas Neue - Tall Condensed', family:'Bebas Neue' },
-    archivo: { label:'Archivo Black - Grotesk',     family:'Archivo Black' },
-    fredoka: { label:'Fredoka - Rounded Friendly',  family:'Fredoka' }
+    anton:    { label:'Anton - Sport Bold',          family:'Anton',          uppercase:true },
+    bebas:    { label:'Bebas Neue - Tall Condensed', family:'Bebas Neue',     uppercase:true },
+    archivo:  { label:'Archivo Black - Grotesk',     family:'Archivo Black', uppercase:true },
+    fredoka:  { label:'Fredoka - Rounded Friendly',  family:'Fredoka',       uppercase:true },
+    chewy:    { label:'Chewy - Bubble',              family:'Chewy',         uppercase:true },
+    bangers:  { label:'Bangers - Comic Shout',       family:'Bangers',       uppercase:true },
+    pacifico: { label:'Pacifico - Script',           family:'Pacifico',      uppercase:false },
+    playfair: { label:'Playfair Display - Elegant Serif', family:'Playfair Display', uppercase:false }
   };
 
   // ---------- background presets ----------
@@ -701,156 +678,95 @@ input[type="range"]{
     c.beginPath(); c.arc(cx, cy+72*scale, 104*scale, Math.PI, 0); c.fill();
   }
 
-  // ---------- icons ----------
-
-  function drawIconSoccer(c, cx, cy, size, color){
-    const r = size/2;
-    c.strokeStyle = color;
-    c.lineWidth = Math.max(2, size*0.045);
-    c.beginPath(); c.arc(cx, cy, r, 0, Math.PI*2); c.stroke();
-    c.fillStyle = color;
-    const pr = r*0.34;
-    c.beginPath();
-    for (let i=0;i<5;i++){
-      const a = -Math.PI/2 + i*(Math.PI*2/5);
-      const px = cx + pr*Math.cos(a), py = cy + pr*Math.sin(a);
-      i===0 ? c.moveTo(px,py) : c.lineTo(px,py);
-    }
-    c.closePath(); c.fill();
-    for (let i=0;i<5;i++){
-      const a = -Math.PI/2 + i*(Math.PI*2/5) + Math.PI/5;
-      c.beginPath();
-      c.moveTo(cx+pr*0.9*Math.cos(a), cy+pr*0.9*Math.sin(a));
-      c.lineTo(cx+r*0.85*Math.cos(a), cy+r*0.85*Math.sin(a));
-      c.stroke();
-    }
+  function pseudoRand(seed){
+    const x = Math.sin(seed*12.9898)*43758.5453;
+    return x - Math.floor(x);
   }
 
-  function drawIconBasketball(c, cx, cy, size, color){
-    const r = size/2;
-    c.strokeStyle = color;
-    c.lineWidth = Math.max(2, size*0.045);
-    c.beginPath(); c.arc(cx, cy, r, 0, Math.PI*2); c.stroke();
-    c.beginPath(); c.moveTo(cx, cy-r); c.lineTo(cx, cy+r); c.stroke();
-    c.beginPath(); c.moveTo(cx-r, cy); c.lineTo(cx+r, cy); c.stroke();
-    c.beginPath(); c.arc(cx-r*0.5, cy, r*0.95, -0.6, 0.6); c.stroke();
-    c.beginPath(); c.arc(cx+r*0.5, cy, r*0.95, Math.PI-0.6, Math.PI+0.6); c.stroke();
-  }
-
-  function drawIconMusic(c, cx, cy, size, color){
-    c.fillStyle = color;
-    const noteR = size*0.16;
-    const x1 = cx - size*0.22, x2 = cx + size*0.22;
-    const y1 = cy + size*0.28, y2 = cy + size*0.20;
-    c.beginPath(); c.arc(x1, y1, noteR, 0, Math.PI*2); c.fill();
-    c.beginPath(); c.arc(x2, y2, noteR, 0, Math.PI*2); c.fill();
-    const sx1 = x1 + noteR*0.7, sx2 = x2 + noteR*0.7;
-    c.fillRect(sx1, cy - size*0.32, size*0.045, size*0.62);
-    c.fillRect(sx2, cy - size*0.40, size*0.045, size*0.62);
-    c.beginPath();
-    c.moveTo(sx1, cy - size*0.32);
-    c.lineTo(sx2, cy - size*0.40);
-    c.lineTo(sx2, cy - size*0.28);
-    c.lineTo(sx1, cy - size*0.20);
-    c.closePath(); c.fill();
-  }
-
-  function drawIconTrophy(c, cx, cy, size, color){
-    c.fillStyle = color;
-    const w = size*0.5, cupTop = cy - size*0.4;
-    roundRect(c, cx-w/2, cupTop, w, size*0.42, size*0.06); c.fill();
-    c.lineWidth = Math.max(2, size*0.045);
-    c.strokeStyle = color;
-    c.beginPath(); c.arc(cx-w/2, cupTop+size*0.12, size*0.14, Math.PI*0.3, Math.PI*1.7); c.stroke();
-    c.beginPath(); c.arc(cx+w/2, cupTop+size*0.12, size*0.14, Math.PI*1.3, Math.PI*2.7); c.stroke();
-    c.fillRect(cx-size*0.04, cupTop+size*0.42, size*0.08, size*0.16);
-    roundRect(c, cx-size*0.22, cupTop+size*0.56, size*0.44, size*0.1, size*0.03); c.fill();
-    roundRect(c, cx-size*0.3, cupTop+size*0.66, size*0.6, size*0.08, size*0.03); c.fill();
-  }
-
-  function drawIconTicket(c, cx, cy, size, color){
+  function drawRetroSun(c, cx, cy, r, stripeCount){
     c.save();
-    c.translate(cx, cy);
-    c.rotate(-0.18);
-    const w = size*0.9, h = size*0.5;
-    roundRect(c, -w/2, -h/2, w, h, size*0.06);
-    c.fillStyle = color; c.fill();
-    c.strokeStyle = 'rgba(0,0,0,0.28)';
-    c.lineWidth = Math.max(2, size*0.02);
-    c.setLineDash([size*0.035, size*0.035]);
-    c.beginPath(); c.moveTo(0,-h/2+2); c.lineTo(0,h/2-2); c.stroke();
-    c.setLineDash([]);
+    c.beginPath(); c.arc(cx, cy, r, 0, Math.PI*2); c.clip();
+    const sg = c.createLinearGradient(0, cy-r, 0, cy+r);
+    sg.addColorStop(0, '#ffe27a');
+    sg.addColorStop(1, '#ff4d6d');
+    c.fillStyle = sg;
+    c.fillRect(cx-r, cy-r, r*2, r*2);
+    c.globalCompositeOperation = 'destination-out';
+    const stripeH = r*0.11, gap = r*0.09;
+    let y = cy - r*0.05;
+    for (let i=0; i<stripeCount; i++){
+      c.fillRect(cx-r, y, r*2, stripeH);
+      y += stripeH + gap;
+    }
     c.restore();
   }
 
-  function drawIconSparkle(c, cx, cy, size, color){
-    c.save();
-    c.translate(cx, cy);
-    c.fillStyle = color;
-    const r = size*0.5;
-    for (let i=0;i<4;i++){
+  function drawConfetti(c){
+    const colors = ['#ff5d8f','#ffd23f','#4cc9f0','#a996f5','#ffffff'];
+    for (let i=0;i<70;i++){
+      const rx = pseudoRand(i*3.1)*W;
+      const ry = pseudoRand(i*7.7+1)*H;
+      const rot = pseudoRand(i*5.3+2)*Math.PI*2;
+      const size = 8 + pseudoRand(i*9.1+3)*14;
       c.save();
-      c.rotate((Math.PI/2)*i + Math.PI/4);
-      c.beginPath();
-      c.moveTo(0,-r);
-      c.lineTo(r*0.09,0);
-      c.lineTo(0,r);
-      c.lineTo(-r*0.09,0);
-      c.closePath();
-      c.fill();
+      c.translate(rx, ry);
+      c.rotate(rot);
+      c.fillStyle = colors[i % colors.length];
+      if (i % 3 === 0){
+        c.beginPath(); c.arc(0,0,size*0.5,0,Math.PI*2); c.fill();
+      } else {
+        c.fillRect(-size/2, -size*0.28, size, size*0.56);
+      }
       c.restore();
     }
-    c.beginPath(); c.arc(0,0,r*0.1,0,Math.PI*2); c.fill();
-    c.restore();
   }
 
-  function drawIconPin(c, cx, cy, size, color){
-    const r = size*0.28, topY = cy - size*0.18;
-    c.fillStyle = color;
+  function drawDuotoneSplit(c, colorA, colorB){
+    c.fillStyle = colorA; c.fillRect(0,0,W,H);
     c.beginPath();
-    c.arc(cx, topY, r, 0, Math.PI*2);
-    c.moveTo(cx - r*0.62, topY + r*0.55);
-    c.lineTo(cx, topY + r*2.3);
-    c.lineTo(cx + r*0.62, topY + r*0.55);
+    c.moveTo(W*0.42,0); c.lineTo(W,0); c.lineTo(W,H); c.lineTo(W*0.58,H);
     c.closePath();
-    c.fill();
-    c.fillStyle = 'rgba(255,255,255,0.55)';
-    c.beginPath(); c.arc(cx, topY, r*0.36, 0, Math.PI*2); c.fill();
+    c.fillStyle = colorB; c.fill();
   }
 
-  function drawIconClock(c, cx, cy, size, color){
-    const r = size*0.42;
-    c.strokeStyle = color;
-    c.lineWidth = Math.max(2, size*0.05);
-    c.beginPath(); c.arc(cx, cy, r, 0, Math.PI*2); c.stroke();
-    c.beginPath(); c.moveTo(cx, cy); c.lineTo(cx, cy-r*0.55); c.stroke();
-    c.beginPath(); c.moveTo(cx, cy); c.lineTo(cx+r*0.4, cy+r*0.15); c.stroke();
-    c.fillStyle = color;
-    c.beginPath(); c.arc(cx, cy, size*0.035, 0, Math.PI*2); c.fill();
+  function drawHalftone(c, dotColor){
+    const cols = 24, rows = 10;
+    const cellW = W/cols, cellH = H/rows;
+    c.fillStyle = dotColor;
+    for (let row=0; row<rows; row++){
+      for (let col=0; col<cols; col++){
+        const t = col/(cols-1);
+        const r = (cellW*0.42) * (1-t) + 1.5;
+        const cx = col*cellW + cellW/2, cy = row*cellH + cellH/2;
+        c.beginPath(); c.arc(cx, cy, r, 0, Math.PI*2); c.fill();
+      }
+    }
   }
 
-  const ICONS = {
-    none:       { label:'None',        emoji:'\u2014',     draw:null },
-    soccer:     { label:'Soccer ball', emoji:'\u26BD',     draw:drawIconSoccer },
-    basketball: { label:'Basketball',  emoji:'\u{1F3C0}',  draw:drawIconBasketball },
-    music:      { label:'Music note',  emoji:'\u{1F3B5}',  draw:drawIconMusic },
-    trophy:     { label:'Trophy',      emoji:'\u{1F3C6}',  draw:drawIconTrophy },
-    ticket:     { label:'Ticket',      emoji:'\u{1F3AB}',  draw:drawIconTicket },
-    sparkle:    { label:'Sparkle',     emoji:'\u2728',     draw:drawIconSparkle },
-    pin:        { label:'Map pin',     emoji:'\u{1F4CD}',  draw:drawIconPin },
-    clock:      { label:'Clock',       emoji:'\u{1F550}',  draw:drawIconClock }
-  };
+  function drawChecker(c, alt, size){
+    c.fillStyle = alt;
+    for (let row=0; row*size < H+size; row++){
+      for (let col=0; col*size < W+size; col++){
+        if ((row+col)%2===0){
+          c.fillRect(col*size, row*size, size, size);
+        }
+      }
+    }
+  }
 
-  function drawIconAt(c, key, position, size, color){
-    const def = ICONS[key];
-    if (!def || !def.draw) return;
-    const margin = 50;
-    let cx, cy;
-    if (position === 'topLeft'){ cx = margin+size/2; cy = margin+size/2; }
-    else if (position === 'topRight'){ cx = W-margin-size/2; cy = margin+size/2; }
-    else if (position === 'bottomLeft'){ cx = margin+size/2; cy = H-margin-size/2; }
-    else { cx = W-margin-size/2; cy = H-margin-size/2; }
-    def.draw(c, cx, cy, size, color);
+  function drawBubbleCluster(c){
+    const positions = [
+      [0.08,0.20,120],[0.22,0.75,150],[0.42,0.35,100],[0.58,0.85,130],
+      [0.75,0.25,150],[0.92,0.65,110],[0.35,0.08,80],[0.65,0.55,90]
+    ];
+    positions.forEach(([px,py,r]) => {
+      const cx = px*W, cy = py*H;
+      const g = c.createRadialGradient(cx-r*0.3,cy-r*0.3,r*0.1,cx,cy,r);
+      g.addColorStop(0,'rgba(255,255,255,0.55)');
+      g.addColorStop(1,'rgba(255,255,255,0.05)');
+      c.fillStyle = g;
+      c.beginPath(); c.arc(cx,cy,r,0,Math.PI*2); c.fill();
+    });
   }
 
   function applyTextEffect(c, effect, color, strength){
@@ -1021,6 +937,65 @@ input[type="range"]{
         drawRing(c, -20, -20, 230, 60, '#ffd23f', '#ff8a3d');
         drawRing(c, W+20, H+20, 200, 55, '#ffd23f', '#ff8a3d');
       }
+    },
+    retroSunset: {
+      label:'Retro Sunset',
+      swatch:'linear-gradient(180deg,#ff9d5c,#ff5d8f 55%,#5a2c8f)',
+      text:'#fff4d6', sub:'#ffd9a0',
+      draw(c){
+        const g = c.createLinearGradient(0,0,0,H);
+        g.addColorStop(0, '#ff9d5c');
+        g.addColorStop(0.55, '#ff5d8f');
+        g.addColorStop(1, '#5a2c8f');
+        c.fillStyle = g; c.fillRect(0,0,W,H);
+        drawRetroSun(c, W/2, H*0.66, 175, 5);
+      }
+    },
+    confettiPop: {
+      label:'Confetti Pop',
+      swatch:'#1c1440',
+      text:'#ffffff', sub:'#ffd23f',
+      draw(c){
+        c.fillStyle = '#1c1440';
+        c.fillRect(0,0,W,H);
+        drawConfetti(c);
+      }
+    },
+    duotoneSplit: {
+      label:'Duotone Split',
+      swatch:'linear-gradient(115deg,#ffb400 45%,#0b1a3a 55%)',
+      text:'#ffffff', sub:'#ffe27a',
+      draw(c){ drawDuotoneSplit(c, '#ffb400', '#0b1a3a'); }
+    },
+    halftoneFade: {
+      label:'Halftone Fade',
+      swatch:'linear-gradient(90deg,#3fd3c6,#101820)',
+      text:'#3fd3c6', sub:'#ffffff',
+      draw(c){
+        c.fillStyle = '#101820';
+        c.fillRect(0,0,W,H);
+        drawHalftone(c, '#3fd3c6');
+      }
+    },
+    checkerPop: {
+      label:'Checker Pop',
+      swatch:'repeating-linear-gradient(45deg,#fff2e0 0 15px,#ffb4a2 15px 30px)',
+      text:'#7a1f3d', sub:'#4a1025',
+      draw(c){
+        c.fillStyle = '#fff2e0';
+        c.fillRect(0,0,W,H);
+        drawChecker(c, '#ffb4a2', 62);
+      }
+    },
+    bubbleCluster: {
+      label:'Bubble Cluster',
+      swatch:'#ff8fab',
+      text:'#ffffff', sub:'#fff0f5',
+      draw(c){
+        c.fillStyle = '#ff8fab';
+        c.fillRect(0,0,W,H);
+        drawBubbleCluster(c);
+      }
     }
   };
 
@@ -1107,7 +1082,8 @@ input[type="range"]{
     const family = FONTS[state.font].family;
     c.font = `${size}px "${family}", sans-serif`;
     c.textBaseline = 'alphabetic';
-    const headlineLines = wrapLines(c, (state.headline || '').toUpperCase(), maxWidth);
+    const headlineText = FONTS[state.font].uppercase ? (state.headline || '').toUpperCase() : (state.headline || '');
+    const headlineLines = wrapLines(c, headlineText, maxWidth);
     const lineHeight = size * 1.06;
 
     const subSize = Math.max(16, Math.round(size * 0.28));
@@ -1126,10 +1102,6 @@ input[type="range"]{
 
     const xPos = state.align === 'left' ? marginX : W/2;
     c.textAlign = state.align === 'left' ? 'left' : 'center';
-
-    if (state.icon !== 'none' && state.iconPosition !== 'inline'){
-      drawIconAt(c, state.icon, state.iconPosition, state.iconSize, state.iconColor);
-    }
 
     c.font = `${size}px "${family}", sans-serif`;
     c.fillStyle = state.headlineColor;
@@ -1151,7 +1123,15 @@ input[type="range"]{
     applyTextEffect(c, state.effect, state.effectColor, state.effectStrength);
     let y = startY;
     headlineLines.forEach(line => {
-      if (state.effect === 'outline'){
+      if (state.effect === 'extrude'){
+        const steps = 8;
+        const step = 1 + state.effectStrength*0.05;
+        c.fillStyle = state.effectColor;
+        for (let s=steps; s>=1; s--){
+          c.fillText(line, xPos + s*step*0.5, y + s*step*0.5);
+        }
+        c.fillStyle = state.headlineColor;
+      } else if (state.effect === 'outline'){
         c.lineJoin = 'round';
         c.lineWidth = 2 + state.effectStrength*0.12;
         c.strokeStyle = state.effectColor;
@@ -1170,17 +1150,6 @@ input[type="range"]{
       roundRect(c, underlineCenterX - underlineW/2, underlineY, underlineW, underlineH, underlineH/2);
       c.fillStyle = state.headlineColor;
       c.fill();
-    }
-
-    if (state.icon !== 'none' && state.iconPosition === 'inline' && headlineLines.length && ICONS[state.icon].draw){
-      c.font = `${size}px "${family}", sans-serif`;
-      const lastLine = headlineLines[headlineLines.length-1];
-      const lastLineWidth = c.measureText(lastLine).width;
-      const lastLineEndX = state.align === 'left' ? xPos + lastLineWidth : xPos + lastLineWidth/2;
-      const lastLineBaselineY = y - lineHeight;
-      const iconCx = lastLineEndX + state.iconSize*0.65;
-      const iconCy = lastLineBaselineY - size*0.32;
-      ICONS[state.icon].draw(c, iconCx, iconCy, state.iconSize, state.iconColor);
     }
 
     if (hasSub){
@@ -1362,54 +1331,10 @@ input[type="range"]{
     redraw();
   });
 
-  const iconsEl = document.getElementById('icons');
-  Object.keys(ICONS).forEach(key => {
-    const btn = document.createElement('button');
-    btn.className = 'icon-btn' + (state.icon===key ? ' active' : '');
-    btn.type = 'button';
-    btn.title = ICONS[key].label;
-    btn.dataset.key = key;
-    btn.textContent = ICONS[key].emoji;
-    btn.addEventListener('click', () => {
-      state.icon = key;
-      document.querySelectorAll('.icon-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      clearTemplateActive();
-      redraw();
-    });
-    iconsEl.appendChild(btn);
-  });
-
-  const iconColorInput = document.getElementById('iconColor');
-  const iconColorHex = document.getElementById('iconColorHex');
-  iconColorInput.addEventListener('input', () => {
-    state.iconColor = iconColorInput.value;
-    iconColorHex.textContent = state.iconColor.toUpperCase();
-    clearTemplateActive();
-    redraw();
-  });
-
-  const iconSizeInput = document.getElementById('iconSize');
-  const iconSizeVal = document.getElementById('iconSizeVal');
-  iconSizeInput.addEventListener('input', () => {
-    state.iconSize = parseInt(iconSizeInput.value,10);
-    iconSizeVal.textContent = state.iconSize + 'px';
-    clearTemplateActive();
-    redraw();
-  });
-
-  const iconPosSelect = document.getElementById('iconPosSelect');
-  iconPosSelect.addEventListener('change', () => {
-    state.iconPosition = iconPosSelect.value;
-    clearTemplateActive();
-    redraw();
-  });
-
   // ---------- templates ----------
 
   const TPL_DEFAULTS = {
     badge:false, badgeColor:'#fff3c4',
-    icon:'none', iconColor:'#ffffff', iconSize:100, iconPosition:'bottomRight',
     effect:'none', effectColor:'#000000', effectStrength:40
   };
 
@@ -1438,28 +1363,36 @@ input[type="range"]{
     { key:'calmRecap', name:'Calm Recap', desc:'Zen Stack + Archivo Black',
       bg:'zenStack', font:'archivo', headlineColor:'#3b2e73', subtitleColor:'#6659a3',
       align:'center', vAlign:'middle' },
-    { key:'soccerMatch', name:'Soccer Match', desc:'Pitch Green + soccer icon',
+    { key:'soccerMatch', name:'Soccer Match', desc:'Pitch Green + Anton + shadow',
       bg:'pitchGreen', font:'anton', headlineColor:'#ffffff', subtitleColor:'#ffffff',
-      align:'center', vAlign:'top', icon:'soccer', iconColor:'#ffffff', iconSize:120, iconPosition:'bottomRight',
-      effect:'shadow', effectColor:'#0b1200', effectStrength:35 },
-    { key:'basketballRecap', name:'Basketball Recap', desc:'Coral Corner + Bebas Neue',
+      align:'center', vAlign:'top', effect:'shadow', effectColor:'#0b1200', effectStrength:35 },
+    { key:'basketballRecap', name:'Basketball Recap', desc:'Coral Corner + Bebas Neue + shadow',
       bg:'coralCorner', font:'bebas', headlineColor:'#ffffff', subtitleColor:'#ffe3d1',
-      align:'left', vAlign:'top', icon:'basketball', iconColor:'#ffffff', iconSize:130, iconPosition:'bottomRight',
-      effect:'shadow', effectColor:'#000000', effectStrength:35 },
+      align:'left', vAlign:'top', effect:'shadow', effectColor:'#000000', effectStrength:35 },
     { key:'musicFeature', name:'Music Feature', desc:'Purple Bloom + Fredoka',
       bg:'purpleButterfly', font:'fredoka', headlineColor:'#ffe066', subtitleColor:'#ffffff',
-      align:'center', vAlign:'middle', icon:'music', iconColor:'#ffe066', iconSize:100, iconPosition:'topRight' },
-    { key:'championship', name:'Championship', desc:'Maroon Fade + Anton + trophy',
+      align:'center', vAlign:'middle' },
+    { key:'championship', name:'Championship', desc:'Maroon Fade + Anton + glow',
       bg:'maroonFade', font:'anton', headlineColor:'#ffffff', subtitleColor:'#eaff7a',
-      align:'center', vAlign:'middle', icon:'trophy', iconColor:'#eaff7a', iconSize:110, iconPosition:'bottomRight',
-      effect:'glow', effectColor:'#eaff7a', effectStrength:45 },
-    { key:'ticketDrop', name:'Ticket Drop', desc:'Royal Blue + Archivo Black',
+      align:'center', vAlign:'middle', effect:'glow', effectColor:'#eaff7a', effectStrength:45 },
+    { key:'ticketDrop', name:'Ticket Drop', desc:'Royal Blue + Archivo Black + outline',
       bg:'royalBlue', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#ffe873',
-      align:'left', vAlign:'top', icon:'ticket', iconColor:'#ffe873', iconSize:100, iconPosition:'bottomRight',
-      effect:'outline', effectColor:'#1a2a8f', effectStrength:30 },
-    { key:'travelGuide', name:'Travel Guide', desc:'Cyan Ring + Fredoka + pin',
+      align:'left', vAlign:'top', effect:'outline', effectColor:'#1a2a8f', effectStrength:30 },
+    { key:'travelGuide', name:'Travel Guide', desc:'Cyan Ring + Fredoka',
       bg:'cyanRing', font:'fredoka', headlineColor:'#062b33', subtitleColor:'#0a3d47',
-      align:'center', vAlign:'middle', icon:'pin', iconColor:'#062b33', iconSize:100, iconPosition:'topLeft' }
+      align:'center', vAlign:'middle' },
+    { key:'retroPoster', name:'Retro Poster', desc:'Retro Sunset + Bangers + extrude',
+      bg:'retroSunset', font:'bangers', headlineColor:'#fff4d6', subtitleColor:'#ffd9a0',
+      align:'center', vAlign:'middle', effect:'extrude', effectColor:'#5a2c8f', effectStrength:45 },
+    { key:'bubbleParty', name:'Bubble Party', desc:'Bubble Cluster + Chewy',
+      bg:'bubbleCluster', font:'chewy', headlineColor:'#ffffff', subtitleColor:'#fff0f5',
+      align:'center', vAlign:'middle' },
+    { key:'elegantAnnounce', name:'Elegant Announce', desc:'Duotone Split + Playfair Display',
+      bg:'duotoneSplit', font:'playfair', headlineColor:'#ffffff', subtitleColor:'#ffe27a',
+      align:'center', vAlign:'middle' },
+    { key:'handwrittenNote', name:'Handwritten Note', desc:'Checker Pop + Pacifico',
+      bg:'checkerPop', font:'pacifico', headlineColor:'#7a1f3d', subtitleColor:'#4a1025',
+      align:'center', vAlign:'middle' }
   ].map(t => Object.assign({}, TPL_DEFAULTS, t));
 
   const templatesEl = document.getElementById('templates');
@@ -1478,10 +1411,6 @@ input[type="range"]{
       state.vAlign = tpl.vAlign;
       state.badge = tpl.badge;
       state.badgeColor = tpl.badgeColor;
-      state.icon = tpl.icon;
-      state.iconColor = tpl.iconColor;
-      state.iconSize = tpl.iconSize;
-      state.iconPosition = tpl.iconPosition;
       state.effect = tpl.effect;
       state.effectColor = tpl.effectColor;
       state.effectStrength = tpl.effectStrength;
@@ -1493,11 +1422,6 @@ input[type="range"]{
       subtitleColorHex.textContent = tpl.subtitleColor.toUpperCase();
       badgeColorInput.value = tpl.badgeColor;
       badgeColorHex.textContent = tpl.badgeColor.toUpperCase();
-      iconColorInput.value = tpl.iconColor;
-      iconColorHex.textContent = tpl.iconColor.toUpperCase();
-      iconSizeInput.value = tpl.iconSize;
-      iconSizeVal.textContent = tpl.iconSize + 'px';
-      iconPosSelect.value = tpl.iconPosition;
       effectSelect.value = tpl.effect;
       effectColorInput.value = tpl.effectColor;
       effectColorHex.textContent = tpl.effectColor.toUpperCase();
@@ -1507,7 +1431,6 @@ input[type="range"]{
       document.querySelectorAll('#alignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v===tpl.align));
       document.querySelectorAll('#vAlignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v===tpl.vAlign));
       document.querySelectorAll('#badgeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v===(tpl.badge?'badge':'plain')));
-      document.querySelectorAll('.icon-btn').forEach(b=>b.classList.toggle('active', b.dataset.key===tpl.icon));
 
       uploadBtn.classList.remove('has-file');
       uploadBtn.textContent = 'Upload a photo...';
@@ -1545,10 +1468,6 @@ input[type="range"]{
     state.effect = 'none';
     state.effectColor = '#000000';
     state.effectStrength = 40;
-    state.icon = 'none';
-    state.iconColor = '#ffffff';
-    state.iconSize = 90;
-    state.iconPosition = 'bottomRight';
     headlineInput.value = state.headline;
     subtitleInput.value = '';
     headlineColorInput.value = state.headlineColor;
@@ -1565,11 +1484,6 @@ input[type="range"]{
     effectColorHex.textContent = state.effectColor.toUpperCase();
     effectStrengthInput.value = state.effectStrength;
     effectStrengthVal.textContent = state.effectStrength;
-    iconColorInput.value = state.iconColor;
-    iconColorHex.textContent = state.iconColor.toUpperCase();
-    iconSizeInput.value = state.iconSize;
-    iconSizeVal.textContent = state.iconSize + 'px';
-    iconPosSelect.value = state.iconPosition;
     uploadBtn.classList.remove('has-file');
     uploadBtn.textContent = 'Upload a photo...';
     document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
@@ -1577,7 +1491,6 @@ input[type="range"]{
     document.querySelectorAll('#alignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v==='center'));
     document.querySelectorAll('#vAlignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v==='middle'));
     document.querySelectorAll('#badgeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v==='plain'));
-    document.querySelectorAll('.icon-btn').forEach(b=>b.classList.toggle('active', b.dataset.key==='none'));
     clearTemplateActive();
     redraw();
   });
@@ -1682,7 +1595,11 @@ input[type="range"]{
       document.fonts.load('400 100px Anton'),
       document.fonts.load('400 100px "Bebas Neue"'),
       document.fonts.load('400 100px "Archivo Black"'),
-      document.fonts.load('400 100px Fredoka')
+      document.fonts.load('400 100px Fredoka'),
+      document.fonts.load('400 100px Chewy'),
+      document.fonts.load('400 100px Bangers'),
+      document.fonts.load('400 100px Pacifico'),
+      document.fonts.load('400 100px "Playfair Display"')
     ]).then(boot).catch(boot);
   } else {
     boot();
