@@ -56,6 +56,20 @@
   font-style:normal;
   font-display:block;
 }
+@font-face{
+  font-family:'Permanent Marker';
+  src:url(data:font/woff2;base64,__MARKER_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
+  font-family:'Caveat';
+  src:url(data:font/woff2;base64,__CAVEAT_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
 
 :root{
   --bg:#12160f;
@@ -295,6 +309,19 @@ input[type="range"]{
   font-weight:600;
   letter-spacing:0.01em;
 }
+.swatch-remove{
+  position:absolute;
+  top:3px;right:5px;
+  width:16px;height:16px;
+  border-radius:50%;
+  background:rgba(0,0,0,0.55);
+  color:#fff;
+  font-size:11px;
+  line-height:16px;
+  text-align:center;
+  cursor:pointer;
+}
+.swatch-remove:hover{background:rgba(0,0,0,0.8);}
 
 .color-chips{display:flex;flex-wrap:wrap;gap:8px;}
 .color-chip{
@@ -425,13 +452,39 @@ input[type="range"]{
         <button class="upload-btn" id="uploadBtn" type="button">Upload a photo&hellip;</button>
         <input type="file" id="fileInput" accept="image/*">
         <p class="fineprint" id="dragHint" style="display:none;margin-top:-4px;">Drag the photo on the canvas to reposition it.</p>
+        <div class="row" id="photoActions" style="display:none;">
+          <button class="btn ghost" id="saveCustomBgBtn" type="button">Save to My Backgrounds</button>
+          <button class="btn ghost" id="removePhotoBtn" type="button">Remove photo</button>
+        </div>
         <div class="swatches" id="swatches"></div>
+        <div class="field" id="customBgsField" style="display:none;margin-top:14px;">
+          <label>My backgrounds <span class="fineprint" style="display:inline;margin:0;">(saved in this browser only)</span></label>
+          <div class="swatches" id="customBgs"></div>
+        </div>
         <div class="field" style="margin-top:14px;">
           <label>Solid color (incl. SeatPick brand colors)</label>
           <div class="color-chips" id="brandColors"></div>
           <div class="colorfield" style="margin-top:8px;">
             <input type="color" id="customBgColor" value="#003BDE">
             <span class="hex" id="customBgColorHex">Custom color&hellip;</span>
+          </div>
+        </div>
+        <div class="field" style="margin-top:14px;">
+          <label>Logo overlay (optional, centered)</label>
+          <button class="upload-btn" id="logoUploadBtn" type="button">Upload a logo&hellip;</button>
+          <input type="file" id="logoFileInput" accept="image/*">
+          <div class="row" id="logoControls" style="display:none;margin-top:8px;">
+            <div class="field">
+              <label>Logo size</label>
+              <div class="slider-row">
+                <input type="range" id="logoSize" min="60" max="400" value="160">
+                <span class="val" id="logoSizeVal">160px</span>
+              </div>
+            </div>
+            <div class="field" style="flex:none;">
+              <label>&nbsp;</label>
+              <button class="btn ghost" id="removeLogoBtn" type="button" style="margin-top:0;width:auto;padding:9px 14px;">Remove</button>
+            </div>
           </div>
         </div>
       </div>
@@ -445,6 +498,13 @@ input[type="range"]{
         <div class="field">
           <label for="subtitle">Subtitle (optional)</label>
           <input type="text" id="subtitle" maxlength="140" placeholder="A short supporting line">
+        </div>
+        <div class="field">
+          <label>Subtitle spacing</label>
+          <div class="slider-row">
+            <input type="range" id="subtitleGap" min="0" max="60" value="18">
+            <span class="val" id="subtitleGapVal">18px</span>
+          </div>
         </div>
         <div class="row">
           <div class="field">
@@ -583,7 +643,9 @@ input[type="range"]{
     badgeColor: '#fff3c4',
     effect: 'none',
     effectColor: '#000000',
-    effectStrength: 40
+    effectStrength: 40,
+    subtitleGap: 18,
+    logo: { image: null, size: 160 }
   };
 
   const FONTS = {
@@ -594,7 +656,9 @@ input[type="range"]{
     chewy:    { label:'Chewy - Bubble',              family:'Chewy',         uppercase:true },
     bangers:  { label:'Bangers - Comic Shout',       family:'Bangers',       uppercase:true },
     pacifico: { label:'Pacifico - Script',           family:'Pacifico',      uppercase:false },
-    playfair: { label:'Playfair Display - Elegant Serif', family:'Playfair Display', uppercase:false }
+    playfair: { label:'Playfair Display - Elegant Serif', family:'Playfair Display', uppercase:false },
+    marker:   { label:'Permanent Marker - Brush',    family:'Permanent Marker', uppercase:false },
+    caveat:   { label:'Caveat - Handwritten',        family:'Caveat',        uppercase:false }
   };
 
   // ---------- background presets ----------
@@ -645,56 +709,44 @@ input[type="range"]{
     c.fill('evenodd');
   }
 
-  function drawBloom(c, cx, cy, r){
-    const offs = [[-r*0.55,-r*0.55],[r*0.55,-r*0.55],[-r*0.55,r*0.55],[r*0.55,r*0.55]];
-    offs.forEach(([dx,dy]) => {
-      const g = c.createRadialGradient(cx+dx, cy+dy, r*0.05, cx+dx, cy+dy, r*0.62);
-      g.addColorStop(0, '#ffe066');
-      g.addColorStop(1, 'rgba(139,110,240,0)');
-      c.fillStyle = g;
-      c.beginPath();
-      c.arc(cx+dx, cy+dy, r*0.62, 0, Math.PI*2);
-      c.fill();
-    });
+  let grainTile = null;
+  function getGrainTile(){
+    if (grainTile) return grainTile;
+    const size = 128;
+    const t = document.createElement('canvas');
+    t.width = size; t.height = size;
+    const tctx = t.getContext('2d');
+    const imgData = tctx.createImageData(size, size);
+    for (let i=0;i<size*size;i++){
+      const v = Math.round(90 + pseudoRand(i*1.7 + 0.37) * 75);
+      const idx = i*4;
+      imgData.data[idx] = v;
+      imgData.data[idx+1] = v;
+      imgData.data[idx+2] = v;
+      imgData.data[idx+3] = 255;
+    }
+    tctx.putImageData(imgData, 0, 0);
+    grainTile = t;
+    return t;
   }
 
-  function drawWaveBand(c){
-    const cy = H*0.64, R = 150, step = R*1.05;
-    const g = c.createLinearGradient(0, cy-R, 0, cy+R);
-    g.addColorStop(0, '#b9a6ff');
-    g.addColorStop(1, '#7c5cf0');
+  function addGrain(c, alpha){
+    const pattern = c.createPattern(getGrainTile(), 'repeat');
+    c.save();
+    c.globalAlpha = alpha == null ? 0.05 : alpha;
+    c.globalCompositeOperation = 'overlay';
+    c.fillStyle = pattern;
+    c.fillRect(0,0,W,H);
+    c.restore();
+  }
+
+  function softBlob(c, cx, cy, r, color){
+    const g = c.createRadialGradient(cx,cy,0,cx,cy,r);
+    g.addColorStop(0, hexToRgba(color,0.55));
+    g.addColorStop(0.6, hexToRgba(color,0.25));
+    g.addColorStop(1, hexToRgba(color,0));
     c.fillStyle = g;
-    for (let x = -R; x < W+R; x += step){
-      c.beginPath(); c.arc(x, cy, R, 0, Math.PI*2); c.fill();
-    }
-    for (let x = -R*0.5; x < W+R; x += step){
-      c.beginPath(); c.arc(x, cy-R*0.98, R*0.4, 0, Math.PI*2); c.fill();
-    }
-  }
-
-  function drawPillGrid(c){
-    const rows = 5, cols = 4, pad = 10;
-    const cellW = W/cols, cellH = H/rows;
-    for (let r=0;r<rows;r++){
-      for (let col=0; col<cols; col++){
-        const x = col*cellW+pad, y = r*cellH+pad;
-        const w = cellW-pad*2, h = cellH-pad*2;
-        roundRect(c, x, y, w, h, h/2);
-        c.fillStyle = (r+col)%2===0 ? 'rgba(255,255,255,0.16)' : 'rgba(255,255,255,0.09)';
-        c.fill();
-      }
-    }
-  }
-
-  function drawZenStack(c, cx, cy, scale){
-    scale = scale || 1;
-    const g = c.createLinearGradient(cx, cy-160*scale, cx, cy+90*scale);
-    g.addColorStop(0, '#c9bbff');
-    g.addColorStop(1, '#7c5cf0');
-    c.fillStyle = g;
-    c.beginPath(); c.arc(cx, cy-95*scale, 40*scale, 0, Math.PI*2); c.fill();
-    c.beginPath(); c.arc(cx, cy-10*scale, 76*scale, Math.PI, 0); c.fill();
-    c.beginPath(); c.arc(cx, cy+72*scale, 104*scale, Math.PI, 0); c.fill();
+    c.fillRect(0,0,W,H);
   }
 
   function drawMowStripes(c, angleDeg, stripeW, alpha){
@@ -869,32 +921,21 @@ input[type="range"]{
     c.restore();
   }
 
-  function drawConfetti(c){
-    const colors = ['#ff5d8f','#ffd23f','#4cc9f0','#a996f5','#ffffff'];
-    for (let i=0;i<70;i++){
-      const rx = pseudoRand(i*3.1)*W;
-      const ry = pseudoRand(i*7.7+1)*H;
-      const rot = pseudoRand(i*5.3+2)*Math.PI*2;
-      const size = 8 + pseudoRand(i*9.1+3)*14;
-      c.save();
-      c.translate(rx, ry);
-      c.rotate(rot);
-      c.fillStyle = colors[i % colors.length];
-      if (i % 3 === 0){
-        c.beginPath(); c.arc(0,0,size*0.5,0,Math.PI*2); c.fill();
-      } else {
-        c.fillRect(-size/2, -size*0.28, size, size*0.56);
-      }
-      c.restore();
-    }
-  }
-
   function drawDuotoneSplit(c, colorA, colorB){
-    c.fillStyle = colorA; c.fillRect(0,0,W,H);
-    c.beginPath();
-    c.moveTo(W*0.42,0); c.lineTo(W,0); c.lineTo(W,H); c.lineTo(W*0.58,H);
-    c.closePath();
-    c.fillStyle = colorB; c.fill();
+    c.save();
+    c.translate(W/2, H/2);
+    c.rotate(-0.15);
+    c.translate(-W/2, -H/2);
+    const span = Math.max(W,H)*1.7;
+    const g = c.createLinearGradient(0,0,span,0);
+    g.addColorStop(0, colorA);
+    g.addColorStop(0.42, colorA);
+    g.addColorStop(0.58, colorB);
+    g.addColorStop(1, colorB);
+    c.fillStyle = g;
+    c.fillRect(-span*0.35, -span*0.35, span*1.7, span*1.7);
+    c.restore();
+    addGrain(c, 0.06);
   }
 
   function drawHalftone(c, dotColor){
@@ -907,17 +948,6 @@ input[type="range"]{
         const r = (cellW*0.42) * (1-t) + 1.5;
         const cx = col*cellW + cellW/2, cy = row*cellH + cellH/2;
         c.beginPath(); c.arc(cx, cy, r, 0, Math.PI*2); c.fill();
-      }
-    }
-  }
-
-  function drawChecker(c, alt, size){
-    c.fillStyle = alt;
-    for (let row=0; row*size < H+size; row++){
-      for (let col=0; col*size < W+size; col++){
-        if ((row+col)%2===0){
-          c.fillRect(col*size, row*size, size, size);
-        }
       }
     }
   }
@@ -970,13 +1000,14 @@ input[type="range"]{
         c.fillRect(0,0,W,H);
         ribbonStack(c, W+40, -60, 135, 620, 46, 10, '#f3ffb0', 3);
         ribbonStack(c, -40, H+60, -45, 620, 46, 10, '#f3ffb0', 3);
+        addGrain(c, 0.045);
       }
     },
     solidPitch: {
       label:'Flat Pitch',
       swatch:'#3fae2a',
       text:'#0b1200', sub:'#0b1200',
-      draw(c){ c.fillStyle = '#3fae2a'; c.fillRect(0,0,W,H); }
+      draw(c){ c.fillStyle = '#3fae2a'; c.fillRect(0,0,W,H); addGrain(c, 0.045); }
     },
     maroonFade: {
       label:'Maroon Fade',
@@ -988,6 +1019,7 @@ input[type="range"]{
         c.fillStyle = g; c.fillRect(0,0,W,H);
         ribbonStack(c, -40, -60, 30, 560, 34, 8, '#7cff4d', 3);
         ribbonStack(c, W+40, H+60, -150, 560, 34, 8, '#7cff4d', 3);
+        addGrain(c, 0.045);
       }
     },
     royalBlue: {
@@ -999,17 +1031,7 @@ input[type="range"]{
         c.fillRect(0,0,W,H);
         ribbonStack(c, -40, -60, 30, 560, 40, 9, '#ffe873', 3);
         ribbonStack(c, W+40, H+60, -150, 560, 40, 9, '#ffe873', 3);
-      }
-    },
-    pinkChevron: {
-      label:'Pink Chevron',
-      swatch:'linear-gradient(90deg,#e8368b 0%,#4cc22c 22%,#4cc22c 78%,#e8368b 100%)',
-      text:'#ffffff', sub:'#ffffff',
-      draw(c){
-        c.fillStyle = '#4cc22c';
-        c.fillRect(0,0,W,H);
-        drawChevronEdge(c, 'left');
-        drawChevronEdge(c, 'right');
+        addGrain(c, 0.045);
       }
     },
     crimsonArc: {
@@ -1022,45 +1044,14 @@ input[type="range"]{
         c.fillStyle = g; c.fillRect(0,0,W,H);
         drawSunArc(c, -40, H/2, 260);
         drawSunArc(c, W+40, H/2, 260);
-      }
-    },
-    skyBurst: {
-      label:'Sky Burst',
-      swatch:'#bfe0ff',
-      text:'#0b1200', sub:'#2a3b6b',
-      draw(c){
-        c.fillStyle = '#bfe0ff';
-        c.fillRect(0,0,W,H);
-        drawBurst(c, W-150, 110, 130);
+        addGrain(c, 0.045);
       }
     },
     solidBlack: {
       label:'Minimal Black',
       swatch:'#0a0a0a',
       text:'#a6ff3d', sub:'#ffffff',
-      draw(c){ c.fillStyle = '#0a0a0a'; c.fillRect(0,0,W,H); }
-    },
-    purpleButterfly: {
-      label:'Purple Bloom',
-      swatch:'radial-gradient(circle at 50% 50%, #ffe066, #8b6ef0 65%)',
-      text:'#ffe066', sub:'#ffffff',
-      draw(c){
-        c.fillStyle = '#8b6ef0';
-        c.fillRect(0,0,W,H);
-        drawBloom(c, W*0.5, H*0.5, 190);
-        drawBloom(c, -30, H*0.5, 130);
-        drawBloom(c, W+30, H*0.5, 130);
-      }
-    },
-    waveBlobs: {
-      label:'Wave Blobs',
-      swatch:'linear-gradient(180deg,#bfe0ff 45%,#8b7bf0 100%)',
-      text:'#2a1b6b', sub:'#4a3a8b',
-      draw(c){
-        c.fillStyle = '#bfe0ff';
-        c.fillRect(0,0,W,H);
-        drawWaveBand(c);
-      }
+      draw(c){ c.fillStyle = '#0a0a0a'; c.fillRect(0,0,W,H); addGrain(c, 0.05); }
     },
     cyanRing: {
       label:'Cyan Ring',
@@ -1071,28 +1062,7 @@ input[type="range"]{
         c.fillRect(0,0,W,H);
         drawRing(c, W*0.16, H*0.5, 190, 55, '#ffe066', '#8ce27a');
         drawRing(c, W*0.88, H*0.5, 150, 45, '#ffe066', '#8ce27a');
-      }
-    },
-    pillGrid: {
-      label:'Pill Grid',
-      swatch:'#e0146f',
-      text:'#ffffff', sub:'#ffe3f2',
-      draw(c){
-        c.fillStyle = '#e0146f';
-        c.fillRect(0,0,W,H);
-        drawPillGrid(c);
-      }
-    },
-    zenStack: {
-      label:'Zen Stack',
-      swatch:'linear-gradient(180deg,#bfe0ff,#a996f5)',
-      text:'#3b2e73', sub:'#6659a3',
-      draw(c){
-        c.fillStyle = '#bfe0ff';
-        c.fillRect(0,0,W,H);
-        drawZenStack(c, W*0.5, H*0.68, 1);
-        drawZenStack(c, W*0.08, H*0.9, 0.5);
-        drawZenStack(c, W*0.95, H*0.28, 0.45);
+        addGrain(c, 0.045);
       }
     },
     coralCorner: {
@@ -1104,6 +1074,7 @@ input[type="range"]{
         c.fillRect(0,0,W,H);
         drawRing(c, -20, -20, 230, 60, '#ffd23f', '#ff8a3d');
         drawRing(c, W+20, H+20, 200, 55, '#ffd23f', '#ff8a3d');
+        addGrain(c, 0.045);
       }
     },
     retroSunset: {
@@ -1117,21 +1088,12 @@ input[type="range"]{
         g.addColorStop(1, '#5a2c8f');
         c.fillStyle = g; c.fillRect(0,0,W,H);
         drawRetroSun(c, W/2, H*0.66, 175, 5);
-      }
-    },
-    confettiPop: {
-      label:'Confetti Pop',
-      swatch:'#1c1440',
-      text:'#ffffff', sub:'#ffd23f',
-      draw(c){
-        c.fillStyle = '#1c1440';
-        c.fillRect(0,0,W,H);
-        drawConfetti(c);
+        addGrain(c, 0.045);
       }
     },
     duotoneSplit: {
       label:'Duotone Split',
-      swatch:'linear-gradient(115deg,#ffb400 45%,#0b1a3a 55%)',
+      swatch:'linear-gradient(115deg,#ffb400 40%,#0b1a3a 60%)',
       text:'#ffffff', sub:'#ffe27a',
       draw(c){ drawDuotoneSplit(c, '#ffb400', '#0b1a3a'); }
     },
@@ -1143,16 +1105,7 @@ input[type="range"]{
         c.fillStyle = '#101820';
         c.fillRect(0,0,W,H);
         drawHalftone(c, '#3fd3c6');
-      }
-    },
-    checkerPop: {
-      label:'Checker Pop',
-      swatch:'repeating-linear-gradient(45deg,#fff2e0 0 15px,#ffb4a2 15px 30px)',
-      text:'#7a1f3d', sub:'#4a1025',
-      draw(c){
-        c.fillStyle = '#fff2e0';
-        c.fillRect(0,0,W,H);
-        drawChecker(c, '#ffb4a2', 62);
+        addGrain(c, 0.045);
       }
     },
     bubbleCluster: {
@@ -1163,6 +1116,100 @@ input[type="range"]{
         c.fillStyle = '#ff8fab';
         c.fillRect(0,0,W,H);
         drawBubbleCluster(c);
+        addGrain(c, 0.045);
+      }
+    },
+    meshAurora: {
+      label:'Mesh Aurora',
+      swatch:'radial-gradient(circle at 22% 30%,#2dd4bf,transparent 45%),radial-gradient(circle at 78% 25%,#c026d3,transparent 45%),radial-gradient(circle at 55% 85%,#4f46e5,transparent 50%),#0b0f1a',
+      text:'#ffffff', sub:'#7fe7d4',
+      draw(c){
+        const g = c.createLinearGradient(0,0,0,H);
+        g.addColorStop(0,'#0b0f1a'); g.addColorStop(1,'#12182c');
+        c.fillStyle=g; c.fillRect(0,0,W,H);
+        softBlob(c, W*0.22, H*0.30, 340, '#2dd4bf');
+        softBlob(c, W*0.78, H*0.25, 300, '#c026d3');
+        softBlob(c, W*0.55, H*0.9, 380, '#4f46e5');
+        addGrain(c, 0.07);
+      }
+    },
+    grainPaper: {
+      label:'Grain Paper',
+      swatch:'#ece3d3',
+      text:'#2b2318', sub:'#6b5a3f',
+      draw(c){
+        c.fillStyle = '#ece3d3';
+        c.fillRect(0,0,W,H);
+        const g = c.createLinearGradient(0,0,W,H);
+        g.addColorStop(0,'rgba(255,255,255,0.25)');
+        g.addColorStop(1,'rgba(0,0,0,0.05)');
+        c.fillStyle = g; c.fillRect(0,0,W,H);
+        addGrain(c, 0.09);
+      }
+    },
+    spotlightGlow: {
+      label:'Spotlight Glow',
+      swatch:'radial-gradient(circle at 72% 32%,#ffd166,transparent 55%),#141414',
+      text:'#ffffff', sub:'#ffd166',
+      draw(c){
+        c.fillStyle = '#141414'; c.fillRect(0,0,W,H);
+        softBlob(c, W*0.72, H*0.32, 420, '#ffd166');
+        addGrain(c, 0.065);
+        const vg = c.createRadialGradient(W/2,H/2,H*0.3,W/2,H/2,H*1.05);
+        vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.4)');
+        c.fillStyle=vg; c.fillRect(0,0,W,H);
+      }
+    },
+    quietArc: {
+      label:'Quiet Arc',
+      swatch:'#11150d',
+      text:'#ffffff', sub:'#a6ff3d',
+      draw(c){
+        c.fillStyle = '#11150d'; c.fillRect(0,0,W,H);
+        c.strokeStyle = hexToRgba('#a6ff3d', 0.55);
+        c.lineWidth = 2.5;
+        c.beginPath(); c.arc(W*0.92, H*0.12, 220, 0, Math.PI*2); c.stroke();
+        c.beginPath(); c.arc(W*0.92, H*0.12, 170, 0, Math.PI*2); c.stroke();
+        addGrain(c, 0.055);
+      }
+    },
+    inkDuotone: {
+      label:'Ink Duotone',
+      swatch:'linear-gradient(90deg,#ff6a3d,#1c2a4a)',
+      text:'#ffffff', sub:'#ffd9c2',
+      draw(c){
+        const g = c.createLinearGradient(0,0,W,0);
+        g.addColorStop(0, '#ff6a3d');
+        g.addColorStop(0.45, '#ff6a3d');
+        g.addColorStop(0.7, '#1c2a4a');
+        g.addColorStop(1, '#1c2a4a');
+        c.fillStyle = g; c.fillRect(0,0,W,H);
+        addGrain(c, 0.07);
+      }
+    },
+    deepGlow: {
+      label:'Deep Glow',
+      swatch:'radial-gradient(circle at 50% 60%,#ff7a3d,transparent 55%),#0d0705',
+      text:'#ffffff', sub:'#ffb37a',
+      draw(c){
+        c.fillStyle = '#0d0705'; c.fillRect(0,0,W,H);
+        softBlob(c, W*0.5, H*0.55, 460, '#ff7a3d');
+        addGrain(c, 0.07);
+        const vg = c.createRadialGradient(W/2,H/2,H*0.2,W/2,H/2,H*1.1);
+        vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.5)');
+        c.fillStyle=vg; c.fillRect(0,0,W,H);
+      }
+    },
+    softWave: {
+      label:'Soft Wave',
+      swatch:'linear-gradient(135deg,#dfe7ff,#ffe3ea)',
+      text:'#22263a', sub:'#5b4a6b',
+      draw(c){
+        const g = c.createLinearGradient(0,0,W,H);
+        g.addColorStop(0, '#dfe7ff');
+        g.addColorStop(1, '#ffe3ea');
+        c.fillStyle = g; c.fillRect(0,0,W,H);
+        addGrain(c, 0.06);
       }
     },
     soccerPitch: {
@@ -1210,27 +1257,44 @@ input[type="range"]{
       swatch:'#19213D',
       text:'#ffffff', sub:'#a2a7ba',
       draw(c){ c.fillStyle = '#19213D'; c.fillRect(0,0,W,H); }
+    },
+    sageMinimal: {
+      label:'Sage Minimal',
+      swatch:'#9CAF97',
+      text:'#2b3328', sub:'#4a5645',
+      draw(c){ c.fillStyle = '#9CAF97'; c.fillRect(0,0,W,H); addGrain(c, 0.05); }
+    },
+    dustyBlue: {
+      label:'Dusty Blue',
+      swatch:'#A9C1D9',
+      text:'#20303f', sub:'#3d5468',
+      draw(c){ c.fillStyle = '#A9C1D9'; c.fillRect(0,0,W,H); addGrain(c, 0.05); }
+    },
+    blushMinimal: {
+      label:'Blush Minimal',
+      swatch:'#E7C7C3',
+      text:'#3d2422', sub:'#6b433f',
+      draw(c){ c.fillStyle = '#E7C7C3'; c.fillRect(0,0,W,H); addGrain(c, 0.05); }
+    },
+    warmSand: {
+      label:'Warm Sand',
+      swatch:'#D9C3A0',
+      text:'#2f2517', sub:'#5a482c',
+      draw(c){ c.fillStyle = '#D9C3A0'; c.fillRect(0,0,W,H); addGrain(c, 0.05); }
+    },
+    oliveNote: {
+      label:'Olive Note',
+      swatch:'#77815F',
+      text:'#f5f2e8', sub:'#dcd8c4',
+      draw(c){ c.fillStyle = '#77815F'; c.fillRect(0,0,W,H); addGrain(c, 0.05); }
+    },
+    stoneGray: {
+      label:'Stone Gray',
+      swatch:'#C7C0B2',
+      text:'#2a271f', sub:'#514c3e',
+      draw(c){ c.fillStyle = '#C7C0B2'; c.fillRect(0,0,W,H); addGrain(c, 0.05); }
     }
   };
-
-  function drawChevronEdge(c, side){
-    const step = 34, cols = 4;
-    const colors = ['#e8368b','#f6a6cc'];
-    for (let row = 0; row < Math.ceil(H/step)+2; row++){
-      for (let col = 0; col < cols; col++){
-        const depth = cols - col;
-        const y = row*step - (row%2)*step/2 - step;
-        const x = side==='left' ? col*step - depth*6 : W - col*step - step + depth*6;
-        c.fillStyle = colors[(row+col)%2];
-        c.beginPath();
-        c.moveTo(x, y);
-        c.lineTo(x+step, y+step/2);
-        c.lineTo(x, y+step);
-        c.closePath();
-        c.fill();
-      }
-    }
-  }
 
   function drawSunArc(c, cx, cy, r){
     const g = c.createRadialGradient(cx,cy,r*0.15,cx,cy,r);
@@ -1240,23 +1304,6 @@ input[type="range"]{
     c.beginPath();
     c.arc(cx,cy,r,0,Math.PI*2);
     c.fill();
-  }
-
-  function drawBurst(c, cx, cy, r){
-    c.save();
-    c.translate(cx,cy);
-    const g = c.createRadialGradient(0,0,r*0.1,0,0,r);
-    g.addColorStop(0,'#ffdd55');
-    g.addColorStop(1,'#fffaf0');
-    c.fillStyle = g;
-    const arms = 8;
-    for (let i=0;i<arms;i++){
-      c.save();
-      c.rotate((Math.PI*2/arms)*i);
-      c.fillRect(-r*0.16, -r, r*0.32, r*2);
-      c.restore();
-    }
-    c.restore();
   }
 
   // ---------- text layout ----------
@@ -1292,6 +1339,14 @@ input[type="range"]{
       preset.draw(c);
     }
 
+    if (state.logo.image){
+      const img = state.logo.image;
+      const maxDim = state.logo.size;
+      const scale = Math.min(maxDim/img.width, maxDim/img.height);
+      const lw = img.width*scale, lh = img.height*scale;
+      c.drawImage(img, W/2 - lw/2, H/2 - lh/2, lw, lh);
+    }
+
     // headline
     const marginX = 100, marginTop = 42, marginBottom = 42;
     const maxWidth = W - marginX*2;
@@ -1310,7 +1365,7 @@ input[type="range"]{
     const subLineHeight = subSize * 1.3;
 
     const blockHeight = headlineLines.length * lineHeight
-      + (hasSub ? (18 + subLines.length * subLineHeight) : 0);
+      + (hasSub ? (state.subtitleGap + subLines.length * subLineHeight) : 0);
 
     let startY;
     if (state.vAlign === 'top') startY = marginTop + lineHeight*0.82;
@@ -1370,7 +1425,7 @@ input[type="range"]{
     }
 
     if (hasSub){
-      y += 18 - lineHeight + subLineHeight*0.1;
+      y += state.subtitleGap - lineHeight + subLineHeight*0.1;
       c.font = `italic ${subSize}px -apple-system, "Segoe UI", sans-serif`;
       c.fillStyle = state.subtitleColor;
       subLines.forEach(line => { c.fillText(line, xPos, y); y += subLineHeight; });
@@ -1386,21 +1441,24 @@ input[type="range"]{
     }
   }
 
-  function coverFitSize(img){
-    const ir = img.width/img.height, cr = W/H;
+  function coverFitSizeFor(img, targetW, targetH){
+    const ir = img.width/img.height, cr = targetW/targetH;
     if (ir > cr) return { sw: img.height*cr, sh: img.height };
     return { sw: img.width, sh: img.width/cr };
   }
 
-  function drawCoverImage(c, img, focusX, focusY){
+  function drawCoverImageInto(ctx, img, focusX, focusY, targetW, targetH){
     focusX = focusX == null ? 0.5 : focusX;
     focusY = focusY == null ? 0.5 : focusY;
-    const { sw, sh } = coverFitSize(img);
+    const { sw, sh } = coverFitSizeFor(img, targetW, targetH);
     const maxSx = Math.max(img.width - sw, 0), maxSy = Math.max(img.height - sh, 0);
     const sx = Math.min(Math.max(focusX*img.width - sw/2, 0), maxSx);
     const sy = Math.min(Math.max(focusY*img.height - sh/2, 0), maxSy);
-    c.drawImage(img, sx, sy, sw, sh, 0, 0, W, H);
+    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, targetW, targetH);
   }
+
+  function coverFitSize(img){ return coverFitSizeFor(img, W, H); }
+  function drawCoverImage(c, img, focusX, focusY){ drawCoverImageInto(c, img, focusX, focusY, W, H); }
 
   function redraw(){
     render(ctx, gctx, false);
@@ -1451,7 +1509,28 @@ input[type="range"]{
     const isImage = state.bg.type === 'image';
     dragHint.style.display = isImage ? 'block' : 'none';
     stage.style.cursor = isImage ? 'grab' : 'default';
+    photoActions.style.display = isImage ? 'flex' : 'none';
   }
+
+  const photoActions = document.getElementById('photoActions');
+  const removePhotoBtn = document.getElementById('removePhotoBtn');
+  removePhotoBtn.addEventListener('click', () => {
+    state.bg = { type:'preset', key:'pitchGreen', image:null };
+    state.headlineColor = PRESETS.pitchGreen.text;
+    state.subtitleColor = PRESETS.pitchGreen.sub;
+    headlineColorInput.value = state.headlineColor;
+    subtitleColorInput.value = state.subtitleColor;
+    headlineColorHex.textContent = state.headlineColor.toUpperCase();
+    subtitleColorHex.textContent = state.subtitleColor.toUpperCase();
+    uploadBtn.classList.remove('has-file');
+    uploadBtn.textContent = 'Upload a photo...';
+    document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.color-chip').forEach(s=>s.classList.remove('active'));
+    document.querySelector('.swatch').classList.add('active');
+    clearTemplateActive();
+    updateCanvasMode();
+    redraw();
+  });
 
   uploadBtn.addEventListener('click', () => fileInput.click());
   fileInput.addEventListener('change', (e) => {
@@ -1582,6 +1661,112 @@ input[type="range"]{
     customBgColorHex.textContent = customBgColorInput.value.toUpperCase();
   });
 
+  // ---------- My Backgrounds (saved locally in this browser) ----------
+
+  const CUSTOM_BG_KEY = 'coverMakerCustomBackgrounds';
+  const customBgsField = document.getElementById('customBgsField');
+  const customBgsEl = document.getElementById('customBgs');
+
+  function loadCustomBgs(){
+    try { return JSON.parse(localStorage.getItem(CUSTOM_BG_KEY) || '[]'); }
+    catch(e){ return []; }
+  }
+  function saveCustomBgsList(list){
+    try { localStorage.setItem(CUSTOM_BG_KEY, JSON.stringify(list)); }
+    catch(e){ /* storage unavailable or full -- saved list just won't persist */ }
+  }
+
+  function renderCustomBgs(){
+    const list = loadCustomBgs();
+    customBgsField.style.display = list.length ? 'block' : 'none';
+    customBgsEl.innerHTML = '';
+    list.forEach(item => {
+      const btn = document.createElement('button');
+      btn.className = 'swatch';
+      btn.type = 'button';
+      btn.style.backgroundImage = `url(${item.dataUrl})`;
+      btn.style.backgroundSize = 'cover';
+      btn.style.backgroundPosition = 'center';
+      btn.innerHTML = `<span>${item.name}</span>`;
+      btn.addEventListener('click', () => {
+        const img = new Image();
+        img.onload = () => {
+          state.bg = { type:'image', key:null, image: img, focusX:0.5, focusY:0.5 };
+          document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+          document.querySelectorAll('.color-chip').forEach(s=>s.classList.remove('active'));
+          btn.classList.add('active');
+          clearTemplateActive();
+          updateCanvasMode();
+          redraw();
+        };
+        img.src = item.dataUrl;
+      });
+      const del = document.createElement('span');
+      del.className = 'swatch-remove';
+      del.textContent = '\u00d7';
+      del.title = 'Remove from My Backgrounds';
+      del.addEventListener('click', (e) => {
+        e.stopPropagation();
+        saveCustomBgsList(loadCustomBgs().filter(x => x.id !== item.id));
+        renderCustomBgs();
+      });
+      btn.appendChild(del);
+      customBgsEl.appendChild(btn);
+    });
+  }
+
+  document.getElementById('saveCustomBgBtn').addEventListener('click', () => {
+    if (state.bg.type !== 'image' || !state.bg.image) return;
+    const off = document.createElement('canvas');
+    off.width = 480; off.height = 200;
+    const octx = off.getContext('2d');
+    drawCoverImageInto(octx, state.bg.image, state.bg.focusX, state.bg.focusY, 480, 200);
+    const dataUrl = off.toDataURL('image/jpeg', 0.75);
+    const list = loadCustomBgs();
+    list.push({ id: 'bg_' + Date.now() + '_' + Math.random().toString(36).slice(2,7), dataUrl, name: 'My photo ' + (list.length+1) });
+    saveCustomBgsList(list);
+    renderCustomBgs();
+  });
+
+  renderCustomBgs();
+
+  // ---------- logo overlay ----------
+
+  const logoUploadBtn = document.getElementById('logoUploadBtn');
+  const logoFileInput = document.getElementById('logoFileInput');
+  const logoControls = document.getElementById('logoControls');
+  const logoSizeInput = document.getElementById('logoSize');
+  const logoSizeVal = document.getElementById('logoSizeVal');
+
+  logoUploadBtn.addEventListener('click', () => logoFileInput.click());
+  logoFileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const img = new Image();
+    img.onload = () => {
+      state.logo.image = img;
+      logoUploadBtn.classList.add('has-file');
+      logoUploadBtn.textContent = file.name.length > 26 ? file.name.slice(0,23)+'...' : file.name;
+      logoControls.style.display = 'flex';
+      redraw();
+    };
+    img.src = URL.createObjectURL(file);
+  });
+
+  logoSizeInput.addEventListener('input', () => {
+    state.logo.size = parseInt(logoSizeInput.value,10);
+    logoSizeVal.textContent = state.logo.size + 'px';
+    redraw();
+  });
+
+  document.getElementById('removeLogoBtn').addEventListener('click', () => {
+    state.logo.image = null;
+    logoUploadBtn.classList.remove('has-file');
+    logoUploadBtn.textContent = 'Upload a logo...';
+    logoControls.style.display = 'none';
+    redraw();
+  });
+
   const headlineInput = document.getElementById('headline');
   const subtitleInput = document.getElementById('subtitle');
   headlineInput.addEventListener('input', () => { state.headline = headlineInput.value; redraw(); });
@@ -1609,6 +1794,15 @@ input[type="range"]{
   fontSizeInput.addEventListener('input', () => {
     state.fontSize = parseInt(fontSizeInput.value,10);
     fontSizeVal.textContent = state.fontSize + 'px';
+    clearTemplateActive();
+    redraw();
+  });
+
+  const subtitleGapInput = document.getElementById('subtitleGap');
+  const subtitleGapVal = document.getElementById('subtitleGapVal');
+  subtitleGapInput.addEventListener('input', () => {
+    state.subtitleGap = parseInt(subtitleGapInput.value,10);
+    subtitleGapVal.textContent = state.subtitleGap + 'px';
     clearTemplateActive();
     redraw();
   });
@@ -1684,7 +1878,8 @@ input[type="range"]{
   const TPL_DEFAULTS = {
     align:'center', vAlign:'middle',
     badge:false, badgeColor:'#fff3c4',
-    effect:'none', effectColor:'#000000', effectStrength:40
+    effect:'none', effectColor:'#000000', effectStrength:40,
+    subtitleGap:18
   };
 
   const TEMPLATES = [
@@ -1696,20 +1891,20 @@ input[type="range"]{
       bg:'royalBlue', font:'bebas', headlineColor:'#ffffff', subtitleColor:'#ffe873' },
     { key:'ranking', name:'Ranking List', desc:'Crimson Arc + Anton',
       bg:'crimsonArc', font:'anton', headlineColor:'#ffffff', subtitleColor:'#ffe08a' },
-    { key:'playfulBadge', name:'Playful Badge', desc:'Pill Grid + Fredoka badge',
-      bg:'pillGrid', font:'fredoka', headlineColor:'#e0146f', subtitleColor:'#ffffff', badge:true },
+    { key:'playfulBadge', name:'Playful Badge', desc:'Ink Duotone + Fredoka badge',
+      bg:'inkDuotone', font:'fredoka', headlineColor:'#ffffff', subtitleColor:'#ffd9c2', badge:true },
     { key:'boldStatement', name:'Bold Statement', desc:'Minimal Black + Archivo Black',
       bg:'solidBlack', font:'archivo', headlineColor:'#a6ff3d', subtitleColor:'#ffffff' },
-    { key:'feature', name:'Feature Spotlight', desc:'Purple Bloom + Fredoka',
-      bg:'purpleButterfly', font:'fredoka', headlineColor:'#ffe066', subtitleColor:'#ffffff' },
-    { key:'calmRecap', name:'Calm Recap', desc:'Zen Stack + Archivo Black',
-      bg:'zenStack', font:'archivo', headlineColor:'#3b2e73', subtitleColor:'#6659a3' },
+    { key:'feature', name:'Feature Spotlight', desc:'Mesh Aurora + Fredoka',
+      bg:'meshAurora', font:'fredoka', headlineColor:'#ffe066', subtitleColor:'#ffffff' },
+    { key:'calmRecap', name:'Calm Recap', desc:'Soft Wave + Archivo Black',
+      bg:'softWave', font:'archivo', headlineColor:'#22263a', subtitleColor:'#5b4a6b' },
     { key:'soccerMatch', name:'Soccer Match', desc:'Soccer Pitch + Anton',
       bg:'soccerPitch', font:'anton', headlineColor:'#ffffff', subtitleColor:'#eaff7a' },
     { key:'basketballRecap', name:'Basketball Recap', desc:'Basketball Court + Bebas Neue',
       bg:'basketballCourt', font:'bebas', headlineColor:'#ffffff', subtitleColor:'#ffb400' },
-    { key:'musicFeature', name:'Music Feature', desc:'Purple Bloom + Fredoka',
-      bg:'purpleButterfly', font:'fredoka', headlineColor:'#ffe066', subtitleColor:'#ffffff' },
+    { key:'musicFeature', name:'Music Feature', desc:'Spotlight Glow + Fredoka',
+      bg:'spotlightGlow', font:'fredoka', headlineColor:'#ffffff', subtitleColor:'#ffd166' },
     { key:'championship', name:'Championship', desc:'Maroon Fade + Anton + glow',
       bg:'maroonFade', font:'anton', headlineColor:'#ffffff', subtitleColor:'#eaff7a',
       effect:'glow', effectColor:'#eaff7a', effectStrength:45 },
@@ -1725,8 +1920,8 @@ input[type="range"]{
       bg:'bubbleCluster', font:'chewy', headlineColor:'#ffffff', subtitleColor:'#fff0f5' },
     { key:'elegantAnnounce', name:'Elegant Announce', desc:'Duotone Split + Playfair Display',
       bg:'duotoneSplit', font:'playfair', headlineColor:'#ffffff', subtitleColor:'#ffe27a' },
-    { key:'handwrittenNote', name:'Handwritten Note', desc:'Checker Pop + Pacifico',
-      bg:'checkerPop', font:'pacifico', headlineColor:'#7a1f3d', subtitleColor:'#4a1025' },
+    { key:'handwrittenNote', name:'Handwritten Note', desc:'Grain Paper + Pacifico',
+      bg:'grainPaper', font:'pacifico', headlineColor:'#2b2318', subtitleColor:'#6b5a3f' },
     { key:'fanZone', name:'Fan Zone', desc:'Stadium Crowd + Archivo Black',
       bg:'stadiumCrowd', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#ffd23f' },
     { key:'diamondClassic', name:'Diamond Classic', desc:'Baseball Field + Anton',
@@ -1734,7 +1929,19 @@ input[type="range"]{
     { key:'ticketAlert', name:'Ticket Alert', desc:'Ticket Stub + Archivo Black',
       bg:'ticketStub', font:'archivo', headlineColor:'#151116', subtitleColor:'#4a1025' },
     { key:'seatpickBlue', name:'SeatPick Blue', desc:'Brand Blue + Anton',
-      bg:'brandBlue', font:'anton', headlineColor:'#ffffff', subtitleColor:'#ccdbff' }
+      bg:'brandBlue', font:'anton', headlineColor:'#ffffff', subtitleColor:'#ccdbff' },
+    { key:'quietStatement', name:'Quiet Statement', desc:'Quiet Arc + Archivo Black',
+      bg:'quietArc', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#a6ff3d' },
+    { key:'afterDark', name:'After Dark', desc:'Deep Glow + Bangers',
+      bg:'deepGlow', font:'bangers', headlineColor:'#ffffff', subtitleColor:'#ffb37a' },
+    { key:'quietSage', name:'Quiet Sage', desc:'Sage Minimal + Caveat',
+      bg:'sageMinimal', font:'caveat', headlineColor:'#2b3328', subtitleColor:'#4a5645' },
+    { key:'markerTag', name:'Marker Tag', desc:'Warm Sand + Permanent Marker',
+      bg:'warmSand', font:'marker', headlineColor:'#2f2517', subtitleColor:'#5a482c' },
+    { key:'stoneEditorial', name:'Stone Editorial', desc:'Stone Gray + Playfair Display',
+      bg:'stoneGray', font:'playfair', headlineColor:'#2a271f', subtitleColor:'#514c3e' },
+    { key:'oliveField', name:'Olive Field', desc:'Olive Note + Archivo Black',
+      bg:'oliveNote', font:'archivo', headlineColor:'#f5f2e8', subtitleColor:'#dcd8c4' }
   ].map(t => Object.assign({}, TPL_DEFAULTS, t));
 
   const templatesEl = document.getElementById('templates');
@@ -1756,7 +1963,10 @@ input[type="range"]{
       state.effect = tpl.effect;
       state.effectColor = tpl.effectColor;
       state.effectStrength = tpl.effectStrength;
+      state.subtitleGap = tpl.subtitleGap;
 
+      subtitleGapInput.value = tpl.subtitleGap;
+      subtitleGapVal.textContent = tpl.subtitleGap + 'px';
       fontSelect.value = tpl.font;
       headlineColorInput.value = tpl.headlineColor;
       subtitleColorInput.value = tpl.subtitleColor;
@@ -1812,6 +2022,7 @@ input[type="range"]{
     state.effect = 'none';
     state.effectColor = '#000000';
     state.effectStrength = 40;
+    state.subtitleGap = 18;
     headlineInput.value = state.headline;
     subtitleInput.value = '';
     headlineColorInput.value = state.headlineColor;
@@ -1828,6 +2039,8 @@ input[type="range"]{
     effectColorHex.textContent = state.effectColor.toUpperCase();
     effectStrengthInput.value = state.effectStrength;
     effectStrengthVal.textContent = state.effectStrength;
+    subtitleGapInput.value = 18;
+    subtitleGapVal.textContent = '18px';
     uploadBtn.classList.remove('has-file');
     uploadBtn.textContent = 'Upload a photo...';
     document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
@@ -1945,7 +2158,9 @@ input[type="range"]{
       document.fonts.load('400 100px Chewy'),
       document.fonts.load('400 100px Bangers'),
       document.fonts.load('400 100px Pacifico'),
-      document.fonts.load('400 100px "Playfair Display"')
+      document.fonts.load('400 100px "Playfair Display"'),
+      document.fonts.load('400 100px "Permanent Marker"'),
+      document.fonts.load('400 100px Caveat')
     ]).then(boot).catch(boot);
   } else {
     boot();
