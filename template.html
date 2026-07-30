@@ -592,7 +592,14 @@ input[type="range"]{
 
       <div class="section">
         <h2>2. Background</h2>
-        <div class="swatches" id="swatches"></div>
+        <div class="field" style="margin-bottom:8px;">
+          <label style="margin-bottom:8px;">Team backgrounds (licensed photos)</label>
+          <div class="swatches" id="teamSwatches"></div>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label style="margin-bottom:8px;">Presets</label>
+          <div class="swatches" id="swatches"></div>
+        </div>
       </div>
 
       <div class="section">
@@ -1419,6 +1426,26 @@ input[type="range"]{
     }
   };
 
+  // ---------- team backgrounds (licensed photos, baked in) ----------
+
+  const TEAM_BACKGROUNDS = {};
+  function registerTeamBackground(key, label, dataUri, textColor, subColor){
+    const img = new Image();
+    img.onload = () => { if (state.bg.type==='preset' && state.bg.key===key) redraw(); };
+    img.src = dataUri;
+    TEAM_BACKGROUNDS[key] = {
+      label: label,
+      swatch: 'url(' + dataUri + ') center/cover',
+      text: textColor, sub: subColor,
+      isTeam: true,
+      draw(c){ if (img.complete && img.naturalWidth) drawCoverImageInto(c, img, 0.5, 0.5, W, H); }
+    };
+  }
+
+  registerTeamBackground('teamMatchNight', 'Match Night', 'data:image/webp;base64,__MATCH_NIGHT_BASE64__', '#ffffff', '#bcd9ff');
+
+  Object.assign(PRESETS, TEAM_BACKGROUNDS);
+
   // ---------- text layout ----------
 
   function wrapParagraph(c, text, maxWidth){
@@ -1656,6 +1683,7 @@ input[type="range"]{
   // ---------- swatches ----------
 
   const swatchesEl = document.getElementById('swatches');
+  const teamSwatchesEl = document.getElementById('teamSwatches');
   Object.keys(PRESETS).forEach(key => {
     const btn = document.createElement('button');
     btn.className = 'swatch' + (state.bg.key===key && state.bg.type==='preset' ? ' active':'');
@@ -1680,7 +1708,7 @@ input[type="range"]{
       updateCanvasMode();
       redraw();
     });
-    swatchesEl.appendChild(btn);
+    (PRESETS[key].isTeam ? teamSwatchesEl : swatchesEl).appendChild(btn);
   });
 
   // ---------- controls wiring ----------

@@ -18,6 +18,9 @@ runtime (everything — including all 13 display fonts — is inlined).
   license): `anton`, `bebas`, `archivo`, `fredoka`, `chewy`, `bangers`,
   `pacifico`, `playfair`, `marker` (Permanent Marker), `caveat`, `graffiti`
   (Rubik Wet Paint), `heebo-latin`/`heebo-hebrew`, `cairo-latin`/`cairo-arabic`.
+- `backgrounds/*.b64` — base64 of each licensed "Team background" photo
+  (see below). The matching raw image files (`backgrounds/*.webp`) are
+  gitignored — only the base64 text is committed, same pattern as fonts.
 - `artifact.html` — generated bare fragment (no doctype/head/body — the
   Claude Artifact tool supplies its own skeleton). Publish this one via
   the Artifact tool.
@@ -39,8 +42,10 @@ runtime (everything — including all 13 display fonts — is inlined).
    template's highlighted state, doesn't reset anything). Logo overlay
    and uploaded/saved photos are untouched by template clicks — those are
    user content, not style.
-2. **Background**: just the preset swatch gallery (22 presets, cut down
-   from 32 then built back up with 3 stadium-diagram styles — see below).
+2. **Background**: a "Team backgrounds" gallery (real licensed photos,
+   baked into the tool — see below) above a "Presets" gallery (22
+   procedural/canvas-drawn presets, cut down from 32 then built back up
+   with 3 stadium-diagram styles — see below).
 3. **Your images**: upload a background photo (+ Remove photo, + Save to
    My Backgrounds), the My Backgrounds gallery, solid color picker
    (including SeatPick brand-color chips), and the logo overlay controls.
@@ -58,6 +63,36 @@ runtime (everything — including all 13 display fonts — is inlined).
 
 The stage column (left) has the canvas, safe-zone toggle, size estimate,
 and (below all of that) the "Preview in a blog" mockups.
+
+## Team backgrounds (real licensed photos)
+
+A small, separate gallery above the procedural presets, for actual
+photos the team has the rights to use — currently one: **Match Night**
+(a licensed stadium photo). Unlike everything else in this tool, these
+are real raster images, not canvas-drawn recreations.
+
+**How it works:** each one is baked directly into `template.html` as a
+base64 data URI (`registerTeamBackground(key, label, dataUri, ...)`,
+merged into the same `PRESETS` object everything else uses, so templates/
+swatch-active-state/reset all treat it identically to a procedural
+preset — it just draws a cover-fit photo instead of running a draw
+function). This is a deliberate architecture choice: the tool is a
+single static file with no backend, and the Claude Artifact mirror
+blocks loading images from external URLs, so "shared with the whole
+team" can only mean "compiled into the file everyone loads" — there's
+no self-serve shared-upload option without building real backend
+infrastructure (a different, bigger project). Practical implication:
+**adding or swapping a team background requires a code change +
+redeploy** (ask for it same as any other tool change) — it is not
+something anyone can add themselves the way "My Backgrounds" works.
+
+**To add another one:** crop/save the source photo to exactly 1200x500
+(cover-fit centered, or pick a deliberate focus crop), save it as
+`backgrounds/<name>.webp`, base64-encode it to `backgrounds/<name>.b64`,
+add a `registerTeamBackground(...)` call, and add the matching
+`.replace('__<NAME>_BASE64__', ...)` line to the regen script below.
+WebP was chosen over JPEG for these — same visual quality at roughly
+half the file size for this kind of soft/gradient-heavy photography.
 
 ## Backgrounds
 
@@ -215,7 +250,8 @@ over budget the tool shows a warning with a one-click "switch to WEBP".
        .replace('__HEEBO_LATIN_BASE64__', load_b64('fonts/heebo-latin.b64'))
        .replace('__HEEBO_HEBREW_BASE64__', load_b64('fonts/heebo-hebrew.b64'))
        .replace('__CAIRO_LATIN_BASE64__', load_b64('fonts/cairo-latin.b64'))
-       .replace('__CAIRO_ARABIC_BASE64__', load_b64('fonts/cairo-arabic.b64')))
+       .replace('__CAIRO_ARABIC_BASE64__', load_b64('fonts/cairo-arabic.b64'))
+       .replace('__MATCH_NIGHT_BASE64__', load_b64('backgrounds/match-night.b64')))
    open('artifact.html', 'w', encoding='utf-8').write(fragment)
 
    marker = '<div class="wrap">'
