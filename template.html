@@ -652,6 +652,19 @@ input[type="range"]{
           <label for="subtitle">Subtitle (optional)</label>
           <input type="text" id="subtitle" maxlength="140" placeholder="A short supporting line">
         </div>
+        <div class="row">
+          <div class="field">
+            <label for="subtitleFontSelect">Subtitle font</label>
+            <select id="subtitleFontSelect"></select>
+          </div>
+          <div class="field">
+            <label>Subtitle size</label>
+            <div class="slider-row">
+              <input type="range" id="subtitleSize" min="12" max="60" value="26">
+              <span class="val" id="subtitleSizeVal">26px</span>
+            </div>
+          </div>
+        </div>
         <div class="field">
           <label>Subtitle spacing</label>
           <div class="slider-row">
@@ -804,6 +817,8 @@ input[type="range"]{
     subtitleColor: '#ffffff',
     font: 'anton',
     fontSize: 92,
+    subtitleFont: 'system',
+    subtitleSize: 26,
     align: 'center',
     vAlign: 'middle',
     badge: false,
@@ -1458,8 +1473,12 @@ input[type="range"]{
     const headlineLines = wrapLines(c, headlineText, maxWidth);
     const lineHeight = size * (state.effect === 'twoTone' ? 0.92 : 1.06);
 
-    const subSize = Math.max(16, Math.round(size * 0.28));
-    c.font = `italic ${subSize}px -apple-system, "Segoe UI", sans-serif`;
+    const subSize = state.subtitleSize;
+    const subFontCss = state.subtitleFont === 'system'
+      ? `italic ${subSize}px -apple-system, "Segoe UI", sans-serif`
+      : `${subSize}px "${FONTS[state.subtitleFont].family}", sans-serif`;
+    const subtitleRtl = state.subtitleFont === 'system' ? FONTS[state.font].rtl : !!FONTS[state.subtitleFont].rtl;
+    c.font = subFontCss;
     const hasSub = !!state.subtitle.trim();
     const subLines = hasSub ? wrapLines(c, state.subtitle, maxWidth) : [];
     const subLineHeight = subSize * 1.3;
@@ -1560,7 +1579,8 @@ input[type="range"]{
 
     if (hasSub){
       y += state.subtitleGap - lineHeight + subLineHeight*0.1;
-      c.font = `italic ${subSize}px -apple-system, "Segoe UI", sans-serif`;
+      c.font = subFontCss;
+      c.direction = subtitleRtl ? 'rtl' : 'ltr';
       c.fillStyle = state.subtitleColor;
       subLines.forEach(line => { c.fillText(line, xPos, y); y += subLineHeight; });
     }
@@ -2030,6 +2050,33 @@ input[type="range"]{
     redraw();
   });
 
+  const subtitleFontSelect = document.getElementById('subtitleFontSelect');
+  const subtitleSystemOpt = document.createElement('option');
+  subtitleSystemOpt.value = 'system';
+  subtitleSystemOpt.textContent = 'System (italic)';
+  subtitleFontSelect.appendChild(subtitleSystemOpt);
+  Object.keys(FONTS).forEach(key => {
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = FONTS[key].label;
+    subtitleFontSelect.appendChild(opt);
+  });
+  subtitleFontSelect.value = state.subtitleFont;
+  subtitleFontSelect.addEventListener('change', () => {
+    state.subtitleFont = subtitleFontSelect.value;
+    clearTemplateActive();
+    redraw();
+  });
+
+  const subtitleSizeInput = document.getElementById('subtitleSize');
+  const subtitleSizeVal = document.getElementById('subtitleSizeVal');
+  subtitleSizeInput.addEventListener('input', () => {
+    state.subtitleSize = parseInt(subtitleSizeInput.value,10);
+    subtitleSizeVal.textContent = state.subtitleSize + 'px';
+    clearTemplateActive();
+    redraw();
+  });
+
   const badgeColorInput = document.getElementById('badgeColor');
   const badgeColorHex = document.getElementById('badgeColorHex');
   badgeColorInput.addEventListener('input', () => {
@@ -2081,7 +2128,7 @@ input[type="range"]{
     align:'center', vAlign:'middle',
     badge:false, badgeColor:'#fff3c4',
     effect:'none', effectColor:'#000000', effectStrength:40, tilt:0,
-    subtitleGap:18
+    subtitleGap:18, subtitleFont:'system', subtitleSize:26
   };
 
   const TEMPLATES = [
@@ -2148,9 +2195,14 @@ input[type="range"]{
       state.effectStrength = tpl.effectStrength;
       state.tilt = tpl.tilt;
       state.subtitleGap = tpl.subtitleGap;
+      state.subtitleFont = tpl.subtitleFont;
+      state.subtitleSize = tpl.subtitleSize;
 
       subtitleGapInput.value = tpl.subtitleGap;
       subtitleGapVal.textContent = tpl.subtitleGap + 'px';
+      subtitleFontSelect.value = tpl.subtitleFont;
+      subtitleSizeInput.value = tpl.subtitleSize;
+      subtitleSizeVal.textContent = tpl.subtitleSize + 'px';
       fontSelect.value = tpl.font;
       headlineColorInput.value = tpl.headlineColor;
       subtitleColorInput.value = tpl.subtitleColor;
@@ -2210,6 +2262,8 @@ input[type="range"]{
     state.effectStrength = 40;
     state.tilt = 0;
     state.subtitleGap = 18;
+    state.subtitleFont = 'system';
+    state.subtitleSize = 26;
     headlineInput.value = state.headline;
     subtitleInput.value = '';
     headlineColorInput.value = state.headlineColor;
@@ -2230,6 +2284,9 @@ input[type="range"]{
     tiltVal.textContent = '0';
     subtitleGapInput.value = 18;
     subtitleGapVal.textContent = '18px';
+    subtitleFontSelect.value = 'system';
+    subtitleSizeInput.value = 26;
+    subtitleSizeVal.textContent = '26px';
     uploadBtn.classList.remove('has-file');
     uploadBtn.textContent = 'Upload a photo...';
     document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
