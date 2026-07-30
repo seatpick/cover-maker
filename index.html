@@ -116,17 +116,17 @@
 }
 
 :root{
-  --bg:#12160f;
-  --panel:#1a2013;
-  --panel-2:#212a18;
-  --line:#333d26;
-  --line-soft:#252e1c;
-  --ink:#eceee4;
-  --ink-dim:#93a184;
-  --accent:#a6ff3d;
-  --accent-ink:#0b1200;
-  --danger:#ff6b6b;
-  --warn:#ffb84d;
+  --bg:#f7f4ec;
+  --panel:#ffffff;
+  --panel-2:#f2efe3;
+  --line:#e2ddc8;
+  --line-soft:#ece8da;
+  --ink:#22261b;
+  --ink-dim:#767a68;
+  --accent:#0a9d58;
+  --accent-ink:#ffffff;
+  --danger:#c62839;
+  --warn:#b8790a;
 }
 
 *{box-sizing:border-box;}
@@ -393,6 +393,13 @@ input[type="range"]{
   overflow:hidden;
 }
 .tpl-card.active{border-color:var(--accent);}
+.tpl-card::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,0.5) 100%);
+  z-index:0;
+}
 .tpl-card .tpl-name{
   position:relative;
   z-index:1;
