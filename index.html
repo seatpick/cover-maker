@@ -870,21 +870,6 @@ input[type="range"]{
 
   // ---------- background presets ----------
 
-  function ribbonStack(c, x, y, angle, len, thickness, gap, colorFrom, count){
-    c.save();
-    c.translate(x, y);
-    c.rotate(angle * Math.PI / 180);
-    for (let i = 0; i < count; i++){
-      const grad = c.createLinearGradient(0, 0, len, 0);
-      const alpha = 0.85 - i * 0.25;
-      grad.addColorStop(0, hexToRgba(colorFrom, Math.max(alpha, 0.12)));
-      grad.addColorStop(1, hexToRgba(colorFrom, 0));
-      c.fillStyle = grad;
-      c.fillRect(0, i * (thickness + gap), len, thickness);
-    }
-    c.restore();
-  }
-
   function hexToRgba(hex, a){
     const v = hex.replace('#','');
     const r = parseInt(v.substring(0,2),16);
@@ -1157,18 +1142,6 @@ input[type="range"]{
   }
 
   const PRESETS = {
-    pitchGreen: {
-      label:'Pitch Green',
-      swatch:'linear-gradient(135deg,#eaff7a 0%,#3fae2a 28%,#3fae2a 72%,#eaff7a 100%)',
-      text:'#a6ff3d', sub:'#ffffff',
-      draw(c){
-        c.fillStyle = '#3fae2a';
-        c.fillRect(0,0,W,H);
-        ribbonStack(c, W+40, -60, 135, 620, 46, 10, '#f3ffb0', 3);
-        ribbonStack(c, -40, H+60, -45, 620, 46, 10, '#f3ffb0', 3);
-        addGrain(c, 0.045);
-      }
-    },
     solidPitch: {
       label:'Flat Pitch',
       swatch:'#3fae2a',
