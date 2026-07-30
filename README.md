@@ -28,17 +28,19 @@ runtime (everything — including all 13 display fonts — is inlined).
 
 ## Layout / sections (rail, top to bottom)
 
-1. **Quick start — templates**: 11 curated one-click combos (background +
-   font + colors + alignment + badge + text effect + subtitle spacing).
-   Cut down from 28 after direct feedback ("remove X, Y, Z...") — see the
-   list below for what survived. All default to center/middle alignment
-   with no drop shadow effect. Picking a template fills every control;
-   any control can still be overridden after (clears the template's
-   highlighted state, doesn't reset anything). Logo overlay and uploaded/
-   saved photos are untouched by template clicks — those are user content,
-   not style.
-2. **Background**: just the preset swatch gallery (19 presets, cut down
-   from 32 — see below).
+1. **Quick start — templates**: 17 curated one-click combos (background +
+   font + colors + alignment + badge + text effect + tilt + subtitle
+   spacing). Cut down to 11 after direct feedback ("remove X, Y, Z...");
+   6 more added later (New Drop, Planet Arcadia, Flair, Highlight My
+   Words, Bulk Deal, Glow Up) to showcase the newer text effects — see
+   the list below for what's in each batch. All default to center/middle
+   alignment with no drop shadow effect. Picking a template fills every
+   control; any control can still be overridden after (clears the
+   template's highlighted state, doesn't reset anything). Logo overlay
+   and uploaded/saved photos are untouched by template clicks — those are
+   user content, not style.
+2. **Background**: just the preset swatch gallery (22 presets, cut down
+   from 32 then built back up with 3 stadium-diagram styles — see below).
 3. **Your images**: upload a background photo (+ Remove photo, + Save to
    My Backgrounds), the My Backgrounds gallery, solid color picker
    (including SeatPick brand-color chips), and the logo overlay controls.
@@ -47,8 +49,9 @@ runtime (everything — including all 13 display fonts — is inlined).
 4. **Text**: headline (textarea — supports Enter for manual line breaks),
    subtitle, colors, font picker, size, align, vertical position, subtitle
    spacing, pill badge toggle.
-5. **Effects**: text effect (shadow/outline/glow/3D extrude) + color +
-   strength.
+5. **Effects**: text effect (shadow/outline/glow/3D extrude/chromatic
+   split/two-tone lines/highlighter marker/neon tube) + color + strength
+   + tilt.
 6. **Export**: format picker, download, reset.
 
 The stage column (left) has the canvas, safe-zone toggle, size estimate,
@@ -56,11 +59,11 @@ and (below all of that) the "Preview in a blog" mockups.
 
 ## Backgrounds
 
-19 presets (down from 32 — removed Brand Blue, Maroon Fade, Royal Blue,
-Crimson Arc, Cyan Ring, Coral Corner, Retro Sunset, Duotone Split,
-Halftone Fade, Soccer Pitch, Baseball Field, Basketball Court, Ticket
-Stub per direct feedback; their now-orphaned draw functions were deleted
-too, not left as dead code):
+22 presets (down to 19 from 32 after removing Brand Blue, Maroon Fade,
+Royal Blue, Crimson Arc, Cyan Ring, Coral Corner, Retro Sunset, Duotone
+Split, Halftone Fade, Soccer Pitch, Baseball Field, Basketball Court,
+Ticket Stub per direct feedback — their now-orphaned draw functions were
+deleted too, not left as dead code — then 3 more added later):
 
 - *Premium/editorial* (mesh gradients + film grain): Mesh Aurora, Grain
   Paper, Spotlight Glow, Quiet Arc, Ink Duotone, Deep Glow, Soft Wave.
@@ -73,6 +76,15 @@ too, not left as dead code):
 - *SeatPick brand*: Brand Navy (flat).
 - *Sports*: Stadium Crowd (tiered seating bands of small deterministic
   dots, floodlight glow, vignette).
+- *Stadium diagrams* (added from reference seat-map/stadium images):
+  Seat Map (`drawSeatMapBlueprint` — off-canvas-center concentric arcs +
+  radial spokes + scattered section numbers, like a corner-cropped
+  seating chart), Arena Bowl (`drawArenaBowlBlueprint` — full centered
+  elliptical bowl with a court rectangle in the middle, 360° of radial
+  dividers), Night Stadium (`drawNightStadium` — moody navy night sky,
+  moon glow, distant city-light silhouette, a glowing stadium-bowl
+  ellipse). All three are vector/gradient recreations of the mood, not
+  photo uploads, so they stay crisp and tiny in file size.
 - *Original set*: Pitch Green, Flat Pitch, Minimal Black, Bubble Cluster.
 
 Users can also **upload their own photo** (cover-fit cropped to 1200x500,
@@ -130,9 +142,25 @@ single greedy word-wrap would.
 
 - **Pill badge**: rounded chip behind the headline (no underline — that
   was removed per feedback).
-- **Text effects**: None, Drop shadow, Outline, Glow, 3D Extrude, with a
-  color + strength slider. All reset after the headline draws so they
-  never bleed into the subtitle.
+- **Text effects**: None, Drop shadow, Outline, Glow, 3D Extrude, plus 4
+  added later from reference style images:
+  - **Chromatic Split** — red + cyan offset copies behind the main fill,
+    a glitch/RGB-split look (see the "Planet Arcadia" template).
+  - **Two-Tone Lines** — alternates fill color between the headline color
+    and effect color per line (odd/even), with tighter line spacing; use
+    2-line headlines (see "Bulk Deal").
+  - **Highlighter Marker** — a rotated colored rectangle behind each line,
+    cycling a small palette (yellow/pink/blue/green), like a highlighter
+    pen mark (see "Highlight My Words").
+  - **Neon Tube** — stroke-only text (no fill) with a strong glow, reads
+    as a hollow neon-tube outline (see "Glow Up").
+  All effects use the same color + strength slider (where applicable),
+  and reset after the headline draws so they never bleed into the
+  subtitle.
+- **Tilt**: slider (`state.tilt`, -12 to 12 degrees, default 0) rotates
+  the whole headline+subtitle block around its own center — added so
+  effects like Drop Shadow / Glow can also read as a tilted, energetic
+  sticker-style headline (see "New Drop", "Flair").
 - **Subtitle spacing**: slider (`state.subtitleGap`, default 18px, range
   0–60), was a hardcoded constant.
 

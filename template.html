@@ -732,6 +732,10 @@ input[type="range"]{
               <option value="outline">Outline</option>
               <option value="glow">Glow</option>
               <option value="extrude">3D Extrude</option>
+              <option value="chromatic">Chromatic Split</option>
+              <option value="twoTone">Two-Tone Lines</option>
+              <option value="highlighter">Highlighter Marker</option>
+              <option value="neonTube">Neon Tube</option>
             </select>
           </div>
           <div class="field">
@@ -742,11 +746,20 @@ input[type="range"]{
             </div>
           </div>
         </div>
-        <div class="field">
-          <label>Effect strength</label>
-          <div class="slider-row">
-            <input type="range" id="effectStrength" min="0" max="100" value="40">
-            <span class="val" id="effectStrengthVal">40</span>
+        <div class="row">
+          <div class="field">
+            <label>Effect strength</label>
+            <div class="slider-row">
+              <input type="range" id="effectStrength" min="0" max="100" value="40">
+              <span class="val" id="effectStrengthVal">40</span>
+            </div>
+          </div>
+          <div class="field">
+            <label>Tilt</label>
+            <div class="slider-row">
+              <input type="range" id="tiltSlider" min="-12" max="12" value="0">
+              <span class="val" id="tiltVal">0</span>
+            </div>
           </div>
         </div>
       </div>
@@ -798,6 +811,7 @@ input[type="range"]{
     effect: 'none',
     effectColor: '#000000',
     effectStrength: 40,
+    tilt: 0,
     subtitleGap: 18,
     logo: { image: null, size: 160, x: 0.5, y: 0.5, zOrder: 'back' }
   };
@@ -955,6 +969,163 @@ input[type="range"]{
       c.fillStyle = g;
       c.beginPath(); c.arc(cx,cy,r,0,Math.PI*2); c.fill();
     });
+  }
+
+  function drawSeatMapBlueprint(c){
+    c.fillStyle = '#123fd6';
+    c.fillRect(0,0,W,H);
+
+    const cx = W*1.15, cy = H*0.5;
+    const rStart = 100, rEnd = 1350;
+    const aStart = Math.PI*(120/180), aEnd = Math.PI*(240/180);
+    const rings = 7;
+
+    c.strokeStyle = 'rgba(255,255,255,0.16)';
+    c.lineWidth = 1.4;
+    for (let i=0;i<rings;i++){
+      const r = rStart + (rEnd-rStart)*(i/(rings-1));
+      c.beginPath();
+      c.arc(cx, cy, r, aStart, aEnd);
+      c.stroke();
+    }
+
+    const spokes = 13;
+    for (let i=0;i<=spokes;i++){
+      const a = aStart + (aEnd-aStart)*(i/spokes);
+      const x1 = cx + Math.cos(a)*rStart, y1 = cy + Math.sin(a)*rStart;
+      const x2 = cx + Math.cos(a)*rEnd, y2 = cy + Math.sin(a)*rEnd;
+      c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2); c.stroke();
+    }
+
+    c.font = '600 13px Arial';
+    c.fillStyle = 'rgba(255,255,255,0.3)';
+    c.textAlign = 'center'; c.textBaseline = 'middle';
+    const labels = [111,112,113,114,115,211,212,213,214,215,216,311,312,313,314,411,412,413,414];
+    labels.forEach((num,i)=>{
+      const t = (i+0.5)/labels.length;
+      const a = aStart + (aEnd-aStart)*t + (pseudoRand(i*3.1)-0.5)*0.04;
+      const rr = rStart + (rEnd-rStart)*(0.06 + pseudoRand(i*7.7)*0.42);
+      const x = cx + Math.cos(a)*rr, y = cy + Math.sin(a)*rr;
+      if (x>-30 && x<W+30 && y>-30 && y<H+30) c.fillText(String(num), x, y);
+    });
+    c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+
+    const vg = c.createRadialGradient(cx,cy,rStart,cx,cy,rEnd*0.55);
+    vg.addColorStop(0,'rgba(0,0,0,0.18)'); vg.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle = vg; c.fillRect(0,0,W,H);
+
+    addGrain(c, 0.03);
+  }
+
+  function drawNightStadium(c){
+    const sky = c.createLinearGradient(0,0,0,H);
+    sky.addColorStop(0, '#050b1a');
+    sky.addColorStop(0.55, '#0a1530');
+    sky.addColorStop(1, '#111d38');
+    c.fillStyle = sky; c.fillRect(0,0,W,H);
+
+    softBlob(c, W*0.26, H*0.14, 260, '#dfe9ff');
+    c.fillStyle = 'rgba(255,255,255,0.9)';
+    c.beginPath(); c.arc(W*0.26, H*0.14, 13, 0, Math.PI*2); c.fill();
+
+    c.fillStyle = 'rgba(4,8,20,0.85)';
+    const buildings = [[0.55,0.22,0.045],[0.60,0.16,0.05],[0.66,0.27,0.04],[0.71,0.14,0.035],[0.76,0.20,0.05],[0.82,0.11,0.04],[0.87,0.25,0.05],[0.93,0.15,0.045],[0.97,0.19,0.04]];
+    buildings.forEach(([bx,bh,bw])=>{
+      const x = bx*W, w = bw*W, h = bh*H;
+      c.fillRect(x, H-h, w, h);
+    });
+    for (let i=0;i<40;i++){
+      const seed = i*17.3;
+      if (pseudoRand(seed+5) > 0.5){
+        const x = (0.52 + pseudoRand(seed)*0.46)*W;
+        const y = H - pseudoRand(seed+2)*H*0.26;
+        const bright = 0.3 + pseudoRand(seed+9)*0.4;
+        c.fillStyle = `rgba(255,${170+Math.round(pseudoRand(seed+7)*40)},120,${bright})`;
+        c.fillRect(x, y, 1.6, 1.6);
+      }
+    }
+
+    const ex = W*0.34, ey = H*0.64, erx = 280, ery = 108;
+    const glow = c.createRadialGradient(ex,ey,10,ex,ey,340);
+    glow.addColorStop(0,'rgba(150,220,255,0.5)');
+    glow.addColorStop(0.5,'rgba(90,170,255,0.22)');
+    glow.addColorStop(1,'rgba(90,170,255,0)');
+    c.fillStyle = glow; c.fillRect(0,0,W,H);
+
+    c.save();
+    c.translate(ex,ey);
+    c.scale(1, ery/erx);
+    const bowlGrad = c.createRadialGradient(0,0,erx*0.15,0,0,erx);
+    bowlGrad.addColorStop(0,'rgba(210,240,255,0.85)');
+    bowlGrad.addColorStop(0.6,'rgba(120,190,255,0.45)');
+    bowlGrad.addColorStop(1,'rgba(60,120,220,0.04)');
+    c.fillStyle = bowlGrad;
+    c.beginPath(); c.arc(0,0,erx,0,Math.PI*2); c.fill();
+    c.strokeStyle = 'rgba(255,150,90,0.5)';
+    c.lineWidth = 2;
+    c.beginPath(); c.arc(0,0,erx*0.98,0,Math.PI*2); c.stroke();
+    c.restore();
+
+    softBlob(c, W*0.5, H*1.08, 500, '#1c3a66');
+    addGrain(c, 0.06);
+  }
+
+  function drawArenaBowlBlueprint(c){
+    c.fillStyle = '#123fd6';
+    c.fillRect(0,0,W,H);
+
+    const cx = W*0.5, cy = H*0.52;
+    const rings = 6;
+    const rxStart = 70, ryStart = 45;
+    const rxEnd = 430, ryEnd = 235;
+
+    c.strokeStyle = 'rgba(255,255,255,0.18)';
+    c.lineWidth = 1.3;
+    for (let i=0;i<rings;i++){
+      const t = i/(rings-1);
+      const rx = rxStart + (rxEnd-rxStart)*t;
+      const ry = ryStart + (ryEnd-ryStart)*t;
+      c.save();
+      c.translate(cx,cy);
+      c.scale(1, ry/rx);
+      c.beginPath(); c.arc(0,0,rx,0,Math.PI*2); c.stroke();
+      c.restore();
+    }
+
+    const spokes = 28;
+    for (let i=0;i<spokes;i++){
+      const a = (Math.PI*2)*(i/spokes);
+      const x1 = cx + Math.cos(a)*rxStart, y1 = cy + Math.sin(a)*ryStart;
+      const x2 = cx + Math.cos(a)*rxEnd, y2 = cy + Math.sin(a)*ryEnd;
+      c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2); c.stroke();
+    }
+
+    c.strokeStyle = 'rgba(255,255,255,0.35)';
+    c.lineWidth = 1.5;
+    c.strokeRect(cx-70, cy-32, 140, 64);
+    c.beginPath(); c.moveTo(cx, cy-32); c.lineTo(cx, cy+32); c.stroke();
+    c.beginPath(); c.arc(cx, cy, 14, 0, Math.PI*2); c.stroke();
+
+    c.font = '600 12px Arial';
+    c.fillStyle = 'rgba(255,255,255,0.32)';
+    c.textAlign = 'center'; c.textBaseline = 'middle';
+    const labelCount = 40;
+    for (let i=0;i<labelCount;i++){
+      const a = (Math.PI*2)*(i/labelCount) + 0.05;
+      const t = 0.35 + pseudoRand(i*5.3)*0.55;
+      const rx = rxStart + (rxEnd-rxStart)*t;
+      const ry = ryStart + (ryEnd-ryStart)*t;
+      const x = cx + Math.cos(a)*rx, y = cy + Math.sin(a)*ry;
+      const num = 100 + Math.floor(pseudoRand(i*9.1)*300);
+      c.fillText(String(num), x, y);
+    }
+    c.textAlign = 'left'; c.textBaseline = 'alphabetic';
+
+    const vg = c.createRadialGradient(cx,cy,ryStart,cx,cy,rxEnd*1.1);
+    vg.addColorStop(0,'rgba(0,0,0,0.12)'); vg.addColorStop(1,'rgba(0,0,0,0.28)');
+    c.fillStyle = vg; c.fillRect(0,0,W,H);
+
+    addGrain(c, 0.03);
   }
 
   function applyTextEffect(c, effect, color, strength){
@@ -1156,6 +1327,24 @@ input[type="range"]{
       swatch:'#C7C0B2',
       text:'#2a271f', sub:'#514c3e',
       draw(c){ c.fillStyle = '#C7C0B2'; c.fillRect(0,0,W,H); addGrain(c, 0.05); }
+    },
+    seatMapBlueprint: {
+      label:'Seat Map',
+      swatch:'#123fd6',
+      text:'#ffffff', sub:'#cfe0ff',
+      draw(c){ drawSeatMapBlueprint(c); }
+    },
+    arenaBowlBlueprint: {
+      label:'Arena Bowl',
+      swatch:'#123fd6',
+      text:'#ffffff', sub:'#cfe0ff',
+      draw(c){ drawArenaBowlBlueprint(c); }
+    },
+    nightStadium: {
+      label:'Night Stadium',
+      swatch:'radial-gradient(circle at 34% 64%,#8fd7ff,transparent 45%),linear-gradient(180deg,#050b1a,#111d38)',
+      text:'#ffffff', sub:'#9fd8ff',
+      draw(c){ drawNightStadium(c); }
     }
   };
 
@@ -1218,7 +1407,7 @@ input[type="range"]{
     c.textBaseline = 'alphabetic';
     const headlineText = FONTS[state.font].uppercase ? (state.headline || '').toUpperCase() : (state.headline || '');
     const headlineLines = wrapLines(c, headlineText, maxWidth);
-    const lineHeight = size * 1.06;
+    const lineHeight = size * (state.effect === 'twoTone' ? 0.92 : 1.06);
 
     const subSize = Math.max(16, Math.round(size * 0.28));
     c.font = `italic ${subSize}px -apple-system, "Segoe UI", sans-serif`;
@@ -1237,6 +1426,14 @@ input[type="range"]{
     const xPos = state.align === 'left' ? marginX : W/2;
     c.textAlign = state.align === 'left' ? 'left' : 'center';
     c.direction = FONTS[state.font].rtl ? 'rtl' : 'ltr';
+
+    if (state.tilt){
+      const rotCenterY = (startY - lineHeight*0.82) + blockHeight/2;
+      c.save();
+      c.translate(xPos, rotCenterY);
+      c.rotate(state.tilt * Math.PI/180);
+      c.translate(-xPos, -rotCenterY);
+    }
 
     c.font = `${size}px "${family}", sans-serif`;
     c.fillStyle = state.headlineColor;
@@ -1257,7 +1454,22 @@ input[type="range"]{
 
     applyTextEffect(c, state.effect, state.effectColor, state.effectStrength);
     let y = startY;
-    headlineLines.forEach(line => {
+    const highlighterPalette = ['#ffe066', '#ff8fd9', '#8fd8ff', '#c6ff6b'];
+    headlineLines.forEach((line, li) => {
+      if (state.effect === 'highlighter'){
+        const w = c.measureText(line).width;
+        const padX = size*0.14, padY = size*0.08;
+        const boxW = w + padX*2, boxH = lineHeight*0.86;
+        const boxX = state.align === 'left' ? xPos - padX : xPos - boxW/2;
+        const boxY = y - size*0.78;
+        c.save();
+        c.translate(boxX + boxW/2, boxY + boxH/2);
+        c.rotate((li%2===0 ? -1 : 1) * 2 * Math.PI/180);
+        c.fillStyle = highlighterPalette[li % highlighterPalette.length];
+        c.fillRect(-boxW/2, -boxH/2, boxW, boxH);
+        c.restore();
+        c.fillStyle = state.headlineColor;
+      }
       if (state.effect === 'extrude'){
         const steps = 8;
         const step = 1 + state.effectStrength*0.05;
@@ -1271,8 +1483,28 @@ input[type="range"]{
         c.lineWidth = 2 + state.effectStrength*0.12;
         c.strokeStyle = state.effectColor;
         c.strokeText(line, xPos, y);
+      } else if (state.effect === 'chromatic'){
+        const off = 2 + state.effectStrength*0.06;
+        c.fillStyle = 'rgba(255,40,60,0.85)';
+        c.fillText(line, xPos - off, y);
+        c.fillStyle = 'rgba(40,220,255,0.85)';
+        c.fillText(line, xPos + off, y);
+        c.fillStyle = state.headlineColor;
+      } else if (state.effect === 'neonTube'){
+        c.lineJoin = 'round';
+        c.lineWidth = 2 + state.effectStrength*0.08;
+        c.strokeStyle = state.effectColor;
+        c.shadowColor = state.effectColor;
+        c.shadowBlur = 14 + state.effectStrength*0.4;
+        c.strokeText(line, xPos, y);
+        c.strokeText(line, xPos, y);
+        c.shadowBlur = 0;
+        y += lineHeight;
+        return;
       }
+      if (state.effect === 'twoTone') c.fillStyle = li % 2 === 0 ? state.headlineColor : state.effectColor;
       c.fillText(line, xPos, y);
+      if (state.effect === 'twoTone') c.fillStyle = state.headlineColor;
       y += lineHeight;
     });
     clearTextEffect(c);
@@ -1284,6 +1516,7 @@ input[type="range"]{
       subLines.forEach(line => { c.fillText(line, xPos, y); y += subLineHeight; });
     }
     c.direction = 'ltr';
+    if (state.tilt) c.restore();
 
     if (state.logo.zOrder === 'front') drawLogo();
 
@@ -1784,12 +2017,21 @@ input[type="range"]{
     redraw();
   });
 
+  const tiltSlider = document.getElementById('tiltSlider');
+  const tiltVal = document.getElementById('tiltVal');
+  tiltSlider.addEventListener('input', () => {
+    state.tilt = parseInt(tiltSlider.value,10);
+    tiltVal.textContent = state.tilt;
+    clearTemplateActive();
+    redraw();
+  });
+
   // ---------- templates ----------
 
   const TPL_DEFAULTS = {
     align:'center', vAlign:'middle',
     badge:false, badgeColor:'#fff3c4',
-    effect:'none', effectColor:'#000000', effectStrength:40,
+    effect:'none', effectColor:'#000000', effectStrength:40, tilt:0,
     subtitleGap:18
   };
 
@@ -1815,7 +2057,25 @@ input[type="range"]{
     { key:'stoneEditorial', name:'Stone Editorial', desc:'Stone Gray + Playfair Display',
       bg:'stoneGray', font:'playfair', headlineColor:'#2a271f', subtitleColor:'#514c3e' },
     { key:'oliveField', name:'Olive Field', desc:'Olive Note + Archivo Black',
-      bg:'oliveNote', font:'archivo', headlineColor:'#f5f2e8', subtitleColor:'#dcd8c4' }
+      bg:'oliveNote', font:'archivo', headlineColor:'#f5f2e8', subtitleColor:'#dcd8c4' },
+    { key:'newDrop', name:'New Drop', desc:'Warm Sand + Chewy + neon shadow',
+      bg:'warmSand', font:'chewy', headlineColor:'#3b2a1e', subtitleColor:'#5a482c',
+      effect:'shadow', effectColor:'#b6ff6e', effectStrength:70, tilt:-6 },
+    { key:'planetArcadia', name:'Planet Arcadia', desc:'Stone Gray + Archivo Black + chromatic split',
+      bg:'stoneGray', font:'archivo', headlineColor:'#14141a', subtitleColor:'#4a4a4a',
+      effect:'chromatic', effectColor:'#000000', effectStrength:55, tilt:0 },
+    { key:'flairScript', name:'Flair', desc:'Blush Minimal + Caveat + soft shadow',
+      bg:'blushMinimal', font:'caveat', headlineColor:'#6b1230', subtitleColor:'#8a4a52',
+      effect:'shadow', effectColor:'#f7c9d9', effectStrength:55, tilt:-8 },
+    { key:'highlightWords', name:'Highlight My Words', desc:'Stone Gray + Archivo Black + highlighter marker',
+      bg:'stoneGray', font:'archivo', headlineColor:'#1a1a2e', subtitleColor:'#3a3a3a',
+      effect:'highlighter', effectColor:'#ffe066', effectStrength:40, tilt:-2 },
+    { key:'bulkDeal', name:'Bulk Deal', desc:'Grain Paper + Archivo Black + two-tone lines',
+      bg:'grainPaper', font:'archivo', headlineColor:'#8b3fd1', subtitleColor:'#3d2f5c',
+      effect:'twoTone', effectColor:'#12224f', effectStrength:40, tilt:0 },
+    { key:'glowUp', name:'Glow Up', desc:'Minimal Black + Caveat + neon tube',
+      bg:'solidBlack', font:'caveat', headlineColor:'#39ff6a', subtitleColor:'#39ff6a',
+      effect:'neonTube', effectColor:'#39ff6a', effectStrength:60, tilt:0 }
   ].map(t => Object.assign({}, TPL_DEFAULTS, t));
 
   const templatesEl = document.getElementById('templates');
@@ -1837,6 +2097,7 @@ input[type="range"]{
       state.effect = tpl.effect;
       state.effectColor = tpl.effectColor;
       state.effectStrength = tpl.effectStrength;
+      state.tilt = tpl.tilt;
       state.subtitleGap = tpl.subtitleGap;
 
       subtitleGapInput.value = tpl.subtitleGap;
@@ -1853,6 +2114,8 @@ input[type="range"]{
       effectColorHex.textContent = tpl.effectColor.toUpperCase();
       effectStrengthInput.value = tpl.effectStrength;
       effectStrengthVal.textContent = tpl.effectStrength;
+      tiltSlider.value = tpl.tilt;
+      tiltVal.textContent = tpl.tilt;
 
       document.querySelectorAll('#alignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v===tpl.align));
       document.querySelectorAll('#vAlignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v===tpl.vAlign));
@@ -1896,6 +2159,7 @@ input[type="range"]{
     state.effect = 'none';
     state.effectColor = '#000000';
     state.effectStrength = 40;
+    state.tilt = 0;
     state.subtitleGap = 18;
     headlineInput.value = state.headline;
     subtitleInput.value = '';
@@ -1913,6 +2177,8 @@ input[type="range"]{
     effectColorHex.textContent = state.effectColor.toUpperCase();
     effectStrengthInput.value = state.effectStrength;
     effectStrengthVal.textContent = state.effectStrength;
+    tiltSlider.value = 0;
+    tiltVal.textContent = '0';
     subtitleGapInput.value = 18;
     subtitleGapVal.textContent = '18px';
     uploadBtn.classList.remove('has-file');
