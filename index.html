@@ -979,24 +979,33 @@ input[type="range"]{
   }
 
   function drawSeatMapBlueprint(c){
-    c.fillStyle = '#123fd6';
-    c.fillRect(0,0,W,H);
-
     const cx = W*1.15, cy = H*0.5;
     const rStart = 100, rEnd = 1350;
     const aStart = Math.PI*(120/180), aEnd = Math.PI*(240/180);
     const rings = 7;
 
-    c.strokeStyle = 'rgba(255,255,255,0.16)';
-    c.lineWidth = 1.4;
+    const bg = c.createRadialGradient(cx, cy, rStart*0.5, cx, cy, rEnd*0.62);
+    bg.addColorStop(0, '#2a5be0');
+    bg.addColorStop(0.55, '#123fd6');
+    bg.addColorStop(1, '#0a1f7a');
+    c.fillStyle = bg; c.fillRect(0,0,W,H);
+
+    softBlob(c, cx - rStart*1.4, cy, rStart*2.2, '#8fd7ff');
+
+    c.lineJoin = 'round';
     for (let i=0;i<rings;i++){
-      const r = rStart + (rEnd-rStart)*(i/(rings-1));
+      const t = i/(rings-1);
+      const r = rStart + (rEnd-rStart)*t;
+      c.strokeStyle = `rgba(255,255,255,${0.24 - t*0.13})`;
+      c.lineWidth = 1.3;
       c.beginPath();
       c.arc(cx, cy, r, aStart, aEnd);
       c.stroke();
     }
 
     const spokes = 13;
+    c.strokeStyle = 'rgba(255,255,255,0.13)';
+    c.lineWidth = 1.1;
     for (let i=0;i<=spokes;i++){
       const a = aStart + (aEnd-aStart)*(i/spokes);
       const x1 = cx + Math.cos(a)*rStart, y1 = cy + Math.sin(a)*rStart;
@@ -1004,24 +1013,25 @@ input[type="range"]{
       c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2); c.stroke();
     }
 
-    c.font = '600 13px Arial';
+    c.font = '600 12px Arial';
     c.fillStyle = 'rgba(255,255,255,0.3)';
     c.textAlign = 'center'; c.textBaseline = 'middle';
-    const labels = [111,112,113,114,115,211,212,213,214,215,216,311,312,313,314,411,412,413,414];
-    labels.forEach((num,i)=>{
-      const t = (i+0.5)/labels.length;
-      const a = aStart + (aEnd-aStart)*t + (pseudoRand(i*3.1)-0.5)*0.04;
-      const rr = rStart + (rEnd-rStart)*(0.06 + pseudoRand(i*7.7)*0.42);
-      const x = cx + Math.cos(a)*rr, y = cy + Math.sin(a)*rr;
-      if (x>-30 && x<W+30 && y>-30 && y<H+30) c.fillText(String(num), x, y);
-    });
+    const cellsPerRing = 6;
+    for (let ri=0; ri<rings-1; ri++){
+      const rr = rStart + (rEnd-rStart)*((ri+0.5)/(rings-1));
+      for (let si=0; si<cellsPerRing; si++){
+        const a = aStart + (aEnd-aStart)*((si+0.5)/cellsPerRing);
+        const x = cx + Math.cos(a)*rr, y = cy + Math.sin(a)*rr;
+        if (x>-20 && x<W+20 && y>-20 && y<H+20) c.fillText(String(101 + ri*10 + si), x, y);
+      }
+    }
     c.textAlign = 'left'; c.textBaseline = 'alphabetic';
 
     const vg = c.createRadialGradient(cx,cy,rStart,cx,cy,rEnd*0.55);
-    vg.addColorStop(0,'rgba(0,0,0,0.18)'); vg.addColorStop(1,'rgba(0,0,0,0)');
+    vg.addColorStop(0,'rgba(0,0,0,0.16)'); vg.addColorStop(1,'rgba(0,0,0,0)');
     c.fillStyle = vg; c.fillRect(0,0,W,H);
 
-    addGrain(c, 0.03);
+    addGrain(c, 0.04);
   }
 
   function drawNightStadium(c){
@@ -1031,7 +1041,15 @@ input[type="range"]{
     sky.addColorStop(1, '#111d38');
     c.fillStyle = sky; c.fillRect(0,0,W,H);
 
-    softBlob(c, W*0.26, H*0.14, 260, '#dfe9ff');
+    for (let i=0;i<70;i++){
+      const seed = i*23.7;
+      const x = pseudoRand(seed)*W, y = pseudoRand(seed+1)*H*0.42;
+      const r = 0.4 + pseudoRand(seed+2)*0.8;
+      c.fillStyle = `rgba(255,255,255,${0.2 + pseudoRand(seed+3)*0.35})`;
+      c.beginPath(); c.arc(x, y, r, 0, Math.PI*2); c.fill();
+    }
+
+    softBlob(c, W*0.26, H*0.14, 280, '#dfe9ff');
     c.fillStyle = 'rgba(255,255,255,0.9)';
     c.beginPath(); c.arc(W*0.26, H*0.14, 13, 0, Math.PI*2); c.fill();
 
@@ -1053,9 +1071,28 @@ input[type="range"]{
     }
 
     const ex = W*0.34, ey = H*0.64, erx = 280, ery = 108;
-    const glow = c.createRadialGradient(ex,ey,10,ex,ey,340);
-    glow.addColorStop(0,'rgba(150,220,255,0.5)');
-    glow.addColorStop(0.5,'rgba(90,170,255,0.22)');
+
+    c.save();
+    c.globalCompositeOperation = 'lighter';
+    [-0.6,-0.2,0.2,0.6].forEach(off=>{
+      const bx = ex + erx*off;
+      const beam = c.createLinearGradient(bx, ey, bx+off*40, ey-260);
+      beam.addColorStop(0, 'rgba(180,225,255,0.16)');
+      beam.addColorStop(1, 'rgba(180,225,255,0)');
+      c.fillStyle = beam;
+      c.beginPath();
+      c.moveTo(bx-10, ey);
+      c.lineTo(bx+10, ey);
+      c.lineTo(bx+off*40+26, ey-260);
+      c.lineTo(bx+off*40-26, ey-260);
+      c.closePath();
+      c.fill();
+    });
+    c.restore();
+
+    const glow = c.createRadialGradient(ex,ey,10,ex,ey,360);
+    glow.addColorStop(0,'rgba(150,220,255,0.55)');
+    glow.addColorStop(0.5,'rgba(90,170,255,0.24)');
     glow.addColorStop(1,'rgba(90,170,255,0)');
     c.fillStyle = glow; c.fillRect(0,0,W,H);
 
@@ -1063,12 +1100,12 @@ input[type="range"]{
     c.translate(ex,ey);
     c.scale(1, ery/erx);
     const bowlGrad = c.createRadialGradient(0,0,erx*0.15,0,0,erx);
-    bowlGrad.addColorStop(0,'rgba(210,240,255,0.85)');
-    bowlGrad.addColorStop(0.6,'rgba(120,190,255,0.45)');
+    bowlGrad.addColorStop(0,'rgba(220,245,255,0.9)');
+    bowlGrad.addColorStop(0.6,'rgba(120,190,255,0.48)');
     bowlGrad.addColorStop(1,'rgba(60,120,220,0.04)');
     c.fillStyle = bowlGrad;
     c.beginPath(); c.arc(0,0,erx,0,Math.PI*2); c.fill();
-    c.strokeStyle = 'rgba(255,150,90,0.5)';
+    c.strokeStyle = 'rgba(255,160,100,0.55)';
     c.lineWidth = 2;
     c.beginPath(); c.arc(0,0,erx*0.98,0,Math.PI*2); c.stroke();
     c.restore();
@@ -1078,20 +1115,25 @@ input[type="range"]{
   }
 
   function drawArenaBowlBlueprint(c){
-    c.fillStyle = '#123fd6';
-    c.fillRect(0,0,W,H);
-
     const cx = W*0.5, cy = H*0.52;
     const rings = 6;
     const rxStart = 70, ryStart = 45;
     const rxEnd = 430, ryEnd = 235;
 
-    c.strokeStyle = 'rgba(255,255,255,0.18)';
-    c.lineWidth = 1.3;
+    const bg = c.createRadialGradient(cx, cy, rxStart, cx, cy, rxEnd*1.15);
+    bg.addColorStop(0, '#2a5be0');
+    bg.addColorStop(0.5, '#123fd6');
+    bg.addColorStop(1, '#0a1f7a');
+    c.fillStyle = bg; c.fillRect(0,0,W,H);
+
+    softBlob(c, cx, cy, 260, '#8fd7ff');
+
     for (let i=0;i<rings;i++){
       const t = i/(rings-1);
       const rx = rxStart + (rxEnd-rxStart)*t;
       const ry = ryStart + (ryEnd-ryStart)*t;
+      c.strokeStyle = `rgba(255,255,255,${0.28 - t*0.15})`;
+      c.lineWidth = 1.2;
       c.save();
       c.translate(cx,cy);
       c.scale(1, ry/rx);
@@ -1100,6 +1142,8 @@ input[type="range"]{
     }
 
     const spokes = 28;
+    c.strokeStyle = 'rgba(255,255,255,0.12)';
+    c.lineWidth = 1;
     for (let i=0;i<spokes;i++){
       const a = (Math.PI*2)*(i/spokes);
       const x1 = cx + Math.cos(a)*rxStart, y1 = cy + Math.sin(a)*ryStart;
@@ -1107,32 +1151,37 @@ input[type="range"]{
       c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2); c.stroke();
     }
 
-    c.strokeStyle = 'rgba(255,255,255,0.35)';
-    c.lineWidth = 1.5;
+    c.save();
+    c.shadowColor = 'rgba(180,220,255,0.6)';
+    c.shadowBlur = 10;
+    c.strokeStyle = 'rgba(255,255,255,0.55)';
+    c.lineWidth = 1.6;
     c.strokeRect(cx-70, cy-32, 140, 64);
     c.beginPath(); c.moveTo(cx, cy-32); c.lineTo(cx, cy+32); c.stroke();
     c.beginPath(); c.arc(cx, cy, 14, 0, Math.PI*2); c.stroke();
+    c.restore();
 
     c.font = '600 12px Arial';
     c.fillStyle = 'rgba(255,255,255,0.32)';
     c.textAlign = 'center'; c.textBaseline = 'middle';
-    const labelCount = 40;
-    for (let i=0;i<labelCount;i++){
-      const a = (Math.PI*2)*(i/labelCount) + 0.05;
-      const t = 0.35 + pseudoRand(i*5.3)*0.55;
+    const cellsPerRing = 12;
+    for (let ri=0; ri<rings-1; ri++){
+      const t = (ri+0.5)/(rings-1);
       const rx = rxStart + (rxEnd-rxStart)*t;
       const ry = ryStart + (ryEnd-ryStart)*t;
-      const x = cx + Math.cos(a)*rx, y = cy + Math.sin(a)*ry;
-      const num = 100 + Math.floor(pseudoRand(i*9.1)*300);
-      c.fillText(String(num), x, y);
+      for (let si=0; si<cellsPerRing; si++){
+        const a = (Math.PI*2)*((si+0.5)/cellsPerRing);
+        const x = cx + Math.cos(a)*rx, y = cy + Math.sin(a)*ry;
+        c.fillText(String(101 + ri*20 + si), x, y);
+      }
     }
     c.textAlign = 'left'; c.textBaseline = 'alphabetic';
 
-    const vg = c.createRadialGradient(cx,cy,ryStart,cx,cy,rxEnd*1.1);
-    vg.addColorStop(0,'rgba(0,0,0,0.12)'); vg.addColorStop(1,'rgba(0,0,0,0.28)');
+    const vg = c.createRadialGradient(cx,cy,ryEnd*0.6,cx,cy,rxEnd*1.3);
+    vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.32)');
     c.fillStyle = vg; c.fillRect(0,0,W,H);
 
-    addGrain(c, 0.03);
+    addGrain(c, 0.04);
   }
 
   function applyTextEffect(c, effect, color, strength){
