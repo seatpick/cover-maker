@@ -47,8 +47,10 @@ runtime (everything — including all 13 display fonts — is inlined).
    Deliberately separated from "2. Background" so user-supplied content
    isn't mixed with curated presets.
 4. **Text**: headline (textarea — supports Enter for manual line breaks),
-   subtitle, colors, font picker, size, align, vertical position, subtitle
-   spacing, pill badge toggle.
+   subtitle, colors, headline font + size, align, vertical position,
+   subtitle font + size (independent of the headline's — own dropdown of
+   all 13 fonts plus a "System (italic)" default, own 12-60px slider),
+   subtitle spacing, pill badge toggle.
 5. **Effects**: text effect (shadow/outline/glow/3D extrude/chromatic
    split/two-tone lines/highlighter marker/neon tube) + color + strength
    + tilt.
