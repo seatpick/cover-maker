@@ -31,21 +31,21 @@ runtime (everything — including all 13 display fonts — is inlined).
 
 ## Layout / sections (rail, top to bottom)
 
-1. **Quick start — templates**: 17 curated one-click combos (background +
+1. **Quick start — templates**: 13 curated one-click combos (background +
    font + colors + alignment + badge + text effect + tilt + subtitle
    spacing). Cut down to 11 after direct feedback ("remove X, Y, Z...");
    6 more added later (New Drop, Planet Arcadia, Flair, Highlight My
-   Words, Bulk Deal, Glow Up) to showcase the newer text effects — see
-   the list below for what's in each batch. All default to center/middle
-   alignment with no drop shadow effect. Picking a template fills every
-   control; any control can still be overridden after (clears the
-   template's highlighted state, doesn't reset anything). Logo overlay
-   and uploaded/saved photos are untouched by template clicks — those are
-   user content, not style.
+   Words, Bulk Deal, Glow Up) to showcase the newer text effects; then
+   Feature Spotlight, After Dark, Marker Tag, and Glow Up were removed
+   again in a follow-up cleanup pass — see the list below for what's
+   left. All default to center/middle alignment with no drop shadow
+   effect. Picking a template fills every control; any control can
+   still be overridden after (clears the template's highlighted state,
+   doesn't reset anything). Logo overlay and uploaded/saved photos are
+   untouched by template clicks — those are user content, not style.
 2. **Background**: a "Team backgrounds" gallery (real licensed photos,
-   baked into the tool — see below) above a "Presets" gallery (22
-   procedural/canvas-drawn presets, cut down from 32 then built back up
-   with 3 stadium-diagram styles — see below).
+   baked into the tool — see below) above a "Presets" gallery (18
+   procedural/canvas-drawn presets — see below).
 3. **Your images**: upload a background photo (+ Remove photo, + Save to
    My Backgrounds), the My Backgrounds gallery, solid color picker
    (including SeatPick brand-color chips), and the logo overlay controls.
@@ -67,9 +67,10 @@ and (below all of that) the "Preview in a blog" mockups.
 ## Team backgrounds (real licensed photos)
 
 A small, separate gallery above the procedural presets, for actual
-photos the team has the rights to use — currently one: **Match Night**
-(a licensed stadium photo). Unlike everything else in this tool, these
-are real raster images, not canvas-drawn recreations.
+photos the team has the rights to use — currently two: **Match Night**
+(aerial night stadium) and **Goal Net** (ball hitting the net, close
+crop). Unlike everything else in this tool, these are real raster
+images, not canvas-drawn recreations.
 
 **How it works:** each one is baked directly into `template.html` as a
 base64 data URI (`registerTeamBackground(key, label, dataUri, ...)`,
@@ -96,14 +97,14 @@ half the file size for this kind of soft/gradient-heavy photography.
 
 ## Backgrounds
 
-20 presets (down to 19 from 32 after removing Brand Blue, Maroon Fade,
+18 presets (down to 19 from 32 after removing Brand Blue, Maroon Fade,
 Royal Blue, Crimson Arc, Cyan Ring, Coral Corner, Retro Sunset, Duotone
 Split, Halftone Fade, Soccer Pitch, Baseball Field, Basketball Court,
 Ticket Stub per direct feedback — their now-orphaned draw functions were
-deleted too, not left as dead code — then 3 more added later, then Night
-Stadium and Pitch Green both removed again: Night Stadium once the real
-"Match Night" team photo covered the same mood, Pitch Green just as a
-direct cleanup ask):
+deleted too, not left as dead code — then 3 stadium-diagram styles added,
+then five removed again in follow-up cleanups: Night Stadium once the
+real "Match Night" team photo covered the same mood, Pitch Green, Seat
+Map, and Arena Bowl all as direct cleanup asks):
 
 - *Premium/editorial* (mesh gradients + film grain): Mesh Aurora, Grain
   Paper, Spotlight Glow, Quiet Arc, Ink Duotone, Deep Glow, Soft Wave.
@@ -116,13 +117,6 @@ direct cleanup ask):
 - *SeatPick brand*: Brand Navy (flat).
 - *Sports*: Stadium Crowd (tiered seating bands of small deterministic
   dots, floodlight glow, vignette).
-- *Stadium diagrams* (added from reference seat-map/stadium images):
-  Seat Map (`drawSeatMapBlueprint` — off-canvas-center concentric arcs +
-  radial spokes + scattered section numbers, like a corner-cropped
-  seating chart), Arena Bowl (`drawArenaBowlBlueprint` — full centered
-  elliptical bowl with a court rectangle in the middle, 360° of radial
-  dividers). Both are vector/gradient recreations of the mood, not photo
-  uploads, so they stay crisp and tiny in file size.
 - *Original set*: Flat Pitch, Minimal Black, Bubble Cluster.
 
 Users can also **upload their own photo** (cover-fit cropped to 1200x500,
@@ -191,16 +185,31 @@ single greedy word-wrap would.
     cycling a small palette (yellow/pink/blue/green), like a highlighter
     pen mark (see "Highlight My Words").
   - **Neon Tube** — stroke-only text (no fill) with a strong glow, reads
-    as a hollow neon-tube outline (see "Glow Up").
+    as a hollow neon-tube outline.
   All effects use the same color + strength slider (where applicable),
   and reset after the headline draws so they never bleed into the
-  subtitle.
+  subtitle. (The "Feature Spotlight", "After Dark", "Marker Tag", and
+  "Glow Up" templates that used to showcase some of these were removed
+  in a later cleanup pass — the effects themselves are still available
+  directly from the dropdown.)
 - **Tilt**: slider (`state.tilt`, -12 to 12 degrees, default 0) rotates
   the whole headline+subtitle block around its own center — added so
   effects like Drop Shadow / Glow can also read as a tilted, energetic
-  sticker-style headline (see "New Drop", "Flair").
+  sticker-style headline (see "New Drop"). Flair originally used a tilt
+  too but had it removed after feedback that it made the headline read
+  as misaligned rather than stylized.
 - **Subtitle spacing**: slider (`state.subtitleGap`, default 18px, range
   0–60), was a hardcoded constant.
+- **Vertical centering** (top/middle/bottom) uses real font metrics —
+  `ctx.measureText(...).actualBoundingBoxAscent` / `actualBoundingBoxDescent`
+  on the actual first/last rendered line — rather than a fixed guess.
+  An earlier version used a flat `lineHeight*0.82` heuristic for where a
+  line's visible ink starts above its baseline; that guess didn't match
+  real display fonts well and a real published cover showed the headline
+  sitting visibly below true center. Verified the fix by rendering to an
+  off-screen canvas and scanning pixel rows for the actual ink bounding
+  box — center now lands within 1-2px of true center across fonts and
+  single-line/headline+subtitle cases.
 
 ## Safe zone
 
@@ -252,7 +261,8 @@ over budget the tool shows a warning with a one-click "switch to WEBP".
        .replace('__HEEBO_HEBREW_BASE64__', load_b64('fonts/heebo-hebrew.b64'))
        .replace('__CAIRO_LATIN_BASE64__', load_b64('fonts/cairo-latin.b64'))
        .replace('__CAIRO_ARABIC_BASE64__', load_b64('fonts/cairo-arabic.b64'))
-       .replace('__MATCH_NIGHT_BASE64__', load_b64('backgrounds/match-night.b64')))
+       .replace('__MATCH_NIGHT_BASE64__', load_b64('backgrounds/match-night.b64'))
+       .replace('__GOAL_NET_BASE64__', load_b64('backgrounds/goal-net.b64')))
    open('artifact.html', 'w', encoding='utf-8').write(fragment)
 
    marker = '<div class="wrap">'

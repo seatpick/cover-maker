@@ -985,132 +985,6 @@ input[type="range"]{
     });
   }
 
-  function drawSeatMapBlueprint(c){
-    const cx = W*1.15, cy = H*0.5;
-    const rStart = 100, rEnd = 1350;
-    const aStart = Math.PI*(120/180), aEnd = Math.PI*(240/180);
-    const rings = 7;
-
-    const bg = c.createRadialGradient(cx, cy, rStart*0.5, cx, cy, rEnd*0.62);
-    bg.addColorStop(0, '#2a5be0');
-    bg.addColorStop(0.55, '#123fd6');
-    bg.addColorStop(1, '#0a1f7a');
-    c.fillStyle = bg; c.fillRect(0,0,W,H);
-
-    softBlob(c, cx - rStart*1.4, cy, rStart*2.2, '#8fd7ff');
-
-    c.lineJoin = 'round';
-    for (let i=0;i<rings;i++){
-      const t = i/(rings-1);
-      const r = rStart + (rEnd-rStart)*t;
-      c.strokeStyle = `rgba(255,255,255,${0.24 - t*0.13})`;
-      c.lineWidth = 1.3;
-      c.beginPath();
-      c.arc(cx, cy, r, aStart, aEnd);
-      c.stroke();
-    }
-
-    const spokes = 13;
-    c.strokeStyle = 'rgba(255,255,255,0.13)';
-    c.lineWidth = 1.1;
-    for (let i=0;i<=spokes;i++){
-      const a = aStart + (aEnd-aStart)*(i/spokes);
-      const x1 = cx + Math.cos(a)*rStart, y1 = cy + Math.sin(a)*rStart;
-      const x2 = cx + Math.cos(a)*rEnd, y2 = cy + Math.sin(a)*rEnd;
-      c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2); c.stroke();
-    }
-
-    c.font = '600 12px Arial';
-    c.fillStyle = 'rgba(255,255,255,0.3)';
-    c.textAlign = 'center'; c.textBaseline = 'middle';
-    const cellsPerRing = 6;
-    for (let ri=0; ri<rings-1; ri++){
-      const rr = rStart + (rEnd-rStart)*((ri+0.5)/(rings-1));
-      for (let si=0; si<cellsPerRing; si++){
-        const a = aStart + (aEnd-aStart)*((si+0.5)/cellsPerRing);
-        const x = cx + Math.cos(a)*rr, y = cy + Math.sin(a)*rr;
-        if (x>-20 && x<W+20 && y>-20 && y<H+20) c.fillText(String(101 + ri*10 + si), x, y);
-      }
-    }
-    c.textAlign = 'left'; c.textBaseline = 'alphabetic';
-
-    const vg = c.createRadialGradient(cx,cy,rStart,cx,cy,rEnd*0.55);
-    vg.addColorStop(0,'rgba(0,0,0,0.16)'); vg.addColorStop(1,'rgba(0,0,0,0)');
-    c.fillStyle = vg; c.fillRect(0,0,W,H);
-
-    addGrain(c, 0.04);
-  }
-
-  function drawArenaBowlBlueprint(c){
-    const cx = W*0.5, cy = H*0.52;
-    const rings = 6;
-    const rxStart = 70, ryStart = 45;
-    const rxEnd = 430, ryEnd = 235;
-
-    const bg = c.createRadialGradient(cx, cy, rxStart, cx, cy, rxEnd*1.15);
-    bg.addColorStop(0, '#2a5be0');
-    bg.addColorStop(0.5, '#123fd6');
-    bg.addColorStop(1, '#0a1f7a');
-    c.fillStyle = bg; c.fillRect(0,0,W,H);
-
-    softBlob(c, cx, cy, 260, '#8fd7ff');
-
-    for (let i=0;i<rings;i++){
-      const t = i/(rings-1);
-      const rx = rxStart + (rxEnd-rxStart)*t;
-      const ry = ryStart + (ryEnd-ryStart)*t;
-      c.strokeStyle = `rgba(255,255,255,${0.28 - t*0.15})`;
-      c.lineWidth = 1.2;
-      c.save();
-      c.translate(cx,cy);
-      c.scale(1, ry/rx);
-      c.beginPath(); c.arc(0,0,rx,0,Math.PI*2); c.stroke();
-      c.restore();
-    }
-
-    const spokes = 28;
-    c.strokeStyle = 'rgba(255,255,255,0.12)';
-    c.lineWidth = 1;
-    for (let i=0;i<spokes;i++){
-      const a = (Math.PI*2)*(i/spokes);
-      const x1 = cx + Math.cos(a)*rxStart, y1 = cy + Math.sin(a)*ryStart;
-      const x2 = cx + Math.cos(a)*rxEnd, y2 = cy + Math.sin(a)*ryEnd;
-      c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2); c.stroke();
-    }
-
-    c.save();
-    c.shadowColor = 'rgba(180,220,255,0.6)';
-    c.shadowBlur = 10;
-    c.strokeStyle = 'rgba(255,255,255,0.55)';
-    c.lineWidth = 1.6;
-    c.strokeRect(cx-70, cy-32, 140, 64);
-    c.beginPath(); c.moveTo(cx, cy-32); c.lineTo(cx, cy+32); c.stroke();
-    c.beginPath(); c.arc(cx, cy, 14, 0, Math.PI*2); c.stroke();
-    c.restore();
-
-    c.font = '600 12px Arial';
-    c.fillStyle = 'rgba(255,255,255,0.32)';
-    c.textAlign = 'center'; c.textBaseline = 'middle';
-    const cellsPerRing = 12;
-    for (let ri=0; ri<rings-1; ri++){
-      const t = (ri+0.5)/(rings-1);
-      const rx = rxStart + (rxEnd-rxStart)*t;
-      const ry = ryStart + (ryEnd-ryStart)*t;
-      for (let si=0; si<cellsPerRing; si++){
-        const a = (Math.PI*2)*((si+0.5)/cellsPerRing);
-        const x = cx + Math.cos(a)*rx, y = cy + Math.sin(a)*ry;
-        c.fillText(String(101 + ri*20 + si), x, y);
-      }
-    }
-    c.textAlign = 'left'; c.textBaseline = 'alphabetic';
-
-    const vg = c.createRadialGradient(cx,cy,ryEnd*0.6,cx,cy,rxEnd*1.3);
-    vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.32)');
-    c.fillStyle = vg; c.fillRect(0,0,W,H);
-
-    addGrain(c, 0.04);
-  }
-
   function applyTextEffect(c, effect, color, strength){
     c.shadowColor = 'transparent';
     c.shadowBlur = 0;
@@ -1298,18 +1172,6 @@ input[type="range"]{
       swatch:'#C7C0B2',
       text:'#2a271f', sub:'#514c3e',
       draw(c){ c.fillStyle = '#C7C0B2'; c.fillRect(0,0,W,H); addGrain(c, 0.05); }
-    },
-    seatMapBlueprint: {
-      label:'Seat Map',
-      swatch:'#123fd6',
-      text:'#ffffff', sub:'#cfe0ff',
-      draw(c){ drawSeatMapBlueprint(c); }
-    },
-    arenaBowlBlueprint: {
-      label:'Arena Bowl',
-      swatch:'#123fd6',
-      text:'#ffffff', sub:'#cfe0ff',
-      draw(c){ drawArenaBowlBlueprint(c); }
     }
   };
 
@@ -1330,6 +1192,7 @@ input[type="range"]{
   }
 
   registerTeamBackground('teamMatchNight', 'Match Night', 'data:image/webp;base64,__MATCH_NIGHT_BASE64__', '#ffffff', '#bcd9ff');
+  registerTeamBackground('teamGoalNet', 'Goal Net', 'data:image/webp;base64,__GOAL_NET_BASE64__', '#ffffff', '#bcd9ff');
 
   Object.assign(PRESETS, TEAM_BACKGROUNDS);
 
@@ -1394,6 +1257,11 @@ input[type="range"]{
     const headlineLines = wrapLines(c, headlineText, maxWidth);
     const lineHeight = size * (state.effect === 'twoTone' ? 0.92 : 1.06);
 
+    const headlineAscentMetrics = c.measureText(headlineLines[0] || 'Hg');
+    const headlineAscent = headlineAscentMetrics.actualBoundingBoxAscent || size*0.72;
+    const headlineDescentMetrics = c.measureText(headlineLines[headlineLines.length-1] || 'Hg');
+    const headlineDescent = headlineDescentMetrics.actualBoundingBoxDescent || size*0.08;
+
     const subSize = state.subtitleSize;
     const subFontCss = state.subtitleFont === 'system'
       ? `italic ${subSize}px -apple-system, "Segoe UI", sans-serif`
@@ -1404,20 +1272,27 @@ input[type="range"]{
     const subLines = hasSub ? wrapLines(c, state.subtitle, maxWidth) : [];
     const subLineHeight = subSize * 1.3;
 
-    const blockHeight = headlineLines.length * lineHeight
-      + (hasSub ? (state.subtitleGap + subLines.length * subLineHeight) : 0);
+    let bottomDescent = headlineDescent;
+    if (hasSub){
+      const subDescentMetrics = c.measureText(subLines[subLines.length-1] || 'Hg');
+      bottomDescent = subDescentMetrics.actualBoundingBoxDescent || subSize*0.25;
+    }
+
+    const innerSpan = (headlineLines.length-1) * lineHeight
+      + (hasSub ? (state.subtitleGap + (subLines.length-1) * subLineHeight) : 0);
+    const totalVisualHeight = headlineAscent + innerSpan + bottomDescent;
 
     let startY;
-    if (state.vAlign === 'top') startY = marginTop + lineHeight*0.82;
-    else if (state.vAlign === 'bottom') startY = H - marginBottom - blockHeight + lineHeight*0.82;
-    else startY = (H - blockHeight)/2 + lineHeight*0.82;
+    if (state.vAlign === 'top') startY = marginTop + headlineAscent;
+    else if (state.vAlign === 'bottom') startY = H - marginBottom - totalVisualHeight + headlineAscent;
+    else startY = (H - totalVisualHeight)/2 + headlineAscent;
 
     const xPos = state.align === 'left' ? marginX : W/2;
     c.textAlign = state.align === 'left' ? 'left' : 'center';
     c.direction = FONTS[state.font].rtl ? 'rtl' : 'ltr';
 
     if (state.tilt){
-      const rotCenterY = (startY - lineHeight*0.82) + blockHeight/2;
+      const rotCenterY = (startY - headlineAscent) + totalVisualHeight/2;
       c.save();
       c.translate(xPos, rotCenterY);
       c.rotate(state.tilt * Math.PI/180);
@@ -1433,7 +1308,7 @@ input[type="range"]{
       const padX = size*0.5, padY = size*0.32;
       const blockW = badgeMaxLineW + padX*2;
       const blockH = headlineLines.length*lineHeight + padY*2;
-      const blockTop = startY - size*0.86 - padY;
+      const blockTop = startY - headlineAscent - padY;
       const blockLeft = state.align === 'left' ? xPos - padX : xPos - blockW/2;
       roundRect(c, blockLeft, blockTop, blockW, blockH, blockH/2);
       c.fillStyle = state.badgeColor;
@@ -2056,8 +1931,6 @@ input[type="range"]{
   const TEMPLATES = [
     { key:'boldStatement', name:'Bold Statement', desc:'Minimal Black + Archivo Black',
       bg:'solidBlack', font:'archivo', headlineColor:'#a6ff3d', subtitleColor:'#ffffff' },
-    { key:'feature', name:'Feature Spotlight', desc:'Mesh Aurora + Fredoka',
-      bg:'meshAurora', font:'fredoka', headlineColor:'#ffe066', subtitleColor:'#ffffff' },
     { key:'calmRecap', name:'Calm Recap', desc:'Soft Wave + Archivo Black',
       bg:'softWave', font:'archivo', headlineColor:'#22263a', subtitleColor:'#5b4a6b' },
     { key:'handwrittenNote', name:'Handwritten Note', desc:'Grain Paper + Pacifico',
@@ -2066,12 +1939,8 @@ input[type="range"]{
       bg:'stadiumCrowd', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#ffd23f' },
     { key:'quietStatement', name:'Quiet Statement', desc:'Quiet Arc + Archivo Black',
       bg:'quietArc', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#a6ff3d' },
-    { key:'afterDark', name:'After Dark', desc:'Deep Glow + Bangers',
-      bg:'deepGlow', font:'bangers', headlineColor:'#ffffff', subtitleColor:'#ffb37a' },
     { key:'quietSage', name:'Quiet Sage', desc:'Sage Minimal + Caveat',
       bg:'sageMinimal', font:'caveat', headlineColor:'#2b3328', subtitleColor:'#4a5645' },
-    { key:'markerTag', name:'Marker Tag', desc:'Warm Sand + Permanent Marker',
-      bg:'warmSand', font:'marker', headlineColor:'#2f2517', subtitleColor:'#5a482c' },
     { key:'stoneEditorial', name:'Stone Editorial', desc:'Stone Gray + Playfair Display',
       bg:'stoneGray', font:'playfair', headlineColor:'#2a271f', subtitleColor:'#514c3e' },
     { key:'oliveField', name:'Olive Field', desc:'Olive Note + Archivo Black',
@@ -2084,16 +1953,13 @@ input[type="range"]{
       effect:'chromatic', effectColor:'#000000', effectStrength:55, tilt:0 },
     { key:'flairScript', name:'Flair', desc:'Blush Minimal + Caveat + soft shadow',
       bg:'blushMinimal', font:'caveat', headlineColor:'#6b1230', subtitleColor:'#8a4a52',
-      effect:'shadow', effectColor:'#f7c9d9', effectStrength:55, tilt:-8 },
+      effect:'shadow', effectColor:'#f7c9d9', effectStrength:55, tilt:0 },
     { key:'highlightWords', name:'Highlight My Words', desc:'Stone Gray + Archivo Black + highlighter marker',
       bg:'stoneGray', font:'archivo', headlineColor:'#1a1a2e', subtitleColor:'#3a3a3a',
       effect:'highlighter', effectColor:'#ffe066', effectStrength:40, tilt:-2 },
     { key:'bulkDeal', name:'Bulk Deal', desc:'Grain Paper + Archivo Black + two-tone lines',
       bg:'grainPaper', font:'archivo', headlineColor:'#8b3fd1', subtitleColor:'#3d2f5c',
-      effect:'twoTone', effectColor:'#12224f', effectStrength:40, tilt:0 },
-    { key:'glowUp', name:'Glow Up', desc:'Minimal Black + Caveat + neon tube',
-      bg:'solidBlack', font:'caveat', headlineColor:'#39ff6a', subtitleColor:'#39ff6a',
-      effect:'neonTube', effectColor:'#39ff6a', effectStrength:60, tilt:0 }
+      effect:'twoTone', effectColor:'#12224f', effectStrength:40, tilt:0 }
   ].map(t => Object.assign({}, TPL_DEFAULTS, t));
 
   const templatesEl = document.getElementById('templates');
