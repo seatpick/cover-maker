@@ -676,15 +676,15 @@ input[type="range"]{
           <div class="field">
             <label>Headline color</label>
             <div class="colorfield">
-              <input type="color" id="headlineColor" value="#a6ff3d">
-              <span class="hex" id="headlineColorHex">#A6FF3D</span>
+              <input type="color" id="headlineColor" value="#f5f2e8">
+              <span class="hex" id="headlineColorHex">#F5F2E8</span>
             </div>
           </div>
           <div class="field">
             <label>Subtitle color</label>
             <div class="colorfield">
-              <input type="color" id="subtitleColor" value="#ffffff">
-              <span class="hex" id="subtitleColorHex">#FFFFFF</span>
+              <input type="color" id="subtitleColor" value="#dcd8c4">
+              <span class="hex" id="subtitleColorHex">#DCD8C4</span>
             </div>
           </div>
         </div>
@@ -810,12 +810,12 @@ input[type="range"]{
   const gctx = guide.getContext('2d');
 
   const state = {
-    bg: { type:'preset', key:'pitchGreen', image:null },
+    bg: { type:'preset', key:'oliveNote', image:null },
     headline: 'Your headline here',
     subtitle: '',
-    headlineColor: '#a6ff3d',
-    subtitleColor: '#ffffff',
-    font: 'anton',
+    headlineColor: '#f5f2e8',
+    subtitleColor: '#dcd8c4',
+    font: 'archivo',
     fontSize: 92,
     subtitleFont: 'system',
     subtitleSize: 26,
@@ -1697,9 +1697,9 @@ input[type="range"]{
   const photoActions = document.getElementById('photoActions');
   const removePhotoBtn = document.getElementById('removePhotoBtn');
   removePhotoBtn.addEventListener('click', () => {
-    state.bg = { type:'preset', key:'pitchGreen', image:null };
-    state.headlineColor = PRESETS.pitchGreen.text;
-    state.subtitleColor = PRESETS.pitchGreen.sub;
+    state.bg = { type:'preset', key:'oliveNote', image:null };
+    state.headlineColor = PRESETS.oliveNote.text;
+    state.subtitleColor = PRESETS.oliveNote.sub;
     headlineColorInput.value = state.headlineColor;
     subtitleColorInput.value = state.subtitleColor;
     headlineColorHex.textContent = state.headlineColor.toUpperCase();
@@ -1708,7 +1708,7 @@ input[type="range"]{
     uploadBtn.textContent = 'Upload a photo...';
     document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
     document.querySelectorAll('.color-chip').forEach(s=>s.classList.remove('active'));
-    document.querySelector('.swatch').classList.add('active');
+    document.querySelector('.swatch[data-key="oliveNote"]').classList.add('active');
     clearTemplateActive();
     updateCanvasMode();
     redraw();
@@ -2177,8 +2177,9 @@ input[type="range"]{
   const templatesEl = document.getElementById('templates');
   TEMPLATES.forEach(tpl => {
     const btn = document.createElement('button');
-    btn.className = 'tpl-card';
+    btn.className = 'tpl-card' + (tpl.key === 'oliveField' ? ' active' : '');
     btn.type = 'button';
+    btn.dataset.key = tpl.key;
     btn.style.background = PRESETS[tpl.bg].swatch;
     btn.innerHTML = `<span class="tpl-name">${tpl.name}</span><span class="tpl-desc">${tpl.desc}</span>`;
     btn.addEventListener('click', () => {
@@ -2246,12 +2247,12 @@ input[type="range"]{
   });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    state.bg = { type:'preset', key:'pitchGreen', image:null };
+    state.bg = { type:'preset', key:'oliveNote', image:null };
     state.headline = 'Your headline here';
     state.subtitle = '';
-    state.headlineColor = '#a6ff3d';
-    state.subtitleColor = '#ffffff';
-    state.font = 'anton';
+    state.headlineColor = '#f5f2e8';
+    state.subtitleColor = '#dcd8c4';
+    state.font = 'archivo';
     state.fontSize = 92;
     state.align = 'center';
     state.vAlign = 'middle';
@@ -2290,12 +2291,13 @@ input[type="range"]{
     uploadBtn.classList.remove('has-file');
     uploadBtn.textContent = 'Upload a photo...';
     document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
-    document.querySelector('.swatch').classList.add('active');
+    document.querySelector('.swatch[data-key="oliveNote"]').classList.add('active');
     document.querySelectorAll('.color-chip').forEach(s=>s.classList.remove('active'));
     document.querySelectorAll('#alignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v==='center'));
     document.querySelectorAll('#vAlignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v==='middle'));
     document.querySelectorAll('#badgeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v==='plain'));
     clearTemplateActive();
+    document.querySelector('.tpl-card[data-key="oliveField"]').classList.add('active');
     updateCanvasMode();
     redraw();
   });
@@ -2391,8 +2393,6 @@ input[type="range"]{
   });
 
   // ---------- boot ----------
-
-  document.querySelector('.swatch').classList.add('active');
 
   function boot(){ redraw(); }
   if (document.fonts && document.fonts.load){
