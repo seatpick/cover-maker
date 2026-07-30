@@ -96,11 +96,13 @@ half the file size for this kind of soft/gradient-heavy photography.
 
 ## Backgrounds
 
-22 presets (down to 19 from 32 after removing Brand Blue, Maroon Fade,
+21 presets (down to 19 from 32 after removing Brand Blue, Maroon Fade,
 Royal Blue, Crimson Arc, Cyan Ring, Coral Corner, Retro Sunset, Duotone
 Split, Halftone Fade, Soccer Pitch, Baseball Field, Basketball Court,
 Ticket Stub per direct feedback — their now-orphaned draw functions were
-deleted too, not left as dead code — then 3 more added later):
+deleted too, not left as dead code — then 3 more added later, then Night
+Stadium removed again once the real "Match Night" team photo covered
+the same mood):
 
 - *Premium/editorial* (mesh gradients + film grain): Mesh Aurora, Grain
   Paper, Spotlight Glow, Quiet Arc, Ink Duotone, Deep Glow, Soft Wave.
@@ -118,10 +120,8 @@ deleted too, not left as dead code — then 3 more added later):
   radial spokes + scattered section numbers, like a corner-cropped
   seating chart), Arena Bowl (`drawArenaBowlBlueprint` — full centered
   elliptical bowl with a court rectangle in the middle, 360° of radial
-  dividers), Night Stadium (`drawNightStadium` — moody navy night sky,
-  moon glow, distant city-light silhouette, a glowing stadium-bowl
-  ellipse). All three are vector/gradient recreations of the mood, not
-  photo uploads, so they stay crisp and tiny in file size.
+  dividers). Both are vector/gradient recreations of the mood, not photo
+  uploads, so they stay crisp and tiny in file size.
 - *Original set*: Pitch Green, Flat Pitch, Minimal Black, Bubble Cluster.
 
 Users can also **upload their own photo** (cover-fit cropped to 1200x500,

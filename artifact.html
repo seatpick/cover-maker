@@ -1056,86 +1056,6 @@ input[type="range"]{
     addGrain(c, 0.04);
   }
 
-  function drawNightStadium(c){
-    const sky = c.createLinearGradient(0,0,0,H);
-    sky.addColorStop(0, '#050b1a');
-    sky.addColorStop(0.55, '#0a1530');
-    sky.addColorStop(1, '#111d38');
-    c.fillStyle = sky; c.fillRect(0,0,W,H);
-
-    for (let i=0;i<70;i++){
-      const seed = i*23.7;
-      const x = pseudoRand(seed)*W, y = pseudoRand(seed+1)*H*0.42;
-      const r = 0.4 + pseudoRand(seed+2)*0.8;
-      c.fillStyle = `rgba(255,255,255,${0.2 + pseudoRand(seed+3)*0.35})`;
-      c.beginPath(); c.arc(x, y, r, 0, Math.PI*2); c.fill();
-    }
-
-    softBlob(c, W*0.26, H*0.14, 280, '#dfe9ff');
-    c.fillStyle = 'rgba(255,255,255,0.9)';
-    c.beginPath(); c.arc(W*0.26, H*0.14, 13, 0, Math.PI*2); c.fill();
-
-    c.fillStyle = 'rgba(4,8,20,0.85)';
-    const buildings = [[0.55,0.22,0.045],[0.60,0.16,0.05],[0.66,0.27,0.04],[0.71,0.14,0.035],[0.76,0.20,0.05],[0.82,0.11,0.04],[0.87,0.25,0.05],[0.93,0.15,0.045],[0.97,0.19,0.04]];
-    buildings.forEach(([bx,bh,bw])=>{
-      const x = bx*W, w = bw*W, h = bh*H;
-      c.fillRect(x, H-h, w, h);
-    });
-    for (let i=0;i<40;i++){
-      const seed = i*17.3;
-      if (pseudoRand(seed+5) > 0.5){
-        const x = (0.52 + pseudoRand(seed)*0.46)*W;
-        const y = H - pseudoRand(seed+2)*H*0.26;
-        const bright = 0.3 + pseudoRand(seed+9)*0.4;
-        c.fillStyle = `rgba(255,${170+Math.round(pseudoRand(seed+7)*40)},120,${bright})`;
-        c.fillRect(x, y, 1.6, 1.6);
-      }
-    }
-
-    const ex = W*0.34, ey = H*0.64, erx = 280, ery = 108;
-
-    c.save();
-    c.globalCompositeOperation = 'lighter';
-    [-0.6,-0.2,0.2,0.6].forEach(off=>{
-      const bx = ex + erx*off;
-      const beam = c.createLinearGradient(bx, ey, bx+off*40, ey-260);
-      beam.addColorStop(0, 'rgba(180,225,255,0.16)');
-      beam.addColorStop(1, 'rgba(180,225,255,0)');
-      c.fillStyle = beam;
-      c.beginPath();
-      c.moveTo(bx-10, ey);
-      c.lineTo(bx+10, ey);
-      c.lineTo(bx+off*40+26, ey-260);
-      c.lineTo(bx+off*40-26, ey-260);
-      c.closePath();
-      c.fill();
-    });
-    c.restore();
-
-    const glow = c.createRadialGradient(ex,ey,10,ex,ey,360);
-    glow.addColorStop(0,'rgba(150,220,255,0.55)');
-    glow.addColorStop(0.5,'rgba(90,170,255,0.24)');
-    glow.addColorStop(1,'rgba(90,170,255,0)');
-    c.fillStyle = glow; c.fillRect(0,0,W,H);
-
-    c.save();
-    c.translate(ex,ey);
-    c.scale(1, ery/erx);
-    const bowlGrad = c.createRadialGradient(0,0,erx*0.15,0,0,erx);
-    bowlGrad.addColorStop(0,'rgba(220,245,255,0.9)');
-    bowlGrad.addColorStop(0.6,'rgba(120,190,255,0.48)');
-    bowlGrad.addColorStop(1,'rgba(60,120,220,0.04)');
-    c.fillStyle = bowlGrad;
-    c.beginPath(); c.arc(0,0,erx,0,Math.PI*2); c.fill();
-    c.strokeStyle = 'rgba(255,160,100,0.55)';
-    c.lineWidth = 2;
-    c.beginPath(); c.arc(0,0,erx*0.98,0,Math.PI*2); c.stroke();
-    c.restore();
-
-    softBlob(c, W*0.5, H*1.08, 500, '#1c3a66');
-    addGrain(c, 0.06);
-  }
-
   function drawArenaBowlBlueprint(c){
     const cx = W*0.5, cy = H*0.52;
     const rings = 6;
@@ -1417,12 +1337,6 @@ input[type="range"]{
       swatch:'#123fd6',
       text:'#ffffff', sub:'#cfe0ff',
       draw(c){ drawArenaBowlBlueprint(c); }
-    },
-    nightStadium: {
-      label:'Night Stadium',
-      swatch:'radial-gradient(circle at 34% 64%,#8fd7ff,transparent 45%),linear-gradient(180deg,#050b1a,#111d38)',
-      text:'#ffffff', sub:'#9fd8ff',
-      draw(c){ drawNightStadium(c); }
     }
   };
 
