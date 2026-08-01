@@ -1000,8 +1000,8 @@ input[type="range"]{
               <div class="field">
                 <label>Spacing above</label>
                 <div class="slider-row">
-                  <input type="range" id="subtitleGap" min="0" max="60" value="28">
-                  <span class="val" id="subtitleGapVal">28px</span>
+                  <input type="range" id="subtitleGap" min="0" max="60" value="30">
+                  <span class="val" id="subtitleGapVal">30px</span>
                 </div>
               </div>
             </div>
@@ -1134,7 +1134,7 @@ input[type="range"]{
     effectColor: '#000000',
     effectStrength: 40,
     tilt: 0,
-    subtitleGap: 28,
+    subtitleGap: 30,
     backdrop: { style: 'off', strength: 50 },
     decor: { shape: null, color: null },
     logo: { image: null, size: 160, x: 0.5, y: 0.5, zOrder: 'back' }
@@ -1364,20 +1364,6 @@ input[type="range"]{
         addGrain(c, 0.045);
       }
     },
-    meshAurora: {
-      label:'Mesh Aurora',
-      swatch:'radial-gradient(circle at 22% 30%,#2dd4bf,transparent 45%),radial-gradient(circle at 78% 25%,#c026d3,transparent 45%),radial-gradient(circle at 55% 85%,#4f46e5,transparent 50%),#0b0f1a',
-      text:'#ffffff', sub:'#7fe7d4',
-      draw(c){
-        const g = c.createLinearGradient(0,0,0,H);
-        g.addColorStop(0,'#0b0f1a'); g.addColorStop(1,'#12182c');
-        c.fillStyle=g; c.fillRect(0,0,W,H);
-        softBlob(c, W*0.22, H*0.30, 340, '#2dd4bf');
-        softBlob(c, W*0.78, H*0.25, 300, '#c026d3');
-        softBlob(c, W*0.55, H*0.9, 380, '#4f46e5');
-        addGrain(c, 0.07);
-      }
-    },
     grainPaper: {
       label:'Grain Paper',
       swatch:'#ece3d3',
@@ -1390,19 +1376,6 @@ input[type="range"]{
         g.addColorStop(1,'rgba(0,0,0,0.05)');
         c.fillStyle = g; c.fillRect(0,0,W,H);
         addGrain(c, 0.09);
-      }
-    },
-    spotlightGlow: {
-      label:'Spotlight Glow',
-      swatch:'radial-gradient(circle at 72% 32%,#ffd166,transparent 55%),#141414',
-      text:'#ffffff', sub:'#ffd166',
-      draw(c){
-        c.fillStyle = '#141414'; c.fillRect(0,0,W,H);
-        softBlob(c, W*0.72, H*0.32, 420, '#ffd166');
-        addGrain(c, 0.065);
-        const vg = c.createRadialGradient(W/2,H/2,H*0.3,W/2,H/2,H*1.05);
-        vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.4)');
-        c.fillStyle=vg; c.fillRect(0,0,W,H);
       }
     },
     quietArc: {
@@ -2315,7 +2288,7 @@ input[type="range"]{
     align:'center', vAlign:'middle',
     badge:false, badgeColor:'#fff3c4',
     effect:'none', effectColor:'#000000', effectStrength:40, tilt:0,
-    subtitleGap:28, subtitleFont:'system', subtitleSize:26,
+    subtitleGap:30, subtitleFont:'system', subtitleSize:26,
     bgType:'preset', decorShape:null,
     backdrop:{ style:'off', strength:50 }
   };
@@ -2488,7 +2461,7 @@ input[type="range"]{
     state.effectColor = '#000000';
     state.effectStrength = 40;
     state.tilt = 0;
-    state.subtitleGap = 28;
+    state.subtitleGap = 30;
     state.subtitleFont = 'system';
     state.subtitleSize = 26;
     state.backdrop = { style:'off', strength:50 };
@@ -2510,8 +2483,8 @@ input[type="range"]{
     effectStrengthVal.textContent = state.effectStrength;
     tiltSlider.value = 0;
     tiltVal.textContent = '0';
-    subtitleGapInput.value = 28;
-    subtitleGapVal.textContent = '28px';
+    subtitleGapInput.value = 30;
+    subtitleGapVal.textContent = '30px';
     subtitleFontSelect.value = 'system';
     subtitleSizeInput.value = 26;
     subtitleSizeVal.textContent = '26px';
