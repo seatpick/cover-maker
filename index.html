@@ -2710,30 +2710,38 @@ input[type="range"]{
 
   // ---------- wizard ----------
 
-  const TOPIC_COLOR_VARIANTS = {
-    soccer:     [{ bg:'#14532D', accent:'#A6FF3D' }, { bg:'#0B3D24', accent:'#FFFFFF' }],
-    football:   [{ bg:'#2B3A1E', accent:'#B5651D' }, { bg:'#3B2A1E', accent:'#D9A441' }],
-    basketball: [{ bg:'#D2601A', accent:'#1D1D1D' }, { bg:'#C9541F', accent:'#FFFFFF' }],
-    tennis:     [{ bg:'#2E7D32', accent:'#DCEE6B' }, { bg:'#1B5E20', accent:'#FFFFFF' }],
-    hockey:     [{ bg:'#0B2A4A', accent:'#FFFFFF' }, { bg:'#0D3B66', accent:'#9AA0A6' }],
-    baseball:   [{ bg:'#1D3B2A', accent:'#C41E3A' }, { bg:'#123420', accent:'#FFFFFF' }],
-    boxing:     [{ bg:'#8B0000', accent:'#111111' }, { bg:'#111111', accent:'#E8384F' }],
-    motorsport: [{ bg:'#111111', accent:'#E10600' }, { bg:'#1A1A1A', accent:'#F2C200' }],
-    pop:        [{ bg:'#FF3B8D', accent:'#FFE066' }, { bg:'#FF6FB0', accent:'#FFFFFF' }],
-    rock:       [{ bg:'#121212', accent:'#E8384F' }, { bg:'#1A1A1A', accent:'#9AA0A6' }],
-    metal:      [{ bg:'#0A0A0A', accent:'#9AA0A6' }, { bg:'#111111', accent:'#E8384F' }],
-    kpop:       [{ bg:'#F2A6D8', accent:'#6C4CE0' }, { bg:'#D6BCFA', accent:'#FF3B8D' }],
-    indie:      [{ bg:'#D9A441', accent:'#6B4A2E' }, { bg:'#C9A26B', accent:'#3A2DE0' }],
-    hiphop:     [{ bg:'#111111', accent:'#D4AF37' }, { bg:'#1A1A1A', accent:'#FFFFFF' }],
-    edm:        [{ bg:'#0A0A2A', accent:'#00E5FF' }, { bg:'#12123A', accent:'#FF3B8D' }],
-    latin:      [{ bg:'#C9302C', accent:'#FFC72C' }, { bg:'#E8384F', accent:'#FFFFFF' }],
-    country:    [{ bg:'#6B4226', accent:'#D9A441' }, { bg:'#4A2E1A', accent:'#FFFFFF' }]
+  const TOPIC_STYLE = {
+    soccer:     { colors:[{bg:'#14532D',accent:'#A6FF3D'},{bg:'#0B3D24',accent:'#FFFFFF'},{bg:'#1B5E20',accent:'#DCEE6B'}], fonts:['anton','bebas','archivo'], effects:['shadow','outline','hardShadow'], presets:['solidPitch','quietArc'], decor:[null,null,'blob'] },
+    football:   { colors:[{bg:'#2B3A1E',accent:'#B5651D'},{bg:'#3B2A1E',accent:'#D9A441'},{bg:'#1F2A14',accent:'#E8C77A'}], fonts:['anton','bebas','archivo'], effects:['shadow','hardShadow','extrude'], presets:['grainPaper','stadiumCrowd'], decor:[null] },
+    basketball: { colors:[{bg:'#D2601A',accent:'#1D1D1D'},{bg:'#C9541F',accent:'#FFFFFF'},{bg:'#E06A22',accent:'#111111'}], fonts:['anton','bebas','bangers'], effects:['hardShadow','outline','extrude'], presets:['deepGlow'], decor:[null,'starburst'] },
+    tennis:     { colors:[{bg:'#2E7D32',accent:'#DCEE6B'},{bg:'#1B5E20',accent:'#FFFFFF'},{bg:'#33691E',accent:'#F0F4C3'}], fonts:['archivo','bebas','playfair'], effects:['shadow','none','outline'], presets:['sageMinimal'], decor:[null] },
+    hockey:     { colors:[{bg:'#0B2A4A',accent:'#FFFFFF'},{bg:'#0D3B66',accent:'#9AA0A6'},{bg:'#123A5E',accent:'#CFE8FF'}], fonts:['anton','bebas','archivo'], effects:['neonTube','hardShadow','shadow'], presets:['deepGlow','quietArc'], decor:[null] },
+    baseball:   { colors:[{bg:'#1D3B2A',accent:'#C41E3A'},{bg:'#123420',accent:'#FFFFFF'},{bg:'#1B4332',accent:'#F4D35E'}], fonts:['bebas','archivo','anton'], effects:['shadow','hardShadow','outline'], presets:['grainPaper'], decor:[null] },
+    boxing:     { colors:[{bg:'#8B0000',accent:'#111111'},{bg:'#111111',accent:'#E8384F'},{bg:'#3A0000',accent:'#FFFFFF'}], fonts:['anton','bebas','bangers'], effects:['hardShadow','extrude','chromatic'], presets:['deepGlow','solidBlack'], decor:[null,'starburst'] },
+    motorsport: { colors:[{bg:'#111111',accent:'#E10600'},{bg:'#1A1A1A',accent:'#F2C200'},{bg:'#0D0D0D',accent:'#00D2FF'}], fonts:['anton','archivo','bebas'], effects:['chromatic','neonTube','hardShadow'], presets:['quietArc'], decor:[null] },
+    pop:        { colors:[{bg:'#FF3B8D',accent:'#FFE066'},{bg:'#FF6FB0',accent:'#FFFFFF'},{bg:'#FF8FC7',accent:'#6C4CE0'}], fonts:['chewy','bangers','pacifico'], effects:['highlighter','outline','twoTone'], presets:['bubbleCluster'], decor:[null,'blob'] },
+    rock:       { colors:[{bg:'#121212',accent:'#E8384F'},{bg:'#1A1A1A',accent:'#9AA0A6'},{bg:'#0A0A0A',accent:'#FF3B3B'}], fonts:['bangers','anton','graffiti'], effects:['extrude','chromatic','hardShadow'], presets:['solidBlack','deepGlow'], decor:[null,'starburst'] },
+    metal:      { colors:[{bg:'#0A0A0A',accent:'#9AA0A6'},{bg:'#111111',accent:'#E8384F'},{bg:'#000000',accent:'#C0C0C0'}], fonts:['graffiti','bangers','anton'], effects:['neonTube','chromatic','extrude'], presets:['solidBlack'], decor:[null] },
+    kpop:       { colors:[{bg:'#F2A6D8',accent:'#6C4CE0'},{bg:'#D6BCFA',accent:'#FF3B8D'},{bg:'#FBD1E8',accent:'#7C3AED'}], fonts:['chewy','pacifico','fredoka'], effects:['twoTone','highlighter','outline'], presets:['bubbleCluster','softWave'], decor:[null,'blob'] },
+    indie:      { colors:[{bg:'#D9A441',accent:'#6B4A2E'},{bg:'#C9A26B',accent:'#3A2DE0'},{bg:'#E4C489',accent:'#2B2B2B'}], fonts:['caveat','playfair','marker'], effects:['none','shadow','outline'], presets:['grainPaper','warmSand'], decor:[null] },
+    hiphop:     { colors:[{bg:'#111111',accent:'#D4AF37'},{bg:'#1A1A1A',accent:'#FFFFFF'},{bg:'#0D0D0D',accent:'#F2C200'}], fonts:['graffiti','anton','bangers'], effects:['hardShadow','extrude','chromatic'], presets:['solidBlack','deepGlow'], decor:[null,'starburst'] },
+    edm:        { colors:[{bg:'#0A0A2A',accent:'#00E5FF'},{bg:'#12123A',accent:'#FF3B8D'},{bg:'#160A3A',accent:'#7C3AED'}], fonts:['bebas','anton','archivo'], effects:['neonTube','glow','chromatic'], presets:['deepGlow','quietArc'], decor:[null] },
+    latin:      { colors:[{bg:'#C9302C',accent:'#FFC72C'},{bg:'#E8384F',accent:'#FFFFFF'},{bg:'#D9432C',accent:'#FFE066'}], fonts:['bangers','pacifico','chewy'], effects:['outline','highlighter','twoTone'], presets:['bubbleCluster'], decor:[null,'blob'] },
+    country:    { colors:[{bg:'#6B4226',accent:'#D9A441'},{bg:'#4A2E1A',accent:'#FFFFFF'},{bg:'#5C3A22',accent:'#F0D9A6'}], fonts:['caveat','playfair','marker'], effects:['none','shadow','outline'], presets:['warmSand','grainPaper'], decor:[null] }
   };
-  const VIBE_STYLE_VARIANTS = {
-    fun:          [{ font:'chewy', effect:'highlighter', effectStrength:40, tilt:-3 }, { font:'bangers', effect:'outline', effectStrength:45, tilt:-4 }],
-    serious:      [{ font:'anton', effect:'shadow', effectStrength:45, tilt:0 }, { font:'bebas', effect:'glow', effectStrength:40, tilt:0 }],
-    professional: [{ font:'archivo', effect:'none', effectStrength:40, tilt:0 }, { font:'playfair', effect:'none', effectStrength:40, tilt:0 }]
+  const FONT_TAGS = { anton:['bold'], bebas:['bold'], archivo:['clean','bold'], fredoka:['fun'], chewy:['fun'], bangers:['fun','edgy'], pacifico:['fun','elegant'], playfair:['elegant','clean'], marker:['fun','edgy'], caveat:['fun'], graffiti:['edgy','fun'] };
+  const EFFECT_TAGS = { none:['clean'], shadow:['clean','bold'], outline:['fun','bold'], glow:['bold','edgy'], extrude:['bold','edgy'], chromatic:['edgy'], twoTone:['fun'], highlighter:['fun'], neonTube:['edgy','bold'], hardShadow:['bold','fun'] };
+  const VIBE_CONFIG = {
+    fun:          { tags:['fun','edgy'], strength:[35,60], tilt:[-6,6] },
+    serious:      { tags:['bold','edgy'], strength:[35,55], tilt:[-2,2] },
+    professional: { tags:['clean','elegant'], strength:[0,30], tilt:[0,0] }
   };
+  function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function randInt(range){ return Math.round(range[0] + Math.random()*(range[1]-range[0])); }
+  function pickTagged(pool, tagMap, allowedTags){
+    const filtered = pool.filter(key => (tagMap[key]||[]).some(t => allowedTags.includes(t)));
+    return pickRandom(filtered.length ? filtered : pool);
+  }
 
   let wizardTopic = null, wizardVibe = null;
   const wizardOverlay = document.getElementById('wizardOverlay');
@@ -2770,40 +2778,57 @@ input[type="range"]{
   });
 
   function applyWizardVariant(){
-    const colorVariants = TOPIC_COLOR_VARIANTS[wizardTopic];
-    const styleVariants = VIBE_STYLE_VARIANTS[wizardVibe];
-    if (!colorVariants || !styleVariants) return;
-    const colors = colorVariants[Math.floor(Math.random()*colorVariants.length)];
-    const style = styleVariants[Math.floor(Math.random()*styleVariants.length)];
-    const textColor = autoContrastColor(colors.bg);
+    const topic = TOPIC_STYLE[wizardTopic];
+    const vibe = VIBE_CONFIG[wizardVibe];
+    if (!topic || !vibe) return;
 
-    state.bg = { type:'color', color: colors.bg, image:null };
-    state.decor = { shape:null, color:null };
-    state.font = style.font;
-    state.headlineColor = textColor;
-    state.subtitleColor = textColor;
-    state.effect = style.effect;
-    state.effectColor = colors.accent;
-    state.effectStrength = style.effectStrength;
-    state.tilt = style.tilt;
+    const colors = pickRandom(topic.colors);
+    const font = pickTagged(topic.fonts, FONT_TAGS, vibe.tags);
+    const effect = pickTagged(topic.effects, EFFECT_TAGS, vibe.tags);
+    const effectStrength = randInt(vibe.strength);
+    const tilt = randInt(vibe.tilt);
+    const usePreset = topic.presets.length && Math.random() < 0.35;
+    const presetKey = usePreset ? pickRandom(topic.presets) : null;
+    const decorShape = !usePreset ? pickRandom(topic.decor) : null;
+
+    let headlineColor, subtitleColor, effectColor;
+    if (usePreset){
+      state.bg = { type:'preset', key: presetKey, image:null };
+      headlineColor = PRESETS[presetKey].text;
+      subtitleColor = PRESETS[presetKey].sub;
+      effectColor = PRESETS[presetKey].sub;
+    } else {
+      state.bg = { type:'color', color: colors.bg, image:null };
+      headlineColor = autoContrastColor(colors.bg);
+      subtitleColor = headlineColor;
+      effectColor = colors.accent;
+    }
+    state.decor = { shape: decorShape, color: colors.accent };
+    state.font = font;
+    state.headlineColor = headlineColor;
+    state.subtitleColor = subtitleColor;
+    state.effect = effect;
+    state.effectColor = effectColor;
+    state.effectStrength = effectStrength;
+    state.tilt = tilt;
 
     const wizHeadline = document.getElementById('wizardHeadline').value.trim();
     const wizSubtitle = document.getElementById('wizardSubtitle').value.trim();
     if (wizHeadline){ state.headline = wizHeadline; headlineInput.value = wizHeadline; }
     if (wizSubtitle){ state.subtitle = wizSubtitle; subtitleInput.value = wizSubtitle; }
 
-    fontSelect.value = style.font;
-    headlineColorInput.value = textColor;
-    subtitleColorInput.value = textColor;
-    headlineColorHex.textContent = textColor.toUpperCase();
-    subtitleColorHex.textContent = textColor.toUpperCase();
-    effectSelect.value = style.effect;
-    effectColorInput.value = colors.accent;
-    effectColorHex.textContent = colors.accent.toUpperCase();
-    effectStrengthInput.value = style.effectStrength;
-    effectStrengthVal.textContent = style.effectStrength;
-    tiltSlider.value = style.tilt;
-    tiltVal.textContent = style.tilt;
+    fontSelect.value = font;
+    headlineColorInput.value = headlineColor;
+    subtitleColorInput.value = subtitleColor;
+    headlineColorHex.textContent = headlineColor.toUpperCase();
+    subtitleColorHex.textContent = subtitleColor.toUpperCase();
+    effectSelect.value = effect;
+    effectColorInput.value = effectColor;
+    effectColorHex.textContent = effectColor.toUpperCase();
+    effectStrengthInput.value = effectStrength;
+    effectStrengthVal.textContent = effectStrength;
+    tiltSlider.value = tilt;
+    tiltVal.textContent = tilt;
 
     uploadBtn.classList.remove('has-file');
     uploadBtn.textContent = 'Upload a photo...';
