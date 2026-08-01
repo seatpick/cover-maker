@@ -112,13 +112,17 @@ The stage column (left) has the canvas, safe-zone toggle, size estimate,
 and (below all of that, collapsed by default) the "Preview in a blog"
 mockups.
 
-## Team backgrounds (real licensed photos)
+## Team backgrounds (licensed photos & illustrations)
 
 A small, separate gallery above the procedural presets, for actual
-photos the team has the rights to use — currently two: **Match Night**
-(aerial night stadium) and **Goal Net** (ball hitting the net, close
-crop). Unlike everything else in this tool, these are real raster
-images, not canvas-drawn recreations.
+licensed imagery the team has the rights to use. Two real photos —
+**Match Night** (aerial night stadium) and **Goal Net** (ball hitting
+the net, close crop) — plus eight licensed illustration/graphic assets:
+**Purple Circles, Record Player, Squiggly Sparkle, Teal Orbs, Halftone
+Record, Starburst Pop, Hand-Drawn Flowers, Ribbon Gradient**. Unlike
+everything else in this tool, these are real raster images, not
+canvas-drawn recreations — same embed technique applies to both
+photos and illustrations.
 
 **How it works:** each one is baked directly into `template.html` as a
 base64 data URI (`registerTeamBackground(key, label, dataUri, ...)`,
@@ -254,6 +258,13 @@ single greedy word-wrap would.
 - **Subtitle spacing**: slider (`state.subtitleGap`, default 28px, range
   0–60), was a hardcoded constant. Default raised from 18px after
   feedback that headline and subtitle read as too cramped together.
+- **Text backdrop**: `state.backdrop = { style: 'off'|'dark'|'light', strength }`
+  draws a translucent rounded panel sized to the headline+subtitle
+  bounding box, behind the text (before badge/effects). Solves
+  legibility on busy/illustrated backgrounds without lowering text
+  opacity itself (which would only make text harder to read) — a
+  scrim behind the text instead. Off by default; lives in the Effects
+  section next to Tilt.
 - **Vertical centering** (top/middle/bottom) uses real font metrics —
   `ctx.measureText(...).actualBoundingBoxAscent` / `actualBoundingBoxDescent`
   on the actual first/last rendered line — rather than a fixed guess.
