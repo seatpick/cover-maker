@@ -316,7 +316,15 @@ over budget the tool shows a warning with a one-click "switch to WEBP".
        .replace('__CAIRO_LATIN_BASE64__', load_b64('fonts/cairo-latin.b64'))
        .replace('__CAIRO_ARABIC_BASE64__', load_b64('fonts/cairo-arabic.b64'))
        .replace('__MATCH_NIGHT_BASE64__', load_b64('backgrounds/match-night.b64'))
-       .replace('__GOAL_NET_BASE64__', load_b64('backgrounds/goal-net.b64')))
+       .replace('__GOAL_NET_BASE64__', load_b64('backgrounds/goal-net.b64'))
+       .replace('__PURPLE_CIRCLES_BASE64__', load_b64('backgrounds/purpleCircles.b64'))
+       .replace('__RECORD_PLAYER_BASE64__', load_b64('backgrounds/recordPlayer.b64'))
+       .replace('__SQUIGGLY_SPARKLE_BASE64__', load_b64('backgrounds/squigglySparkle.b64'))
+       .replace('__TEAL_ORBS_BASE64__', load_b64('backgrounds/tealOrbs.b64'))
+       .replace('__HALFTONE_RECORD_BASE64__', load_b64('backgrounds/halftoneRecord.b64'))
+       .replace('__STARBURST_POP_BASE64__', load_b64('backgrounds/starburstPop.b64'))
+       .replace('__HAND_DRAWN_FLOWERS_BASE64__', load_b64('backgrounds/handDrawnFlowers.b64'))
+       .replace('__RIBBON_GRADIENT_BASE64__', load_b64('backgrounds/ribbonGradient.b64')))
    open('artifact.html', 'w', encoding='utf-8').write(fragment)
 
    marker = '<div class="wrap">'
