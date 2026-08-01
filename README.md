@@ -72,7 +72,7 @@ and both Headline/Subtitle text groups each have their own **Clear**
 button, separate from the global "Reset to defaults" in Export.
 
 1. **Quick start — templates**: one merged gallery, 4 cards per row
-   (same grid as Backgrounds), 19 entries total, capped at 12 with a
+   (same grid as Backgrounds), 26 entries total, capped at 12 with a
    "Show more" toggle; a filter box searches by name. Cards show just
    the template name now — the "font + effect" subtitle on each card
    was removed per feedback that names alone are enough. This used to
@@ -222,7 +222,7 @@ single greedy word-wrap would.
 
 - **Pill badge**: rounded chip behind the headline (no underline — that
   was removed per feedback).
-- **Text effects**: None, Drop shadow, Outline, Glow, 3D Extrude, plus 4
+- **Text effects**: None, Drop shadow, Outline, Glow, 3D Extrude, plus 5
   added later from reference style images:
   - **Chromatic Split** — red + cyan offset copies behind the main fill,
     a glitch/RGB-split look (see the "Planet Arcadia" template).
@@ -234,6 +234,11 @@ single greedy word-wrap would.
     pen mark (see "Highlight My Words").
   - **Neon Tube** — stroke-only text (no fill) with a strong glow, reads
     as a hollow neon-tube outline.
+  - **Hard Shadow** — a single crisp, unblurred offset duplicate behind
+    the main fill (unlike Drop Shadow, which is blurred, or 3D Extrude,
+    which stacks 8 copies) — the flat "bubble-letter" shadow look from
+    packaging/poster design (see "Velvet Vibes", "Color Shadow",
+    "Streaming Now").
   All effects use the same color + strength slider (where applicable),
   and reset after the headline draws so they never bleed into the
   subtitle. (The "Feature Spotlight", "After Dark", "Marker Tag", and

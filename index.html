@@ -1039,6 +1039,7 @@ input[type="range"]{
                 <option value="twoTone">Two-Tone Lines</option>
                 <option value="highlighter">Highlighter Marker</option>
                 <option value="neonTube">Neon Tube</option>
+                <option value="hardShadow">Hard Shadow</option>
               </select>
             </div>
             <div class="field">
@@ -1679,6 +1680,11 @@ input[type="range"]{
         c.fillStyle = 'rgba(40,220,255,0.85)';
         c.fillText(line, xPos + off, y);
         c.fillStyle = state.headlineColor;
+      } else if (state.effect === 'hardShadow'){
+        const off = 3 + state.effectStrength*0.15;
+        c.fillStyle = state.effectColor;
+        c.fillText(line, xPos + off, y + off);
+        c.fillStyle = state.headlineColor;
       } else if (state.effect === 'neonTube'){
         c.lineJoin = 'round';
         c.lineWidth = 2 + state.effectStrength*0.08;
@@ -2306,7 +2312,25 @@ input[type="range"]{
       bg:'#111111', bgType:'color', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#ffffff',
       effect:'highlighter', effectColor:'#FF7A1A', effectStrength:40, tilt:-2 },
     { key:'editorialGenre', name:'Editorial', desc:'Archivo Black, clean',
-      bg:'#6B7B4F', bgType:'color', font:'archivo', headlineColor:'#F5F2E8', subtitleColor:'#F5F2E8' }
+      bg:'#6B7B4F', bgType:'color', font:'archivo', headlineColor:'#F5F2E8', subtitleColor:'#F5F2E8' },
+    { key:'velvetVibes', name:'Velvet Vibes', desc:'Chewy + hard shadow, bubbly',
+      bg:'#8B5CF6', bgType:'color', font:'chewy', headlineColor:'#FFFFFF', subtitleColor:'#FFFFFF',
+      effect:'hardShadow', effectColor:'#F2568C', effectStrength:60, tilt:-3 },
+    { key:'colorShadow', name:'Color Shadow', desc:'Archivo Black + hard shadow',
+      bg:'#E8E4DC', bgType:'color', font:'archivo', headlineColor:'#123B3A', subtitleColor:'#123B3A',
+      effect:'hardShadow', effectColor:'#6EE7B7', effectStrength:55, tilt:0 },
+    { key:'streamingNow', name:'Streaming Now', desc:'Fredoka + hard shadow, bubbly',
+      bg:'#F2A6D8', bgType:'color', font:'fredoka', headlineColor:'#FFFFFF', subtitleColor:'#FFFFFF',
+      effect:'hardShadow', effectColor:'#2F7A4F', effectStrength:55, tilt:0 },
+    { key:'ivyAndBrie', name:'Ivy & Brie', desc:'Playfair Display, elegant',
+      bg:'#C9B8E8', bgType:'color', font:'playfair', headlineColor:'#5B2A86', subtitleColor:'#5B2A86' },
+    { key:'todayBold', name:'Today', desc:'Fredoka + outline',
+      bg:'#FF7A1A', bgType:'color', font:'fredoka', headlineColor:'#FFFFFF', subtitleColor:'#FFFFFF',
+      effect:'outline', effectColor:'#FFE066', effectStrength:55, tilt:0 },
+    { key:'teamSync', name:'Team Sync', desc:'Archivo Black, clean minimal',
+      bg:'#6B7A6D', bgType:'color', font:'archivo', headlineColor:'#F5F2E8', subtitleColor:'#F5F2E8' },
+    { key:'loveEditorial', name:'Love', desc:'Playfair Display, editorial',
+      bg:'#F7F4EE', bgType:'color', font:'playfair', headlineColor:'#141413', subtitleColor:'#141413' }
   ].map(t => Object.assign({}, TPL_DEFAULTS, t));
 
   const templatesEl = document.getElementById('templates');
