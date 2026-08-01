@@ -32,20 +32,26 @@ runtime (everything — including all 13 display fonts — is inlined).
 ## The "Build my cover" wizard
 
 A green **"✨ Build my cover"** button in the masthead opens a modal:
-headline + subtitle text fields, a Topic picker (grouped **Sports** —
-Soccer/Football/Basketball/Tennis — and **Music** — Pop/Rock/Metal/
-K-Pop/Indie), and a Vibe picker (Fun/Serious/Professional). Hitting
-"Build it" applies a cover in one click.
+headline + subtitle text fields, a Topic picker (**Sports** — Soccer,
+Football, Basketball, Tennis, Hockey, Baseball, Boxing, Motorsport —
+and **Music** — Pop, Rock, Metal, K-Pop, Indie, Hip-Hop, EDM, Latin,
+Country — 17 topics total), and a Vibe picker (Fun/Serious/
+Professional). "Build it" applies a cover and closes the modal; a small
+🎲 button next to it re-rolls a fresh variation for the same topic/vibe
+without closing, so you can shuffle through options before committing.
 
 This does **not** reuse the template gallery — it's a small generative
-system of its own: `TOPIC_COLORS` gives each topic a background + accent
-color pair chosen to actually look like the topic (Tennis is court-green
-`#2E7D32` + tennis-ball yellow-green, Soccer is pitch-green, Basketball
-is orange+black, Rock is black+red, Metal is black+silver, K-Pop is
-pastel pink+purple, etc.) and `VIBE_STYLE` gives each vibe a font +
-effect + tilt (Fun → Chewy + highlighter blocks + tilt, Serious → Anton
-+ drop shadow, Professional → Archivo Black + clean/no effect). The two
-combine into `bg`/`headlineColor`/`subtitleColor`/`font`/`effect`/
+system of its own. `TOPIC_COLOR_VARIANTS` gives each topic **two**
+background+accent color-pair options chosen to actually look like the
+topic (Tennis is court-green `#2E7D32` + tennis-ball yellow-green,
+Soccer is pitch-green, Basketball is orange+black, Boxing is deep
+red/black, Hip-Hop is black+gold, EDM is midnight-blue+cyan, etc.), and
+`VIBE_STYLE_VARIANTS` gives each vibe **two** font+effect+tilt options
+(Fun → Chewy+highlighter or Bangers+outline, Serious → Anton+shadow or
+Bebas+glow, Professional → Archivo Black or Playfair Display, both
+clean/no effect). Build/Shuffle pick a random variant from each side —
+2 colors × 2 styles = 4 possible looks per topic/vibe pair, not just 1 —
+then combine into `bg`/`headlineColor`/`subtitleColor`/`font`/`effect`/
 `effectColor`/`tilt`, applied the same way a template click is. Headline/
 subtitle text is set from the modal's own fields — deliberately not
 AI-generated copy, just carrying over what you typed in the wizard.
@@ -53,7 +59,10 @@ AI-generated copy, just carrying over what you typed in the wizard.
 An earlier version mapped topic+vibe to existing template *cards*
 instead of generating colors directly — replaced after feedback that it
 didn't give accurate-enough colors per topic (e.g. Tennis should read
-green, and reusing an unrelated template didn't guarantee that).
+green, and reusing an unrelated template didn't guarantee that). The
+topic list and per-topic/vibe variation count both grew after a direct
+follow-up ask to add more options and make the results feel less
+repetitive/more "smart."
 
 ## Layout / sections (rail, top to bottom)
 
@@ -63,15 +72,21 @@ and both Headline/Subtitle text groups each have their own **Clear**
 button, separate from the global "Reset to defaults" in Export.
 
 1. **Quick start — templates**: one merged gallery, 4 cards per row
-   (same grid as Backgrounds), 23 entries total, capped at 12 with a
-   "Show more" toggle; a filter box searches by name. This used to be
-   two separate galleries — a curated "Quick start" template list and a
-   "Template Style" genre gallery (3 colors + font + effect bundles named
-   by genre, e.g. K-Pop, Soccer) — merged into one after direct feedback
-   that they served the same purpose. Picking a card fills every text/
-   effect control; any control can still be overridden after. Logo
-   overlay and uploaded/saved photos are untouched by card clicks —
-   those are user content, not style.
+   (same grid as Backgrounds), 19 entries total, capped at 12 with a
+   "Show more" toggle; a filter box searches by name. Cards show just
+   the template name now — the "font + effect" subtitle on each card
+   was removed per feedback that names alone are enough. This used to
+   be two separate galleries — a curated "Quick start" template list
+   and a "Template Style" genre gallery (3 colors + font + effect
+   bundles named by genre, e.g. K-Pop, Soccer) — merged into one after
+   direct feedback that they served the same purpose; four of the
+   original genre cards (Festival, Comic Hype, Motivation, Concert Glow)
+   were removed again in a later cleanup pass, and K-Pop/New Drop were
+   redesigned (K-Pop: pastel pink + purple instead of hot pink + white;
+   New Drop: black background + neon-green glow instead of tan/brown).
+   Picking a card fills every text/effect control; any control can
+   still be overridden after. Logo overlay and uploaded/saved photos
+   are untouched by card clicks — those are user content, not style.
 2. **Background**: a "Team backgrounds" gallery (real licensed photos,
    baked into the tool — see below), a "Backgrounds" gallery (18
    procedural/canvas-drawn presets, capped at 12 + "Show more", plus a
@@ -231,8 +246,9 @@ single greedy word-wrap would.
   sticker-style headline (see "New Drop"). Flair originally used a tilt
   too but had it removed after feedback that it made the headline read
   as misaligned rather than stylized.
-- **Subtitle spacing**: slider (`state.subtitleGap`, default 18px, range
-  0–60), was a hardcoded constant.
+- **Subtitle spacing**: slider (`state.subtitleGap`, default 28px, range
+  0–60), was a hardcoded constant. Default raised from 18px after
+  feedback that headline and subtitle read as too cramped together.
 - **Vertical centering** (top/middle/bottom) uses real font metrics —
   `ctx.measureText(...).actualBoundingBoxAscent` / `actualBoundingBoxDescent`
   on the actual first/last rendered line — rather than a fixed guess.

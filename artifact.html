@@ -534,21 +534,21 @@ input[type="range"]{
   overflow:hidden;
   display:flex;
   flex-direction:column;
-  justify-content:flex-end;
+  justify-content:center;
 }
 .tpl-card.active{border-color:var(--accent);}
 .tpl-card::before{
   content:'';
   position:absolute;
   inset:0;
-  background:linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,0.5) 100%);
+  background:linear-gradient(180deg, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.32) 100%);
   z-index:0;
 }
 .tpl-card .tpl-name{
   position:relative;
   z-index:1;
   display:block;
-  font-size:10.5px;
+  font-size:12px;
   font-weight:700;
   color:#fff;
   text-shadow:0 1px 3px rgba(0,0,0,0.55);
@@ -714,6 +714,10 @@ input[type="range"]{
           <button class="wizard-chip" type="button" data-topic="football">Football</button>
           <button class="wizard-chip" type="button" data-topic="basketball">Basketball</button>
           <button class="wizard-chip" type="button" data-topic="tennis">Tennis</button>
+          <button class="wizard-chip" type="button" data-topic="hockey">Hockey</button>
+          <button class="wizard-chip" type="button" data-topic="baseball">Baseball</button>
+          <button class="wizard-chip" type="button" data-topic="boxing">Boxing</button>
+          <button class="wizard-chip" type="button" data-topic="motorsport">Motorsport</button>
         </div>
         <p class="wizard-group-label">Music</p>
         <div class="wizard-chips" id="wizardTopicsMusic">
@@ -722,6 +726,10 @@ input[type="range"]{
           <button class="wizard-chip" type="button" data-topic="metal">Metal</button>
           <button class="wizard-chip" type="button" data-topic="kpop">K-Pop</button>
           <button class="wizard-chip" type="button" data-topic="indie">Indie</button>
+          <button class="wizard-chip" type="button" data-topic="hiphop">Hip-Hop</button>
+          <button class="wizard-chip" type="button" data-topic="edm">EDM</button>
+          <button class="wizard-chip" type="button" data-topic="latin">Latin</button>
+          <button class="wizard-chip" type="button" data-topic="country">Country</button>
         </div>
       </div>
       <div class="wizard-step">
@@ -732,7 +740,10 @@ input[type="range"]{
           <button class="wizard-chip" type="button" data-vibe="professional">Professional</button>
         </div>
       </div>
-      <button class="btn" id="wizardBuildBtn" type="button" disabled>Build it</button>
+      <div class="row">
+        <button class="btn" id="wizardBuildBtn" type="button" style="flex:1;" disabled>Build it</button>
+        <button class="btn ghost" id="wizardShuffleBtn" type="button" title="Try another variation" style="flex:none;width:auto;margin-top:0;padding:12px 16px;" disabled>&#127922;</button>
+      </div>
     </div>
   </div>
 
@@ -989,8 +1000,8 @@ input[type="range"]{
               <div class="field">
                 <label>Spacing above</label>
                 <div class="slider-row">
-                  <input type="range" id="subtitleGap" min="0" max="60" value="18">
-                  <span class="val" id="subtitleGapVal">18px</span>
+                  <input type="range" id="subtitleGap" min="0" max="60" value="28">
+                  <span class="val" id="subtitleGapVal">28px</span>
                 </div>
               </div>
             </div>
@@ -1105,7 +1116,7 @@ input[type="range"]{
     effectColor: '#000000',
     effectStrength: 40,
     tilt: 0,
-    subtitleGap: 18,
+    subtitleGap: 28,
     decor: { shape: null, color: null },
     logo: { image: null, size: 160, x: 0.5, y: 0.5, zOrder: 'back' }
   };
@@ -2237,7 +2248,7 @@ input[type="range"]{
     align:'center', vAlign:'middle',
     badge:false, badgeColor:'#fff3c4',
     effect:'none', effectColor:'#000000', effectStrength:40, tilt:0,
-    subtitleGap:18, subtitleFont:'system', subtitleSize:26,
+    subtitleGap:28, subtitleFont:'system', subtitleSize:26,
     bgType:'preset', decorShape:null
   };
 
@@ -2258,9 +2269,9 @@ input[type="range"]{
       bg:'stoneGray', font:'playfair', headlineColor:'#2a271f', subtitleColor:'#514c3e' },
     { key:'oliveField', name:'Olive Field', desc:'Olive Note + Archivo Black',
       bg:'oliveNote', font:'archivo', headlineColor:'#f5f2e8', subtitleColor:'#dcd8c4' },
-    { key:'newDrop', name:'New Drop', desc:'Warm Sand + Chewy + neon shadow',
-      bg:'warmSand', font:'chewy', headlineColor:'#3b2a1e', subtitleColor:'#5a482c',
-      effect:'shadow', effectColor:'#b6ff6e', effectStrength:70, tilt:-6 },
+    { key:'newDrop', name:'New Drop', desc:'Minimal Black + Chewy + neon glow',
+      bg:'#111111', bgType:'color', font:'chewy', headlineColor:'#ffffff', subtitleColor:'#ffffff',
+      effect:'glow', effectColor:'#b6ff6e', effectStrength:60, tilt:-4 },
     { key:'planetArcadia', name:'Planet Arcadia', desc:'Stone Gray + Archivo Black + chromatic split',
       bg:'stoneGray', font:'archivo', headlineColor:'#14141a', subtitleColor:'#4a4a4a',
       effect:'chromatic', effectColor:'#000000', effectStrength:55, tilt:0 },
@@ -2278,29 +2289,17 @@ input[type="range"]{
     { key:'neonEditorial', name:'Neon Editorial', desc:'Quiet Arc + Bebas Neue + glow',
       bg:'quietArc', font:'bebas', headlineColor:'#c6ff6b', subtitleColor:'#c6ff6b',
       effect:'glow', effectColor:'#c6ff6b', effectStrength:50, tilt:0 },
-    { key:'kpop', name:'K-Pop', desc:'Fredoka + highlighter marker',
-      bg:'#FF3B8D', bgType:'color', font:'fredoka', headlineColor:'#ffffff', subtitleColor:'#ffffff',
-      effect:'highlighter', effectColor:'#FFE066', effectStrength:40, tilt:-3 },
+    { key:'kpop', name:'K-Pop', desc:'Fredoka + highlighter marker, pastel glam',
+      bg:'#FFD6E8', bgType:'color', font:'fredoka', headlineColor:'#6C4CE0', subtitleColor:'#6C4CE0',
+      effect:'highlighter', effectColor:'#6EE7B7', effectStrength:40, tilt:-3 },
     { key:'soccer', name:'Soccer', desc:'Archivo Black + shadow',
       bg:'#0B3D24', bgType:'color', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#ffffff',
       effect:'shadow', effectColor:'#A6FF3D', effectStrength:45, tilt:0 },
-    { key:'festival', name:'Festival', desc:'Chewy + blob shape',
-      bg:'#FF7A1A', bgType:'color', font:'chewy', headlineColor:'#FFE066', subtitleColor:'#FFE066',
-      tilt:-4, decorShape:'blob', effectColor:'#FFFFFF' },
-    { key:'comicHype', name:'Comic Hype', desc:'Bangers + starburst + outline',
-      bg:'#E8384F', bgType:'color', font:'bangers', headlineColor:'#FFD23F', subtitleColor:'#FFD23F',
-      effect:'outline', effectColor:'#111111', effectStrength:50, tilt:0, decorShape:'starburst' },
-    { key:'motivation', name:'Motivation', desc:'Chewy + blob shape',
-      bg:'#FCE38A', bgType:'color', font:'chewy', headlineColor:'#3A2DE0', subtitleColor:'#3A2DE0',
-      tilt:0, decorShape:'blob', effectColor:'#F2A6D8' },
     { key:'streetwear', name:'Streetwear', desc:'Archivo Black + highlighter marker',
       bg:'#111111', bgType:'color', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#ffffff',
       effect:'highlighter', effectColor:'#FF7A1A', effectStrength:40, tilt:-2 },
     { key:'editorialGenre', name:'Editorial', desc:'Archivo Black, clean',
-      bg:'#6B7B4F', bgType:'color', font:'archivo', headlineColor:'#F5F2E8', subtitleColor:'#F5F2E8' },
-    { key:'concertGlow', name:'Concert Glow', desc:'Bangers + neon tube',
-      bg:'#0A0A14', bgType:'color', font:'bangers', headlineColor:'#ffffff', subtitleColor:'#ffffff',
-      effect:'neonTube', effectColor:'#7FE7D4', effectStrength:60, tilt:0 }
+      bg:'#6B7B4F', bgType:'color', font:'archivo', headlineColor:'#F5F2E8', subtitleColor:'#F5F2E8' }
   ].map(t => Object.assign({}, TPL_DEFAULTS, t));
 
   const templatesEl = document.getElementById('templates');
@@ -2312,7 +2311,7 @@ input[type="range"]{
     btn.style.background = tpl.bgType === 'color'
       ? `linear-gradient(135deg, ${tpl.bg} 60%, ${tpl.effectColor || tpl.bg} 100%)`
       : PRESETS[tpl.bg].swatch;
-    btn.innerHTML = `<span class="tpl-name">${tpl.name}</span><span class="tpl-desc">${tpl.desc}</span>`;
+    btn.innerHTML = `<span class="tpl-name">${tpl.name}</span>`;
     btn.addEventListener('click', () => {
       state.bg = tpl.bgType === 'color'
         ? { type:'color', color: tpl.bg, image:null }
@@ -2399,7 +2398,7 @@ input[type="range"]{
     state.effectColor = '#000000';
     state.effectStrength = 40;
     state.tilt = 0;
-    state.subtitleGap = 18;
+    state.subtitleGap = 28;
     state.subtitleFont = 'system';
     state.subtitleSize = 26;
     headlineInput.value = state.headline;
@@ -2420,8 +2419,8 @@ input[type="range"]{
     effectStrengthVal.textContent = state.effectStrength;
     tiltSlider.value = 0;
     tiltVal.textContent = '0';
-    subtitleGapInput.value = 18;
-    subtitleGapVal.textContent = '18px';
+    subtitleGapInput.value = 28;
+    subtitleGapVal.textContent = '28px';
     subtitleFontSelect.value = 'system';
     subtitleSizeInput.value = 26;
     subtitleSizeVal.textContent = '26px';
@@ -2633,26 +2632,35 @@ input[type="range"]{
 
   // ---------- wizard ----------
 
-  const TOPIC_COLORS = {
-    soccer:     { bg:'#14532D', accent:'#A6FF3D' },
-    football:   { bg:'#2B3A1E', accent:'#B5651D' },
-    basketball: { bg:'#D2601A', accent:'#1D1D1D' },
-    tennis:     { bg:'#2E7D32', accent:'#DCEE6B' },
-    pop:        { bg:'#FF3B8D', accent:'#FFE066' },
-    rock:       { bg:'#121212', accent:'#E8384F' },
-    metal:      { bg:'#0A0A0A', accent:'#9AA0A6' },
-    kpop:       { bg:'#F2A6D8', accent:'#6C4CE0' },
-    indie:      { bg:'#D9A441', accent:'#6B4A2E' }
+  const TOPIC_COLOR_VARIANTS = {
+    soccer:     [{ bg:'#14532D', accent:'#A6FF3D' }, { bg:'#0B3D24', accent:'#FFFFFF' }],
+    football:   [{ bg:'#2B3A1E', accent:'#B5651D' }, { bg:'#3B2A1E', accent:'#D9A441' }],
+    basketball: [{ bg:'#D2601A', accent:'#1D1D1D' }, { bg:'#C9541F', accent:'#FFFFFF' }],
+    tennis:     [{ bg:'#2E7D32', accent:'#DCEE6B' }, { bg:'#1B5E20', accent:'#FFFFFF' }],
+    hockey:     [{ bg:'#0B2A4A', accent:'#FFFFFF' }, { bg:'#0D3B66', accent:'#9AA0A6' }],
+    baseball:   [{ bg:'#1D3B2A', accent:'#C41E3A' }, { bg:'#123420', accent:'#FFFFFF' }],
+    boxing:     [{ bg:'#8B0000', accent:'#111111' }, { bg:'#111111', accent:'#E8384F' }],
+    motorsport: [{ bg:'#111111', accent:'#E10600' }, { bg:'#1A1A1A', accent:'#F2C200' }],
+    pop:        [{ bg:'#FF3B8D', accent:'#FFE066' }, { bg:'#FF6FB0', accent:'#FFFFFF' }],
+    rock:       [{ bg:'#121212', accent:'#E8384F' }, { bg:'#1A1A1A', accent:'#9AA0A6' }],
+    metal:      [{ bg:'#0A0A0A', accent:'#9AA0A6' }, { bg:'#111111', accent:'#E8384F' }],
+    kpop:       [{ bg:'#F2A6D8', accent:'#6C4CE0' }, { bg:'#D6BCFA', accent:'#FF3B8D' }],
+    indie:      [{ bg:'#D9A441', accent:'#6B4A2E' }, { bg:'#C9A26B', accent:'#3A2DE0' }],
+    hiphop:     [{ bg:'#111111', accent:'#D4AF37' }, { bg:'#1A1A1A', accent:'#FFFFFF' }],
+    edm:        [{ bg:'#0A0A2A', accent:'#00E5FF' }, { bg:'#12123A', accent:'#FF3B8D' }],
+    latin:      [{ bg:'#C9302C', accent:'#FFC72C' }, { bg:'#E8384F', accent:'#FFFFFF' }],
+    country:    [{ bg:'#6B4226', accent:'#D9A441' }, { bg:'#4A2E1A', accent:'#FFFFFF' }]
   };
-  const VIBE_STYLE = {
-    fun:          { font:'chewy', effect:'highlighter', effectStrength:40, tilt:-3 },
-    serious:      { font:'anton', effect:'shadow', effectStrength:45, tilt:0 },
-    professional: { font:'archivo', effect:'none', effectStrength:40, tilt:0 }
+  const VIBE_STYLE_VARIANTS = {
+    fun:          [{ font:'chewy', effect:'highlighter', effectStrength:40, tilt:-3 }, { font:'bangers', effect:'outline', effectStrength:45, tilt:-4 }],
+    serious:      [{ font:'anton', effect:'shadow', effectStrength:45, tilt:0 }, { font:'bebas', effect:'glow', effectStrength:40, tilt:0 }],
+    professional: [{ font:'archivo', effect:'none', effectStrength:40, tilt:0 }, { font:'playfair', effect:'none', effectStrength:40, tilt:0 }]
   };
 
   let wizardTopic = null, wizardVibe = null;
   const wizardOverlay = document.getElementById('wizardOverlay');
   const wizardBuildBtn = document.getElementById('wizardBuildBtn');
+  const wizardShuffleBtn = document.getElementById('wizardShuffleBtn');
 
   document.getElementById('wizardOpenBtn').addEventListener('click', () => {
     wizardOverlay.style.display = 'flex';
@@ -2670,6 +2678,7 @@ input[type="range"]{
       chip.classList.add('active');
       wizardTopic = chip.dataset.topic;
       wizardBuildBtn.disabled = !(wizardTopic && wizardVibe);
+      wizardShuffleBtn.disabled = !(wizardTopic && wizardVibe);
     });
   });
   document.querySelectorAll('#wizardVibes .wizard-chip').forEach(chip => {
@@ -2678,13 +2687,16 @@ input[type="range"]{
       chip.classList.add('active');
       wizardVibe = chip.dataset.vibe;
       wizardBuildBtn.disabled = !(wizardTopic && wizardVibe);
+      wizardShuffleBtn.disabled = !(wizardTopic && wizardVibe);
     });
   });
 
-  wizardBuildBtn.addEventListener('click', () => {
-    const colors = TOPIC_COLORS[wizardTopic];
-    const style = VIBE_STYLE[wizardVibe];
-    if (!colors || !style){ wizardOverlay.style.display = 'none'; return; }
+  function applyWizardVariant(){
+    const colorVariants = TOPIC_COLOR_VARIANTS[wizardTopic];
+    const styleVariants = VIBE_STYLE_VARIANTS[wizardVibe];
+    if (!colorVariants || !styleVariants) return;
+    const colors = colorVariants[Math.floor(Math.random()*colorVariants.length)];
+    const style = styleVariants[Math.floor(Math.random()*styleVariants.length)];
     const textColor = autoContrastColor(colors.bg);
 
     state.bg = { type:'color', color: colors.bg, image:null };
@@ -2722,8 +2734,14 @@ input[type="range"]{
     clearTemplateActive();
     updateCanvasMode();
     redraw();
+  }
 
+  wizardBuildBtn.addEventListener('click', () => {
+    applyWizardVariant();
     wizardOverlay.style.display = 'none';
+  });
+  wizardShuffleBtn.addEventListener('click', () => {
+    applyWizardVariant();
   });
 
   // ---------- boot ----------
