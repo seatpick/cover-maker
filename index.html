@@ -161,6 +161,105 @@ body{
   font-size:13.5px;
 }
 
+.wizard-trigger{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  width:auto;
+  background:var(--accent);
+  color:var(--accent-ink);
+  border:none;
+  border-radius:20px;
+  padding:9px 18px;
+  margin-top:16px;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+}
+.wizard-trigger:hover{opacity:0.9;}
+
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(30,26,18,0.45);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:100;
+  padding:20px;
+}
+.modal-card{
+  background:var(--panel);
+  border-radius:16px;
+  padding:24px;
+  width:100%;
+  max-width:420px;
+  max-height:88vh;
+  overflow-y:auto;
+  box-shadow:0 20px 60px rgba(0,0,0,0.28);
+}
+.modal-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:18px;
+}
+.modal-head h2{
+  font-size:17px;
+  font-weight:700;
+  margin:0;
+  color:var(--ink);
+}
+.modal-close{
+  background:none;
+  border:none;
+  font-size:22px;
+  color:var(--ink-dim);
+  cursor:pointer;
+  line-height:1;
+  padding:0;
+}
+.modal-close:hover{color:var(--ink);}
+.wizard-step{margin-bottom:20px;}
+.wizard-step-label{
+  display:block;
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:var(--ink-dim);
+  margin-bottom:10px;
+}
+.wizard-text{
+  width:100%;
+  background:var(--panel-2);
+  border:1px solid var(--line);
+  color:var(--ink);
+  border-radius:8px;
+  padding:9px 10px;
+  font-size:14px;
+  font-family:inherit;
+}
+textarea.wizard-text{resize:vertical;min-height:46px;}
+.wizard-group-label{
+  font-size:11px;
+  color:var(--ink-dim);
+  margin:0 0 6px;
+}
+.wizard-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+.wizard-chips:last-child{margin-bottom:0;}
+.wizard-chip{
+  background:var(--panel-2);
+  border:1px solid var(--line);
+  color:var(--ink);
+  border-radius:20px;
+  padding:8px 14px;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+}
+.wizard-chip.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);}
+
 .layout{
   display:grid;
   grid-template-columns:minmax(0,1.35fr) minmax(320px,0.85fr);
@@ -255,8 +354,55 @@ body{
   text-transform:uppercase;
   letter-spacing:0.09em;
   color:var(--ink-dim);
-  margin:0 0 12px;
+  margin:0;
 }
+.section-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin:0 0 12px;
+  cursor:pointer;
+  user-select:none;
+}
+.section-head-right{display:flex;align-items:center;gap:12px;flex:none;}
+.section-clear{
+  background:none;
+  border:none;
+  padding:0;
+  font-size:11px;
+  font-weight:600;
+  color:var(--ink-dim);
+  cursor:pointer;
+  text-transform:none;
+  letter-spacing:0;
+}
+.section-clear:hover{color:var(--ink);text-decoration:underline;}
+.chev{
+  font-size:18px;
+  color:var(--ink);
+  transition:transform 0.15s ease;
+  flex:none;
+  line-height:1;
+}
+.collapsed .chev{transform:rotate(-90deg);}
+.collapsed .section-body{display:none;}
+.subgroup{margin-bottom:16px;}
+.subgroup:last-child{margin-bottom:0;}
+.subgroup-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:10px;
+  padding-bottom:6px;
+  border-bottom:1px solid var(--line-soft);
+}
+.subgroup-head .subgroup-title{
+  font-size:11.5px;
+  font-weight:700;
+  color:var(--ink);
+}
+.filter-input{margin-bottom:10px;}
 .field{margin-bottom:12px;}
 .field:last-child{margin-bottom:0;}
 .field label{
@@ -379,18 +525,21 @@ input[type="range"]{
 
 .tpl-grid{
   display:grid;
-  grid-template-columns:repeat(2,1fr);
+  grid-template-columns:repeat(4,1fr);
   gap:8px;
 }
 .tpl-card{
   position:relative;
+  aspect-ratio:12/8;
   border-radius:10px;
   border:2px solid transparent;
   cursor:pointer;
-  padding:9px 10px 32px;
-  min-height:58px;
+  padding:7px 8px;
   text-align:left;
   overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
 }
 .tpl-card.active{border-color:var(--accent);}
 .tpl-card::before{
@@ -404,19 +553,21 @@ input[type="range"]{
   position:relative;
   z-index:1;
   display:block;
-  font-size:12px;
+  font-size:10.5px;
   font-weight:700;
   color:#fff;
   text-shadow:0 1px 3px rgba(0,0,0,0.55);
+  line-height:1.2;
 }
 .tpl-card .tpl-desc{
   position:relative;
   z-index:1;
   display:block;
-  font-size:10px;
+  font-size:8.5px;
   margin-top:2px;
   color:rgba(255,255,255,0.85);
   text-shadow:0 1px 3px rgba(0,0,0,0.55);
+  line-height:1.25;
 }
 
 .upload-btn{
@@ -545,6 +696,51 @@ input[type="range"]{
   <div class="masthead">
     <h1>Cover Maker</h1>
     <p>1200 &times; 500 social covers &mdash; PNG, JPG or WEBP, kept under 120&nbsp;KB. For the content team.</p>
+    <button class="wizard-trigger" type="button" id="wizardOpenBtn">&#10024; Build my cover</button>
+  </div>
+
+  <div class="modal-overlay" id="wizardOverlay" style="display:none;">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2>Let&rsquo;s build your cover</h2>
+        <button class="modal-close" id="wizardCloseBtn" type="button">&times;</button>
+      </div>
+      <div class="wizard-step">
+        <label class="wizard-step-label">Headline</label>
+        <textarea class="wizard-text" id="wizardHeadline" maxlength="140" placeholder="Your headline&hellip;"></textarea>
+      </div>
+      <div class="wizard-step">
+        <label class="wizard-step-label">Subtitle (optional)</label>
+        <input type="text" class="wizard-text" id="wizardSubtitle" maxlength="140" placeholder="A short supporting line&hellip;">
+      </div>
+      <div class="wizard-step">
+        <label class="wizard-step-label">Topic</label>
+        <p class="wizard-group-label">Sports</p>
+        <div class="wizard-chips" id="wizardTopicsSports">
+          <button class="wizard-chip" type="button" data-topic="soccer">Soccer</button>
+          <button class="wizard-chip" type="button" data-topic="football">Football</button>
+          <button class="wizard-chip" type="button" data-topic="basketball">Basketball</button>
+          <button class="wizard-chip" type="button" data-topic="tennis">Tennis</button>
+        </div>
+        <p class="wizard-group-label">Music</p>
+        <div class="wizard-chips" id="wizardTopicsMusic">
+          <button class="wizard-chip" type="button" data-topic="pop">Pop</button>
+          <button class="wizard-chip" type="button" data-topic="rock">Rock</button>
+          <button class="wizard-chip" type="button" data-topic="metal">Metal</button>
+          <button class="wizard-chip" type="button" data-topic="kpop">K-Pop</button>
+          <button class="wizard-chip" type="button" data-topic="indie">Indie</button>
+        </div>
+      </div>
+      <div class="wizard-step">
+        <label class="wizard-step-label">Vibe</label>
+        <div class="wizard-chips" id="wizardVibes">
+          <button class="wizard-chip" type="button" data-vibe="fun">Fun</button>
+          <button class="wizard-chip" type="button" data-vibe="serious">Serious</button>
+          <button class="wizard-chip" type="button" data-vibe="professional">Professional</button>
+        </div>
+      </div>
+      <button class="btn" id="wizardBuildBtn" type="button" disabled>Build it</button>
+    </div>
   </div>
 
   <div class="layout">
@@ -564,27 +760,32 @@ input[type="range"]{
         <span class="size-fig" id="sizeFig"></span>
       </div>
 
-      <div class="stage-frame mock-frame">
-        <h2 class="mock-title">Preview in a blog</h2>
-        <p class="mock-note">Approximate mockups &mdash; a card thumbnail (often cropped tighter than the full 1200&times;500 image) and a full article hero &mdash; so you can sanity-check the safe zone before exporting.</p>
-        <div class="mock-row">
-          <div>
-            <div class="mock-label">Card thumbnail</div>
-            <div class="mock-card">
-              <div class="mock-card-media"><img id="mockCardImg" alt=""></div>
-              <div class="mock-card-body">
-                <span class="mock-pill">Sport</span>
-                <div class="mock-card-title" id="mockCardTitle">Your headline here</div>
+      <div class="stage-frame mock-frame collapsed" id="mockFrame">
+        <div class="section-head" id="mockToggle">
+          <h2 class="mock-title">Preview in a blog</h2>
+          <span class="chev">&#9662;</span>
+        </div>
+        <div class="section-body">
+          <p class="mock-note">Approximate mockups &mdash; a card thumbnail (often cropped tighter than the full 1200&times;500 image) and a full article hero &mdash; so you can sanity-check the safe zone before exporting.</p>
+          <div class="mock-row">
+            <div>
+              <div class="mock-label">Card thumbnail</div>
+              <div class="mock-card">
+                <div class="mock-card-media"><img id="mockCardImg" alt=""></div>
+                <div class="mock-card-body">
+                  <span class="mock-pill">Sport</span>
+                  <div class="mock-card-title" id="mockCardTitle">Your headline here</div>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="mock-article-col">
-            <div class="mock-label">Article hero</div>
-            <div class="mock-article">
-              <div class="mock-article-logo">Ticket Insider</div>
-              <div class="mock-article-media"><img id="mockArticleImg" alt=""></div>
-              <div class="mock-article-title" id="mockArticleTitle">Your headline here</div>
-              <div class="mock-article-byline">By the content team</div>
+            <div class="mock-article-col">
+              <div class="mock-label">Article hero</div>
+              <div class="mock-article">
+                <div class="mock-article-logo">Ticket Insider</div>
+                <div class="mock-article-media"><img id="mockArticleImg" alt=""></div>
+                <div class="mock-article-title" id="mockArticleTitle">Your headline here</div>
+                <div class="mock-article-byline">By the content team</div>
+              </div>
             </div>
           </div>
         </div>
@@ -592,228 +793,291 @@ input[type="range"]{
     </div>
 
     <div class="rail">
-      <div class="section">
-        <h2>1. Quick start &mdash; templates</h2>
-        <div class="tpl-grid" id="templates"></div>
-      </div>
-
-      <div class="section">
-        <h2>2. Background</h2>
-        <div class="field" style="margin-bottom:8px;">
-          <label style="margin-bottom:8px;">Team backgrounds (licensed photos)</label>
-          <div class="swatches" id="teamSwatches"></div>
+      <div class="section" id="sec-templates">
+        <div class="section-head">
+          <h2>1. Quick start &mdash; templates</h2>
+          <span class="chev">&#9662;</span>
         </div>
-        <div class="field" style="margin-bottom:0;">
-          <label style="margin-bottom:8px;">Presets</label>
-          <div class="swatches" id="swatches"></div>
+        <div class="section-body">
+          <input type="text" class="filter-input" id="templateFilter" placeholder="Filter templates&hellip;">
+          <div class="tpl-grid" id="templates"></div>
+          <button class="btn ghost show-more-btn" type="button" id="templatesShowMore" style="display:none;">Show more</button>
         </div>
       </div>
 
-      <div class="section">
-        <h2>3. Your images</h2>
-        <div class="field">
-          <label>Upload background photo</label>
-          <button class="upload-btn" id="uploadBtn" type="button">Upload a photo&hellip;</button>
-          <input type="file" id="fileInput" accept="image/*">
-          <p class="fineprint" id="dragHint" style="display:none;margin-top:-4px;">Drag the photo on the canvas to reposition it.</p>
-          <div class="row" id="photoActions" style="display:none;">
-            <button class="btn ghost" id="saveCustomBgBtn" type="button">Save to My Backgrounds</button>
-            <button class="btn ghost" id="removePhotoBtn" type="button">Remove photo</button>
+      <div class="section" id="sec-background">
+        <div class="section-head">
+          <h2>2. Background</h2>
+          <div class="section-head-right">
+            <button class="section-clear" type="button" data-clear="background">Clear</button>
+            <span class="chev">&#9662;</span>
           </div>
         </div>
-        <div class="field" id="customBgsField" style="display:none;margin-top:14px;">
-          <label>My backgrounds <span class="fineprint" style="display:inline;margin:0;">(saved in this browser only)</span></label>
-          <div class="swatches" id="customBgs"></div>
-        </div>
-        <div class="field" style="margin-top:14px;">
-          <label>Solid color (incl. SeatPick brand colors)</label>
-          <div class="color-chips" id="brandColors"></div>
-          <div class="colorfield" style="margin-top:8px;">
-            <input type="color" id="customBgColor" value="#003BDE">
-            <span class="hex" id="customBgColorHex">Custom color&hellip;</span>
+        <div class="section-body">
+          <input type="text" class="filter-input" id="backgroundFilter" placeholder="Filter backgrounds&hellip;">
+          <div class="field" style="margin-bottom:8px;">
+            <label style="margin-bottom:8px;">Team backgrounds (licensed photos)</label>
+            <div class="swatches" id="teamSwatches"></div>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label style="margin-bottom:8px;">Backgrounds</label>
+            <div class="swatches" id="swatches"></div>
+            <button class="btn ghost show-more-btn" type="button" id="swatchesShowMore" style="display:none;">Show more</button>
+          </div>
+          <div class="field" style="margin-top:14px;">
+            <label>Brand &amp; custom colors</label>
+            <div class="color-chips" id="brandColors"></div>
+            <div class="colorfield" style="margin-top:8px;">
+              <input type="color" id="customBgColor" value="#003BDE">
+              <span class="hex" id="customBgColorHex">Custom color&hellip;</span>
+            </div>
           </div>
         </div>
-        <div class="field" style="margin-top:14px;">
-          <label>Logo overlay (optional)</label>
-          <button class="upload-btn" id="logoUploadBtn" type="button">Upload a logo&hellip;</button>
-          <input type="file" id="logoFileInput" accept="image/*">
-          <div id="logoControls" style="display:none;margin-top:8px;">
-            <div class="row">
-              <div class="field">
-                <label>Logo size</label>
-                <div class="slider-row">
-                  <input type="range" id="logoSize" min="60" max="400" value="160">
-                  <span class="val" id="logoSizeVal">160px</span>
+      </div>
+
+      <div class="section" id="sec-images">
+        <div class="section-head">
+          <h2>3. Your images</h2>
+          <div class="section-head-right">
+            <button class="section-clear" type="button" data-clear="images">Clear</button>
+            <span class="chev">&#9662;</span>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="field">
+            <label>Upload background photo</label>
+            <button class="upload-btn" id="uploadBtn" type="button">Upload a photo&hellip;</button>
+            <input type="file" id="fileInput" accept="image/*">
+            <p class="fineprint" id="dragHint" style="display:none;margin-top:-4px;">Drag the photo on the canvas to reposition it.</p>
+            <div class="row" id="photoActions" style="display:none;">
+              <button class="btn ghost" id="saveCustomBgBtn" type="button">Save to My Backgrounds</button>
+              <button class="btn ghost" id="removePhotoBtn" type="button">Remove photo</button>
+            </div>
+          </div>
+          <div class="field" id="customBgsField" style="display:none;margin-top:14px;">
+            <label>My backgrounds <span class="fineprint" style="display:inline;margin:0;">(saved in this browser only)</span></label>
+            <div class="swatches" id="customBgs"></div>
+          </div>
+          <div class="field" style="margin-top:14px;">
+            <label>Logo overlay (optional)</label>
+            <button class="upload-btn" id="logoUploadBtn" type="button">Upload a logo&hellip;</button>
+            <input type="file" id="logoFileInput" accept="image/*">
+            <div id="logoControls" style="display:none;margin-top:8px;">
+              <div class="row">
+                <div class="field">
+                  <label>Logo size</label>
+                  <div class="slider-row">
+                    <input type="range" id="logoSize" min="60" max="400" value="160">
+                    <span class="val" id="logoSizeVal">160px</span>
+                  </div>
+                </div>
+                <div class="field" style="flex:none;">
+                  <label>&nbsp;</label>
+                  <button class="btn ghost" id="removeLogoBtn" type="button" style="margin-top:0;width:auto;padding:9px 14px;">Remove</button>
                 </div>
               </div>
-              <div class="field" style="flex:none;">
-                <label>&nbsp;</label>
-                <button class="btn ghost" id="removeLogoBtn" type="button" style="margin-top:0;width:auto;padding:9px 14px;">Remove</button>
+              <div class="field" style="margin-top:12px;">
+                <label>Layer order</label>
+                <div class="seg" id="logoOrderSeg">
+                  <button data-v="back" class="active">Behind text</button>
+                  <button data-v="front">In front of text</button>
+                </div>
               </div>
-            </div>
-            <div class="field" style="margin-top:12px;">
-              <label>Layer order</label>
-              <div class="seg" id="logoOrderSeg">
-                <button data-v="back" class="active">Behind text</button>
-                <button data-v="front">In front of text</button>
-              </div>
-            </div>
-            <p class="fineprint" style="margin-top:8px;">Drag the logo on the canvas to reposition it.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <h2>4. Text</h2>
-        <div class="field">
-          <label for="headline">Headline</label>
-          <textarea id="headline" maxlength="140">Your headline here</textarea>
-        </div>
-        <div class="field">
-          <label for="subtitle">Subtitle (optional)</label>
-          <input type="text" id="subtitle" maxlength="140" placeholder="A short supporting line">
-        </div>
-        <div class="row">
-          <div class="field">
-            <label for="subtitleFontSelect">Subtitle font</label>
-            <select id="subtitleFontSelect"></select>
-          </div>
-          <div class="field">
-            <label>Subtitle size</label>
-            <div class="slider-row">
-              <input type="range" id="subtitleSize" min="12" max="60" value="26">
-              <span class="val" id="subtitleSizeVal">26px</span>
-            </div>
-          </div>
-        </div>
-        <div class="field">
-          <label>Subtitle spacing</label>
-          <div class="slider-row">
-            <input type="range" id="subtitleGap" min="0" max="60" value="18">
-            <span class="val" id="subtitleGapVal">18px</span>
-          </div>
-        </div>
-        <div class="row">
-          <div class="field">
-            <label>Headline color</label>
-            <div class="colorfield">
-              <input type="color" id="headlineColor" value="#f5f2e8">
-              <span class="hex" id="headlineColorHex">#F5F2E8</span>
-            </div>
-          </div>
-          <div class="field">
-            <label>Subtitle color</label>
-            <div class="colorfield">
-              <input type="color" id="subtitleColor" value="#dcd8c4">
-              <span class="hex" id="subtitleColorHex">#DCD8C4</span>
-            </div>
-          </div>
-        </div>
-        <div class="field">
-          <label for="fontSelect">Font</label>
-          <select id="fontSelect"></select>
-        </div>
-        <div class="field">
-          <label>Headline size</label>
-          <div class="slider-row">
-            <input type="range" id="fontSize" min="44" max="150" value="92">
-            <span class="val" id="fontSizeVal">92px</span>
-          </div>
-        </div>
-        <div class="row">
-          <div class="field">
-            <label>Align</label>
-            <div class="seg" id="alignSeg">
-              <button data-v="left">Left</button>
-              <button data-v="center" class="active">Center</button>
-            </div>
-          </div>
-          <div class="field">
-            <label>Vertical</label>
-            <div class="seg" id="vAlignSeg">
-              <button data-v="top">Top</button>
-              <button data-v="middle" class="active">Middle</button>
-              <button data-v="bottom">Bottom</button>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="field">
-            <label>Headline style</label>
-            <div class="seg" id="badgeSeg">
-              <button data-v="plain" class="active">Plain</button>
-              <button data-v="badge">Pill badge</button>
-            </div>
-          </div>
-          <div class="field">
-            <label>Badge color</label>
-            <div class="colorfield">
-              <input type="color" id="badgeColor" value="#fff3c4">
-              <span class="hex" id="badgeColorHex">#FFF3C4</span>
+              <p class="fineprint" style="margin-top:8px;">Drag the logo on the canvas to reposition it.</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="section">
-        <h2>5. Effects</h2>
-        <div class="row">
+      <div class="section" id="sec-text">
+        <div class="section-head">
+          <h2>4. Text</h2>
+          <span class="chev">&#9662;</span>
+        </div>
+        <div class="section-body">
+
+          <div class="subgroup">
+            <div class="subgroup-head">
+              <span class="subgroup-title">Headline</span>
+              <button class="section-clear" type="button" data-clear="headline">Clear</button>
+            </div>
+            <div class="field">
+              <label for="headline">Headline text</label>
+              <textarea id="headline" maxlength="140">Your headline here</textarea>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="fontSelect">Font</label>
+                <select id="fontSelect"></select>
+              </div>
+              <div class="field">
+                <label>Color</label>
+                <div class="colorfield">
+                  <input type="color" id="headlineColor" value="#f5f2e8">
+                  <span class="hex" id="headlineColorHex">#F5F2E8</span>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Size</label>
+              <div class="slider-row">
+                <input type="range" id="fontSize" min="44" max="150" value="92">
+                <span class="val" id="fontSizeVal">92px</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label>Align</label>
+                <div class="seg" id="alignSeg">
+                  <button data-v="left">Left</button>
+                  <button data-v="center" class="active">Center</button>
+                </div>
+              </div>
+              <div class="field">
+                <label>Vertical</label>
+                <div class="seg" id="vAlignSeg">
+                  <button data-v="top">Top</button>
+                  <button data-v="middle" class="active">Middle</button>
+                  <button data-v="bottom">Bottom</button>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label>Style</label>
+                <div class="seg" id="badgeSeg">
+                  <button data-v="plain" class="active">Plain</button>
+                  <button data-v="badge">Pill badge</button>
+                </div>
+              </div>
+              <div class="field">
+                <label>Badge color</label>
+                <div class="colorfield">
+                  <input type="color" id="badgeColor" value="#fff3c4">
+                  <span class="hex" id="badgeColorHex">#FFF3C4</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="subgroup">
+            <div class="subgroup-head">
+              <span class="subgroup-title">Subtitle</span>
+              <div class="section-head-right">
+                <button class="section-clear" type="button" id="matchHeadlineBtn">Match headline</button>
+                <button class="section-clear" type="button" data-clear="subtitle">Clear</button>
+              </div>
+            </div>
+            <div class="field">
+              <label for="subtitle">Subtitle text (optional)</label>
+              <input type="text" id="subtitle" maxlength="140" placeholder="A short supporting line">
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="subtitleFontSelect">Font</label>
+                <select id="subtitleFontSelect"></select>
+              </div>
+              <div class="field">
+                <label>Color</label>
+                <div class="colorfield">
+                  <input type="color" id="subtitleColor" value="#dcd8c4">
+                  <span class="hex" id="subtitleColorHex">#DCD8C4</span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label>Size</label>
+                <div class="slider-row">
+                  <input type="range" id="subtitleSize" min="12" max="60" value="26">
+                  <span class="val" id="subtitleSizeVal">26px</span>
+                </div>
+              </div>
+              <div class="field">
+                <label>Spacing above</label>
+                <div class="slider-row">
+                  <input type="range" id="subtitleGap" min="0" max="60" value="18">
+                  <span class="val" id="subtitleGapVal">18px</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="section" id="sec-effects">
+        <div class="section-head">
+          <h2>5. Effects</h2>
+          <div class="section-head-right">
+            <button class="section-clear" type="button" data-clear="effects">Clear</button>
+            <span class="chev">&#9662;</span>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="row">
+            <div class="field">
+              <label>Text effect</label>
+              <select id="effectSelect">
+                <option value="none">None</option>
+                <option value="shadow">Drop shadow</option>
+                <option value="outline">Outline</option>
+                <option value="glow">Glow</option>
+                <option value="extrude">3D Extrude</option>
+                <option value="chromatic">Chromatic Split</option>
+                <option value="twoTone">Two-Tone Lines</option>
+                <option value="highlighter">Highlighter Marker</option>
+                <option value="neonTube">Neon Tube</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Effect color</label>
+              <div class="colorfield">
+                <input type="color" id="effectColor" value="#000000">
+                <span class="hex" id="effectColorHex">#000000</span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label>Effect strength</label>
+              <div class="slider-row">
+                <input type="range" id="effectStrength" min="0" max="100" value="40">
+                <span class="val" id="effectStrengthVal">40</span>
+              </div>
+            </div>
+            <div class="field">
+              <label>Tilt</label>
+              <div class="slider-row">
+                <input type="range" id="tiltSlider" min="-12" max="12" value="0">
+                <span class="val" id="tiltVal">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-export">
+        <div class="section-head">
+          <h2>6. Export</h2>
+          <span class="chev">&#9662;</span>
+        </div>
+        <div class="section-body">
           <div class="field">
-            <label>Text effect</label>
-            <select id="effectSelect">
-              <option value="none">None</option>
-              <option value="shadow">Drop shadow</option>
-              <option value="outline">Outline</option>
-              <option value="glow">Glow</option>
-              <option value="extrude">3D Extrude</option>
-              <option value="chromatic">Chromatic Split</option>
-              <option value="twoTone">Two-Tone Lines</option>
-              <option value="highlighter">Highlighter Marker</option>
-              <option value="neonTube">Neon Tube</option>
+            <label for="format">File type</label>
+            <select id="format">
+              <option value="webp">WEBP &mdash; smallest, recommended</option>
+              <option value="jpeg">JPG</option>
+              <option value="png">PNG &mdash; lossless, largest</option>
             </select>
           </div>
-          <div class="field">
-            <label>Effect color</label>
-            <div class="colorfield">
-              <input type="color" id="effectColor" value="#000000">
-              <span class="hex" id="effectColorHex">#000000</span>
-            </div>
-          </div>
+          <button class="btn" id="downloadBtn" type="button">Download cover.webp</button>
+          <button class="btn ghost" id="resetBtn" type="button">Reset to defaults</button>
+          <p class="fineprint" id="pngWarning" style="display:none;">
+            This PNG is over 120&nbsp;KB and can't be compressed further &mdash;
+            <a id="switchWebp">switch to WEBP</a> to bring it under budget.
+          </p>
         </div>
-        <div class="row">
-          <div class="field">
-            <label>Effect strength</label>
-            <div class="slider-row">
-              <input type="range" id="effectStrength" min="0" max="100" value="40">
-              <span class="val" id="effectStrengthVal">40</span>
-            </div>
-          </div>
-          <div class="field">
-            <label>Tilt</label>
-            <div class="slider-row">
-              <input type="range" id="tiltSlider" min="-12" max="12" value="0">
-              <span class="val" id="tiltVal">0</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <h2>6. Export</h2>
-        <div class="field">
-          <label for="format">File type</label>
-          <select id="format">
-            <option value="webp">WEBP &mdash; smallest, recommended</option>
-            <option value="jpeg">JPG</option>
-            <option value="png">PNG &mdash; lossless, largest</option>
-          </select>
-        </div>
-        <button class="btn" id="downloadBtn" type="button">Download cover.webp</button>
-        <button class="btn ghost" id="resetBtn" type="button">Reset to defaults</button>
-        <p class="fineprint" id="pngWarning" style="display:none;">
-          This PNG is over 120&nbsp;KB and can't be compressed further &mdash;
-          <a id="switchWebp">switch to WEBP</a> to bring it under budget.
-        </p>
       </div>
     </div>
   </div>
@@ -849,6 +1113,7 @@ input[type="range"]{
     effectStrength: 40,
     tilt: 0,
     subtitleGap: 18,
+    decor: { shape: null, color: null },
     logo: { image: null, size: 160, x: 0.5, y: 0.5, zOrder: 'back' }
   };
 
@@ -932,6 +1197,43 @@ input[type="range"]{
     g.addColorStop(1, hexToRgba(color,0));
     c.fillStyle = g;
     c.fillRect(0,0,W,H);
+  }
+
+  function drawDecorBlob(c, color){
+    const cx = W*0.62, cy = H*0.58, baseR = 210;
+    const points = 10;
+    const pts = [];
+    for (let i=0;i<points;i++){
+      const a = (Math.PI*2)*(i/points);
+      const rr = baseR * (0.82 + pseudoRand(i*13.7)*0.36);
+      pts.push([cx+Math.cos(a)*rr, cy+Math.sin(a)*rr]);
+    }
+    c.fillStyle = color;
+    c.beginPath();
+    c.moveTo((pts[0][0]+pts[points-1][0])/2, (pts[0][1]+pts[points-1][1])/2);
+    for (let i=0;i<points;i++){
+      const cur = pts[i], next = pts[(i+1)%points];
+      const midX = (cur[0]+next[0])/2, midY = (cur[1]+next[1])/2;
+      c.quadraticCurveTo(cur[0], cur[1], midX, midY);
+    }
+    c.closePath();
+    c.fill();
+  }
+
+  function drawDecorStarburst(c, color){
+    const cx = W*0.5, cy = H*0.5;
+    const spikes = 14;
+    const outerR = 230, innerR = 130;
+    c.fillStyle = color;
+    c.beginPath();
+    for (let i=0;i<spikes*2;i++){
+      const a = (Math.PI*2)*(i/(spikes*2)) - Math.PI/2;
+      const r = i%2===0 ? outerR : innerR;
+      const x = cx+Math.cos(a)*r, y = cy+Math.sin(a)*r;
+      if (i===0) c.moveTo(x,y); else c.lineTo(x,y);
+    }
+    c.closePath();
+    c.fill();
   }
 
   function drawStadiumCrowd(c){
@@ -1242,6 +1544,11 @@ input[type="range"]{
       preset.draw(c);
     }
 
+    if (state.decor && state.decor.shape){
+      if (state.decor.shape === 'blob') drawDecorBlob(c, state.decor.color);
+      else if (state.decor.shape === 'starburst') drawDecorStarburst(c, state.decor.color);
+    }
+
     function drawLogo(){
       if (!state.logo.image) return;
       const img = state.logo.image;
@@ -1462,6 +1769,7 @@ input[type="range"]{
     btn.innerHTML = `<span>${PRESETS[key].label}</span>`;
     btn.addEventListener('click', () => {
       state.bg = { type:'preset', key, image:null };
+      state.decor = { shape:null, color:null };
       state.headlineColor = PRESETS[key].text;
       state.subtitleColor = PRESETS[key].sub;
       headlineColorInput.value = state.headlineColor;
@@ -1502,6 +1810,7 @@ input[type="range"]{
   const removePhotoBtn = document.getElementById('removePhotoBtn');
   removePhotoBtn.addEventListener('click', () => {
     state.bg = { type:'preset', key:'oliveNote', image:null };
+    state.decor = { shape:null, color:null };
     state.headlineColor = PRESETS.oliveNote.text;
     state.subtitleColor = PRESETS.oliveNote.sub;
     headlineColorInput.value = state.headlineColor;
@@ -1525,6 +1834,7 @@ input[type="range"]{
     const img = new Image();
     img.onload = () => {
       state.bg = { type:'image', key:null, image: img, focusX:0.5, focusY:0.5 };
+      state.decor = { shape:null, color:null };
       uploadBtn.classList.add('has-file');
       uploadBtn.textContent = file.name.length > 26 ? file.name.slice(0,23)+'...' : file.name;
       document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
@@ -1634,6 +1944,7 @@ input[type="range"]{
 
   function applyColorBg(hex){
     state.bg = { type:'color', color:hex, image:null };
+    state.decor = { shape:null, color:null };
     const auto = autoContrastColor(hex);
     state.headlineColor = auto;
     state.subtitleColor = auto;
@@ -1703,6 +2014,7 @@ input[type="range"]{
         const img = new Image();
         img.onload = () => {
           state.bg = { type:'image', key:null, image: img, focusX:0.5, focusY:0.5 };
+          state.decor = { shape:null, color:null };
           document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
           document.querySelectorAll('.color-chip').forEach(s=>s.classList.remove('active'));
           btn.classList.add('active');
@@ -1932,7 +2244,8 @@ input[type="range"]{
     align:'center', vAlign:'middle',
     badge:false, badgeColor:'#fff3c4',
     effect:'none', effectColor:'#000000', effectStrength:40, tilt:0,
-    subtitleGap:18, subtitleFont:'system', subtitleSize:26
+    subtitleGap:18, subtitleFont:'system', subtitleSize:26,
+    bgType:'preset', decorShape:null
   };
 
   const TEMPLATES = [
@@ -1966,7 +2279,35 @@ input[type="range"]{
       effect:'highlighter', effectColor:'#ffe066', effectStrength:40, tilt:-2 },
     { key:'bulkDeal', name:'Bulk Deal', desc:'Grain Paper + Archivo Black + two-tone lines',
       bg:'grainPaper', font:'archivo', headlineColor:'#8b3fd1', subtitleColor:'#3d2f5c',
-      effect:'twoTone', effectColor:'#12224f', effectStrength:40, tilt:0 }
+      effect:'twoTone', effectColor:'#12224f', effectStrength:40, tilt:0 },
+    { key:'concertLineup', name:'Concert Lineup', desc:'Minimal Black + Anton, bold pink',
+      bg:'solidBlack', font:'anton', headlineColor:'#e88ac4', subtitleColor:'#e88ac4' },
+    { key:'neonEditorial', name:'Neon Editorial', desc:'Quiet Arc + Bebas Neue + glow',
+      bg:'quietArc', font:'bebas', headlineColor:'#c6ff6b', subtitleColor:'#c6ff6b',
+      effect:'glow', effectColor:'#c6ff6b', effectStrength:50, tilt:0 },
+    { key:'kpop', name:'K-Pop', desc:'Fredoka + highlighter marker',
+      bg:'#FF3B8D', bgType:'color', font:'fredoka', headlineColor:'#ffffff', subtitleColor:'#ffffff',
+      effect:'highlighter', effectColor:'#FFE066', effectStrength:40, tilt:-3 },
+    { key:'soccer', name:'Soccer', desc:'Archivo Black + shadow',
+      bg:'#0B3D24', bgType:'color', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#ffffff',
+      effect:'shadow', effectColor:'#A6FF3D', effectStrength:45, tilt:0 },
+    { key:'festival', name:'Festival', desc:'Chewy + blob shape',
+      bg:'#FF7A1A', bgType:'color', font:'chewy', headlineColor:'#FFE066', subtitleColor:'#FFE066',
+      tilt:-4, decorShape:'blob', effectColor:'#FFFFFF' },
+    { key:'comicHype', name:'Comic Hype', desc:'Bangers + starburst + outline',
+      bg:'#E8384F', bgType:'color', font:'bangers', headlineColor:'#FFD23F', subtitleColor:'#FFD23F',
+      effect:'outline', effectColor:'#111111', effectStrength:50, tilt:0, decorShape:'starburst' },
+    { key:'motivation', name:'Motivation', desc:'Chewy + blob shape',
+      bg:'#FCE38A', bgType:'color', font:'chewy', headlineColor:'#3A2DE0', subtitleColor:'#3A2DE0',
+      tilt:0, decorShape:'blob', effectColor:'#F2A6D8' },
+    { key:'streetwear', name:'Streetwear', desc:'Archivo Black + highlighter marker',
+      bg:'#111111', bgType:'color', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#ffffff',
+      effect:'highlighter', effectColor:'#FF7A1A', effectStrength:40, tilt:-2 },
+    { key:'editorialGenre', name:'Editorial', desc:'Archivo Black, clean',
+      bg:'#6B7B4F', bgType:'color', font:'archivo', headlineColor:'#F5F2E8', subtitleColor:'#F5F2E8' },
+    { key:'concertGlow', name:'Concert Glow', desc:'Bangers + neon tube',
+      bg:'#0A0A14', bgType:'color', font:'bangers', headlineColor:'#ffffff', subtitleColor:'#ffffff',
+      effect:'neonTube', effectColor:'#7FE7D4', effectStrength:60, tilt:0 }
   ].map(t => Object.assign({}, TPL_DEFAULTS, t));
 
   const templatesEl = document.getElementById('templates');
@@ -1975,10 +2316,15 @@ input[type="range"]{
     btn.className = 'tpl-card' + (tpl.key === 'oliveField' ? ' active' : '');
     btn.type = 'button';
     btn.dataset.key = tpl.key;
-    btn.style.background = PRESETS[tpl.bg].swatch;
+    btn.style.background = tpl.bgType === 'color'
+      ? `linear-gradient(135deg, ${tpl.bg} 60%, ${tpl.effectColor || tpl.bg} 100%)`
+      : PRESETS[tpl.bg].swatch;
     btn.innerHTML = `<span class="tpl-name">${tpl.name}</span><span class="tpl-desc">${tpl.desc}</span>`;
     btn.addEventListener('click', () => {
-      state.bg = { type:'preset', key: tpl.bg, image:null };
+      state.bg = tpl.bgType === 'color'
+        ? { type:'color', color: tpl.bg, image:null }
+        : { type:'preset', key: tpl.bg, image:null };
+      state.decor = { shape: tpl.decorShape, color: tpl.effectColor };
       state.font = tpl.font;
       state.headlineColor = tpl.headlineColor;
       state.subtitleColor = tpl.subtitleColor;
@@ -2023,8 +2369,10 @@ input[type="range"]{
 
       document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
       document.querySelectorAll('.color-chip').forEach(s=>s.classList.remove('active'));
-      const matchSwatch = document.querySelector(`.swatch[data-key="${tpl.bg}"]`);
-      if (matchSwatch) matchSwatch.classList.add('active');
+      if (tpl.bgType !== 'color'){
+        const matchSwatch = document.querySelector(`.swatch[data-key="${tpl.bg}"]`);
+        if (matchSwatch) matchSwatch.classList.add('active');
+      }
 
       clearTemplateActive();
       btn.classList.add('active');
@@ -2043,6 +2391,7 @@ input[type="range"]{
 
   document.getElementById('resetBtn').addEventListener('click', () => {
     state.bg = { type:'preset', key:'oliveNote', image:null };
+    state.decor = { shape:null, color:null };
     state.headline = 'Your headline here';
     state.subtitle = '';
     state.headlineColor = '#f5f2e8';
@@ -2185,6 +2534,203 @@ input[type="range"]{
     downloadBtn.textContent = 'Download cover.webp';
     document.getElementById('pngWarning').style.display = 'none';
     updateSizeEstimate();
+  });
+
+  // ---------- collapsible sections ----------
+
+  document.querySelectorAll('.section-head').forEach(head => {
+    head.addEventListener('click', (e) => {
+      if (e.target.closest('.section-clear')) return;
+      const box = head.closest('.section, .mock-frame');
+      if (box) box.classList.toggle('collapsed');
+    });
+  });
+
+  // ---------- filters + 12-item cap with "show more" ----------
+
+  function wireCappedGrid(opts){
+    const itemsEl = () => Array.from(document.querySelectorAll(opts.itemSelector));
+    const moreBtn = opts.moreBtnId ? document.getElementById(opts.moreBtnId) : null;
+    const filterInput = opts.filterInputId ? document.getElementById(opts.filterInputId) : null;
+    let expanded = false;
+    function apply(){
+      const items = itemsEl();
+      const q = filterInput ? filterInput.value.trim().toLowerCase() : '';
+      const filtering = q.length > 0;
+      items.forEach((el, i) => {
+        const matches = !filtering || el.textContent.toLowerCase().includes(q);
+        const withinCap = expanded || filtering || i < opts.cap;
+        el.style.display = (matches && withinCap) ? '' : 'none';
+      });
+      if (moreBtn){
+        const hiddenCount = items.length - opts.cap;
+        moreBtn.style.display = (!filtering && hiddenCount > 0) ? '' : 'none';
+        moreBtn.textContent = expanded ? 'Show less' : `Show more (${hiddenCount})`;
+      }
+    }
+    if (moreBtn) moreBtn.addEventListener('click', () => { expanded = !expanded; apply(); });
+    if (filterInput) filterInput.addEventListener('input', apply);
+    apply();
+    return apply;
+  }
+
+  const reapplyTemplateFilter = wireCappedGrid({ itemSelector:'#templates .tpl-card', cap:12, moreBtnId:'templatesShowMore', filterInputId:'templateFilter' });
+  const reapplyBackgroundFilter = wireCappedGrid({ itemSelector:'#swatches .swatch', cap:12, moreBtnId:'swatchesShowMore', filterInputId:'backgroundFilter' });
+
+  document.getElementById('backgroundFilter').addEventListener('input', function(){
+    const q = this.value.trim().toLowerCase();
+    const filtering = q.length > 0;
+    document.querySelectorAll('#teamSwatches .swatch').forEach(el => {
+      el.style.display = (!filtering || el.textContent.toLowerCase().includes(q)) ? '' : 'none';
+    });
+  });
+
+  // ---------- per-section clear ----------
+
+  document.querySelectorAll('.section-clear').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const kind = btn.dataset.clear;
+      if (kind === 'background' || kind === 'images'){
+        removePhotoBtn.click();
+      }
+      if (kind === 'images'){
+        document.getElementById('removeLogoBtn').click();
+      }
+      if (kind === 'headline'){
+        state.headline = '';
+        headlineInput.value = '';
+        clearTemplateActive();
+        redraw();
+      }
+      if (kind === 'subtitle'){
+        state.subtitle = '';
+        subtitleInput.value = '';
+        clearTemplateActive();
+        redraw();
+      }
+      if (kind === 'effects'){
+        state.effect = 'none';
+        state.effectColor = '#000000';
+        state.effectStrength = 40;
+        state.tilt = 0;
+        effectSelect.value = 'none';
+        effectColorInput.value = '#000000';
+        effectColorHex.textContent = '#000000';
+        effectStrengthInput.value = 40;
+        effectStrengthVal.textContent = '40';
+        tiltSlider.value = 0;
+        tiltVal.textContent = '0';
+        clearTemplateActive();
+        redraw();
+      }
+    });
+  });
+
+  document.getElementById('matchHeadlineBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    state.subtitleFont = state.font;
+    state.subtitleColor = state.headlineColor;
+    subtitleFontSelect.value = state.font;
+    subtitleColorInput.value = state.headlineColor;
+    subtitleColorHex.textContent = state.headlineColor.toUpperCase();
+    clearTemplateActive();
+    redraw();
+  });
+
+  // ---------- wizard ----------
+
+  const TOPIC_COLORS = {
+    soccer:     { bg:'#14532D', accent:'#A6FF3D' },
+    football:   { bg:'#2B3A1E', accent:'#B5651D' },
+    basketball: { bg:'#D2601A', accent:'#1D1D1D' },
+    tennis:     { bg:'#2E7D32', accent:'#DCEE6B' },
+    pop:        { bg:'#FF3B8D', accent:'#FFE066' },
+    rock:       { bg:'#121212', accent:'#E8384F' },
+    metal:      { bg:'#0A0A0A', accent:'#9AA0A6' },
+    kpop:       { bg:'#F2A6D8', accent:'#6C4CE0' },
+    indie:      { bg:'#D9A441', accent:'#6B4A2E' }
+  };
+  const VIBE_STYLE = {
+    fun:          { font:'chewy', effect:'highlighter', effectStrength:40, tilt:-3 },
+    serious:      { font:'anton', effect:'shadow', effectStrength:45, tilt:0 },
+    professional: { font:'archivo', effect:'none', effectStrength:40, tilt:0 }
+  };
+
+  let wizardTopic = null, wizardVibe = null;
+  const wizardOverlay = document.getElementById('wizardOverlay');
+  const wizardBuildBtn = document.getElementById('wizardBuildBtn');
+
+  document.getElementById('wizardOpenBtn').addEventListener('click', () => {
+    wizardOverlay.style.display = 'flex';
+  });
+  document.getElementById('wizardCloseBtn').addEventListener('click', () => {
+    wizardOverlay.style.display = 'none';
+  });
+  wizardOverlay.addEventListener('click', (e) => {
+    if (e.target === wizardOverlay) wizardOverlay.style.display = 'none';
+  });
+
+  document.querySelectorAll('#wizardTopicsSports .wizard-chip, #wizardTopicsMusic .wizard-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#wizardTopicsSports .wizard-chip, #wizardTopicsMusic .wizard-chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      wizardTopic = chip.dataset.topic;
+      wizardBuildBtn.disabled = !(wizardTopic && wizardVibe);
+    });
+  });
+  document.querySelectorAll('#wizardVibes .wizard-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#wizardVibes .wizard-chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      wizardVibe = chip.dataset.vibe;
+      wizardBuildBtn.disabled = !(wizardTopic && wizardVibe);
+    });
+  });
+
+  wizardBuildBtn.addEventListener('click', () => {
+    const colors = TOPIC_COLORS[wizardTopic];
+    const style = VIBE_STYLE[wizardVibe];
+    if (!colors || !style){ wizardOverlay.style.display = 'none'; return; }
+    const textColor = autoContrastColor(colors.bg);
+
+    state.bg = { type:'color', color: colors.bg, image:null };
+    state.decor = { shape:null, color:null };
+    state.font = style.font;
+    state.headlineColor = textColor;
+    state.subtitleColor = textColor;
+    state.effect = style.effect;
+    state.effectColor = colors.accent;
+    state.effectStrength = style.effectStrength;
+    state.tilt = style.tilt;
+
+    const wizHeadline = document.getElementById('wizardHeadline').value.trim();
+    const wizSubtitle = document.getElementById('wizardSubtitle').value.trim();
+    if (wizHeadline){ state.headline = wizHeadline; headlineInput.value = wizHeadline; }
+    if (wizSubtitle){ state.subtitle = wizSubtitle; subtitleInput.value = wizSubtitle; }
+
+    fontSelect.value = style.font;
+    headlineColorInput.value = textColor;
+    subtitleColorInput.value = textColor;
+    headlineColorHex.textContent = textColor.toUpperCase();
+    subtitleColorHex.textContent = textColor.toUpperCase();
+    effectSelect.value = style.effect;
+    effectColorInput.value = colors.accent;
+    effectColorHex.textContent = colors.accent.toUpperCase();
+    effectStrengthInput.value = style.effectStrength;
+    effectStrengthVal.textContent = style.effectStrength;
+    tiltSlider.value = style.tilt;
+    tiltVal.textContent = style.tilt;
+
+    uploadBtn.classList.remove('has-file');
+    uploadBtn.textContent = 'Upload a photo...';
+    document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.color-chip').forEach(s=>s.classList.remove('active'));
+    clearTemplateActive();
+    updateCanvasMode();
+    redraw();
+
+    wizardOverlay.style.display = 'none';
   });
 
   // ---------- boot ----------
