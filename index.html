@@ -2731,6 +2731,7 @@ input[type="range"]{
   };
   const FONT_TAGS = { anton:['bold'], bebas:['bold'], archivo:['clean','bold'], fredoka:['fun'], chewy:['fun'], bangers:['fun','edgy'], pacifico:['fun','elegant'], playfair:['elegant','clean'], marker:['fun','edgy'], caveat:['fun'], graffiti:['edgy','fun'] };
   const EFFECT_TAGS = { none:['clean'], shadow:['clean','bold'], outline:['fun','bold'], glow:['bold','edgy'], extrude:['bold','edgy'], chromatic:['edgy'], twoTone:['fun'], highlighter:['fun'], neonTube:['edgy','bold'], hardShadow:['bold','fun'] };
+  const PRESET_TAGS = { solidPitch:['clean','bold'], quietArc:['clean','bold'], grainPaper:['clean','elegant'], stadiumCrowd:['bold','edgy'], deepGlow:['bold','edgy'], solidBlack:['clean','bold','edgy'], sageMinimal:['clean','elegant'], bubbleCluster:['fun'], softWave:['fun','elegant'], inkDuotone:['bold','edgy'], warmSand:['clean','elegant'] };
   const VIBE_CONFIG = {
     fun:          { tags:['fun','edgy'], strength:[35,60], tilt:[-6,6] },
     serious:      { tags:['bold','edgy'], strength:[35,55], tilt:[-2,2] },
@@ -2787,8 +2788,9 @@ input[type="range"]{
     const effect = pickTagged(topic.effects, EFFECT_TAGS, vibe.tags);
     const effectStrength = randInt(vibe.strength);
     const tilt = randInt(vibe.tilt);
-    const usePreset = topic.presets.length && Math.random() < 0.35;
-    const presetKey = usePreset ? pickRandom(topic.presets) : null;
+    const vibeMatchedPresets = topic.presets.filter(key => (PRESET_TAGS[key]||[]).some(t => vibe.tags.includes(t)));
+    const usePreset = vibeMatchedPresets.length && Math.random() < 0.35;
+    const presetKey = usePreset ? pickRandom(vibeMatchedPresets) : null;
     const decorShape = !usePreset ? pickRandom(topic.decor) : null;
 
     let headlineColor, subtitleColor, effectColor;
