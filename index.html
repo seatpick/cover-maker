@@ -959,6 +959,7 @@ input[type="range"]{
                 <div class="seg" id="badgeSeg">
                   <button data-v="plain" class="active">Plain</button>
                   <button data-v="badge">Pill badge</button>
+                  <button data-v="banner">Slant banner</button>
                 </div>
               </div>
               <div class="field">
@@ -1135,7 +1136,7 @@ input[type="range"]{
     subtitleSize: 26,
     align: 'center',
     vAlign: 'middle',
-    badge: false,
+    badge: 'plain',
     badgeColor: '#fff3c4',
     effect: 'none',
     effectColor: '#000000',
@@ -1324,6 +1325,55 @@ input[type="range"]{
     });
   }
 
+  function drawTornHole(c, cx, cy, r){
+    const N = 14;
+    const points = [];
+    for (let i=0;i<N;i++){
+      const angle = (i/N)*Math.PI*2;
+      const jag = 1 + 0.35*Math.sin(angle*3.7 + cx*0.01) + 0.2*Math.cos(angle*5.3 + cy*0.02);
+      const rad = r*jag;
+      points.push([cx+Math.cos(angle)*rad, cy+Math.sin(angle)*rad]);
+    }
+    c.save();
+    c.globalCompositeOperation = 'destination-out';
+    c.beginPath();
+    points.forEach(([x,y],i) => i===0 ? c.moveTo(x,y) : c.lineTo(x,y));
+    c.closePath();
+    c.fill();
+    c.restore();
+    c.save();
+    c.strokeStyle = 'rgba(74,14,40,0.35)';
+    c.lineWidth = 1.5;
+    for (let i=0;i<6;i++){
+      const angle = (i/6)*Math.PI*2 + 0.3;
+      const x1 = cx+Math.cos(angle)*r*0.3, y1 = cy+Math.sin(angle)*r*0.3;
+      const x2 = cx+Math.cos(angle)*r*1.1, y2 = cy+Math.sin(angle)*r*1.1;
+      c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2); c.stroke();
+    }
+    c.restore();
+  }
+
+  function drawTornFabric(c){
+    c.fillStyle = '#bcd4ea'; c.fillRect(0,0,W,H);
+    const g = c.createLinearGradient(0,0,W,H);
+    g.addColorStop(0,'#6e1638'); g.addColorStop(1,'#4a0e28');
+    c.fillStyle = g; c.fillRect(0,0,W,H);
+    softBlob(c, W*0.15, H*0.2, 320, '#2e0a1c');
+    softBlob(c, W*0.85, H*0.8, 340, '#7a1f45');
+    c.save();
+    c.globalAlpha = 0.12;
+    c.fillStyle = '#2e0a1c';
+    for (let yy=6; yy<H; yy+=10){
+      for (let xx=((yy/10)%2===0 ? 0 : 5); xx<W; xx+=10){
+        c.beginPath(); c.arc(xx,yy,1,0,Math.PI*2); c.fill();
+      }
+    }
+    c.restore();
+    drawTornHole(c, W*0.20, H*0.42, 90);
+    drawTornHole(c, W*0.86, H*0.32, 68);
+    addGrain(c, 0.04);
+  }
+
   function applyTextEffect(c, effect, color, strength){
     c.shadowColor = 'transparent';
     c.shadowBlur = 0;
@@ -1484,6 +1534,12 @@ input[type="range"]{
       swatch:'#C7C0B2',
       text:'#2a271f', sub:'#514c3e',
       draw(c){ c.fillStyle = '#C7C0B2'; c.fillRect(0,0,W,H); addGrain(c, 0.05); }
+    },
+    tornFabric: {
+      label:'Torn Fabric',
+      swatch:'linear-gradient(135deg,#6e1638,#4a0e28)',
+      text:'#ffffff', sub:'#e8c9d8',
+      draw(c){ drawTornFabric(c); }
     }
   };
 
@@ -1647,7 +1703,7 @@ input[type="range"]{
       c.fillStyle = state.headlineColor;
     }
 
-    if (state.badge){
+    if (state.badge === 'badge'){
       let badgeMaxLineW = 0;
       headlineLines.forEach(line => { badgeMaxLineW = Math.max(badgeMaxLineW, c.measureText(line).width); });
       const padX = size*0.5, padY = size*0.32;
@@ -1658,6 +1714,25 @@ input[type="range"]{
       roundRect(c, blockLeft, blockTop, blockW, blockH, blockH/2);
       c.fillStyle = state.badgeColor;
       c.fill();
+      c.fillStyle = state.headlineColor;
+    } else if (state.badge === 'banner'){
+      headlineLines.forEach((line, li) => {
+        const w = c.measureText(line).width;
+        const padX = size*0.32, padY = size*0.2;
+        const boxW = w + padX*2, boxH = lineHeight*0.82;
+        const stagger = (li % 2 === 1) ? -size*0.16 : 0;
+        const boxX = (state.align === 'left' ? xPos - padX : xPos - boxW/2) + stagger;
+        const boxY = (startY + li*lineHeight) - size*0.76;
+        const skew = boxH*0.32;
+        c.beginPath();
+        c.moveTo(boxX+skew, boxY);
+        c.lineTo(boxX+boxW, boxY);
+        c.lineTo(boxX+boxW-skew, boxY+boxH);
+        c.lineTo(boxX, boxY+boxH);
+        c.closePath();
+        c.fillStyle = state.badgeColor;
+        c.fill();
+      });
       c.fillStyle = state.headlineColor;
     }
 
@@ -2186,7 +2261,7 @@ input[type="range"]{
   }
   wireSeg('alignSeg', v => state.align = v);
   wireSeg('vAlignSeg', v => state.vAlign = v);
-  wireSeg('badgeSeg', v => state.badge = (v === 'badge'));
+  wireSeg('badgeSeg', v => state.badge = v);
 
   const fontSelect = document.getElementById('fontSelect');
   Object.keys(FONTS).forEach(key => {
@@ -2293,7 +2368,7 @@ input[type="range"]{
 
   const TPL_DEFAULTS = {
     align:'center', vAlign:'middle',
-    badge:false, badgeColor:'#fff3c4',
+    badge:'plain', badgeColor:'#fff3c4',
     effect:'none', effectColor:'#000000', effectStrength:40, tilt:0,
     subtitleGap:30, subtitleFont:'system', subtitleSize:26,
     bgType:'preset', decorShape:null,
@@ -2365,7 +2440,10 @@ input[type="range"]{
     { key:'teamSync', name:'Team Sync', desc:'Archivo Black, clean minimal',
       bg:'#6B7A6D', bgType:'color', font:'archivo', headlineColor:'#F5F2E8', subtitleColor:'#F5F2E8' },
     { key:'loveEditorial', name:'Love', desc:'Playfair Display, editorial',
-      bg:'#F7F4EE', bgType:'color', font:'playfair', headlineColor:'#141413', subtitleColor:'#141413' }
+      bg:'#F7F4EE', bgType:'color', font:'playfair', headlineColor:'#141413', subtitleColor:'#141413' },
+    { key:'teamRip', name:'Team Rip', desc:'Torn Fabric + slant banner',
+      bg:'tornFabric', font:'anton', headlineColor:'#181818', subtitleColor:'#ffffff',
+      badge:'banner', badgeColor:'#f5f2ea' }
   ].map(t => Object.assign({}, TPL_DEFAULTS, t));
 
   const templatesEl = document.getElementById('templates');
@@ -2424,7 +2502,7 @@ input[type="range"]{
 
       document.querySelectorAll('#alignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v===tpl.align));
       document.querySelectorAll('#vAlignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v===tpl.vAlign));
-      document.querySelectorAll('#badgeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v===(tpl.badge?'badge':'plain')));
+      document.querySelectorAll('#badgeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v===tpl.badge));
 
       uploadBtn.classList.remove('has-file');
       uploadBtn.textContent = 'Upload a photo...';
@@ -2462,7 +2540,7 @@ input[type="range"]{
     state.fontSize = 92;
     state.align = 'center';
     state.vAlign = 'middle';
-    state.badge = false;
+    state.badge = 'plain';
     state.badgeColor = '#fff3c4';
     state.effect = 'none';
     state.effectColor = '#000000';
