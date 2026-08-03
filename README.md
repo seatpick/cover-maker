@@ -158,8 +158,9 @@ then five removed again in follow-up cleanups: Night Stadium once the
 real "Match Night" team photo covered the same mood, Pitch Green, Seat
 Map, and Arena Bowl all as direct cleanup asks):
 
-- *Premium/editorial* (mesh gradients + film grain): Mesh Aurora, Grain
-  Paper, Spotlight Glow, Quiet Arc, Ink Duotone, Deep Glow, Soft Wave.
+- *Premium/editorial* (mesh gradients + film grain): Grain
+  Paper, Quiet Arc, Ink Duotone, Deep Glow, Soft Wave (Mesh Aurora and
+  Spotlight Glow were removed later per direct feedback).
   Built from `softBlob()` (blurred radial-gradient color blob) and
   `addGrain()` (a small noise tile drawn as a repeating pattern with
   `globalCompositeOperation = 'overlay'` — proper film grain; an earlier
@@ -169,6 +170,13 @@ Map, and Arena Bowl all as direct cleanup asks):
 - *SeatPick brand*: Brand Navy (flat).
 - *Sports*: Stadium Crowd (tiered seating bands of small deterministic
   dots, floodlight glow, vignette).
+- *Collage/poster*: Torn Fabric — a maroon woven-texture fill with two
+  jagged torn holes (via `destination-out` on a deterministic jagged
+  polygon path, not a real cutout image) revealing a light-blue layer
+  underneath, plus thin frayed-thread strokes at each hole's edge.
+  Pairs with the "Slant banner" headline style below (see "Team Rip"
+  template) — recreates the visual language of a torn-jersey collage
+  cover without needing a licensed photo.
 - *Original set*: Flat Pitch, Minimal Black, Bubble Cluster.
 
 Users can also **upload their own photo** (cover-fit cropped to 1200x500,
@@ -226,6 +234,12 @@ single greedy word-wrap would.
 
 - **Pill badge**: rounded chip behind the headline (no underline — that
   was removed per feedback).
+- **Slant banner**: `state.badge = 'plain'|'badge'|'banner'` (was a
+  boolean, now a 3-way style picker). Draws each headline *line* as its
+  own skewed parallelogram bar (not one block like Pill badge), with a
+  slight left/right stagger between lines — the collage-poster "team
+  rip" look (see "Team Rip" template, paired with the Torn Fabric
+  background below).
 - **Text effects**: None, Drop shadow, Outline, Glow, 3D Extrude, plus 5
   added later from reference style images:
   - **Chromatic Split** — red + cyan offset copies behind the main fill,
