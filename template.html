@@ -1034,6 +1034,8 @@ input[type="range"]{
                 <option value="highlighter">Highlighter Marker</option>
                 <option value="neonTube">Neon Tube</option>
                 <option value="hardShadow">Hard Shadow</option>
+                <option value="popOutline">Pop Outline</option>
+                <option value="popLayers">Pop Layers</option>
               </select>
             </div>
             <div class="field">
@@ -1159,6 +1161,14 @@ input[type="range"]{
 
   // ---------- background presets ----------
 
+  function shadeColor(hex, percent){
+    const v = hex.replace('#','');
+    const r = parseInt(v.substring(0,2),16), g = parseInt(v.substring(2,4),16), b = parseInt(v.substring(4,6),16);
+    const adj = (ch) => Math.max(0, Math.min(255, Math.round(ch + (percent/100)*255)));
+    const toHex = (ch) => ch.toString(16).padStart(2,'0');
+    return '#' + toHex(adj(r)) + toHex(adj(g)) + toHex(adj(b));
+  }
+
   function hexToRgba(hex, a){
     const v = hex.replace('#','');
     const r = parseInt(v.substring(0,2),16);
@@ -1258,6 +1268,28 @@ input[type="range"]{
     }
     c.closePath();
     c.fill();
+  }
+
+  function drawStar(c, cx, cy, r){
+    const spikes = 5, innerR = r*0.42;
+    c.beginPath();
+    for (let i=0;i<spikes*2;i++){
+      const a = (Math.PI*2)*(i/(spikes*2)) - Math.PI/2;
+      const rad = i%2===0 ? r : innerR;
+      const x = cx+Math.cos(a)*rad, y = cy+Math.sin(a)*rad;
+      if (i===0) c.moveTo(x,y); else c.lineTo(x,y);
+    }
+    c.closePath();
+    c.fill();
+  }
+
+  function drawDecorStars(c, color){
+    const positions = [
+      [0.08,0.16,20],[0.14,0.62,14],[0.90,0.22,22],[0.86,0.68,16],
+      [0.94,0.48,12],[0.06,0.85,16]
+    ];
+    c.fillStyle = color;
+    positions.forEach(([px,py,r]) => drawStar(c, px*W, py*H, r));
   }
 
   function drawStadiumCrowd(c){
@@ -1609,6 +1641,7 @@ input[type="range"]{
     if (state.decor && state.decor.shape){
       if (state.decor.shape === 'blob') drawDecorBlob(c, state.decor.color);
       else if (state.decor.shape === 'starburst') drawDecorStarburst(c, state.decor.color);
+      else if (state.decor.shape === 'stars') drawDecorStars(c, state.decor.color);
     }
 
     function drawLogo(){
@@ -1785,6 +1818,22 @@ input[type="range"]{
         c.shadowBlur = 0;
         y += lineHeight;
         return;
+      } else if (state.effect === 'popOutline'){
+        const off = 4 + state.effectStrength*0.12;
+        c.fillStyle = state.effectColor;
+        c.fillText(line, xPos + off, y + off);
+        c.lineJoin = 'round';
+        c.lineWidth = 3 + state.effectStrength*0.1;
+        c.strokeStyle = '#000000';
+        c.strokeText(line, xPos, y);
+        c.fillStyle = state.headlineColor;
+      } else if (state.effect === 'popLayers'){
+        const off1 = 9 + state.effectStrength*0.14, off2 = 4 + state.effectStrength*0.07;
+        c.fillStyle = shadeColor(state.effectColor, -30);
+        c.fillText(line, xPos + off1, y + off1);
+        c.fillStyle = state.effectColor;
+        c.fillText(line, xPos + off2, y + off2);
+        c.fillStyle = state.headlineColor;
       }
       if (state.effect === 'twoTone') c.fillStyle = li % 2 === 0 ? state.headlineColor : state.effectColor;
       c.fillText(line, xPos, y);
@@ -2438,7 +2487,16 @@ input[type="range"]{
       bg:'#F7F4EE', bgType:'color', font:'playfair', headlineColor:'#141413', subtitleColor:'#141413' },
     { key:'teamRip', name:'Team Rip', desc:'Torn Fabric + slant banner',
       bg:'tornFabric', font:'anton', headlineColor:'#181818', subtitleColor:'#ffffff',
-      badge:'banner', badgeColor:'#f5f2ea' }
+      badge:'banner', badgeColor:'#f5f2ea' },
+    { key:'graffitiTag', name:'Graffiti Tag', desc:'Rubik Wet Paint + pop outline',
+      bg:'#F2C200', bgType:'color', font:'graffiti', headlineColor:'#FFFFFF', subtitleColor:'#111111',
+      effect:'popOutline', effectColor:'#111111', effectStrength:55, tilt:-3 },
+    { key:'funkyRetro', name:'Funky Retro', desc:'Pacifico + pop outline, 70s groovy',
+      bg:'#F2D3B0', bgType:'color', font:'pacifico', headlineColor:'#E8397F', subtitleColor:'#111111',
+      effect:'popOutline', effectColor:'#111111', effectStrength:45, tilt:-4 },
+    { key:'breakDance', name:'Break Dance', desc:'Bangers + pop layers, arcade pop-art',
+      bg:'#7EDDE8', bgType:'color', font:'bangers', headlineColor:'#FFE066', subtitleColor:'#111111',
+      effect:'popLayers', effectColor:'#7C3AED', effectStrength:55, tilt:-2, decorShape:'stars' }
   ].map(t => Object.assign({}, TPL_DEFAULTS, t));
 
   const templatesEl = document.getElementById('templates');
