@@ -78,6 +78,13 @@
   font-display:block;
 }
 @font-face{
+  font-family:'Lobster';
+  src:url(data:font/woff2;base64,__LOBSTER_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
   font-family:'Heebo';
   src:url(data:font/woff2;base64,__HEEBO_LATIN_BASE64__) format('woff2');
   font-weight:700;
@@ -1155,6 +1162,7 @@ input[type="range"]{
     marker:   { label:'Permanent Marker - Brush',    family:'Permanent Marker', uppercase:false },
     caveat:   { label:'Caveat - Handwritten',        family:'Caveat',        uppercase:false },
     graffiti: { label:'Rubik Wet Paint - Graffiti',  family:'Rubik Wet Paint', uppercase:false },
+    lobster:  { label:'Lobster - Retro Groovy Script', family:'Lobster',      uppercase:false },
     heebo:    { label:'Heebo - Hebrew + Latin',      family:'Heebo',         uppercase:false, rtl:true },
     cairo:    { label:'Cairo - Arabic + Latin',       family:'Cairo',         uppercase:false, rtl:true }
   };
@@ -2496,8 +2504,8 @@ input[type="range"]{
     { key:'graffitiTag', name:'Graffiti Tag', desc:'Rubik Wet Paint + pop outline',
       bg:'#F2C200', bgType:'color', font:'graffiti', headlineColor:'#FFFFFF', subtitleColor:'#111111',
       effect:'popOutline', effectColor:'#111111', effectStrength:55, tilt:-3 },
-    { key:'funkyRetro', name:'Funky Retro', desc:'Pacifico + pop outline, 70s groovy',
-      bg:'#F2D3B0', bgType:'color', font:'pacifico', headlineColor:'#E8397F', subtitleColor:'#111111',
+    { key:'funkyRetro', name:'Funky Retro', desc:'Lobster + pop outline, 70s groovy',
+      bg:'#F2D3B0', bgType:'color', font:'lobster', headlineColor:'#E8397F', subtitleColor:'#111111',
       effect:'popOutline', effectColor:'#111111', effectStrength:45, tilt:-4 },
     { key:'breakDance', name:'Break Dance', desc:'Bangers + pop layers, arcade pop-art',
       bg:'#7EDDE8', bgType:'color', font:'bangers', headlineColor:'#FFE066', subtitleColor:'#111111',
