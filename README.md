@@ -359,7 +359,12 @@ over budget the tool shows a warning with a one-click "switch to WEBP".
        .replace('__HAND_DRAWN_FLOWERS_BASE64__', load_b64('backgrounds/handDrawnFlowers.b64'))
        .replace('__RIBBON_GRADIENT_BASE64__', load_b64('backgrounds/ribbonGradient.b64'))
        .replace('__SOCCER_FIELD_AERIAL_BASE64__', load_b64('backgrounds/soccerFieldAerial.b64'))
-       .replace('__BASKETBALL_DUNK_BASE64__', load_b64('backgrounds/basketballDunk.b64')))
+       .replace('__BASKETBALL_DUNK_BASE64__', load_b64('backgrounds/basketballDunk.b64'))
+       .replace('__BASKETBALL_SPLATTER_BASE64__', load_b64('backgrounds/basketballSplatter.b64'))
+       .replace('__SOCCER_KICK_PURPLE_BASE64__', load_b64('backgrounds/soccerKickPurple.b64'))
+       .replace('__SOCCER_RUN_GOLD_BASE64__', load_b64('backgrounds/soccerRunGold.b64'))
+       .replace('__SOCCER_BICYCLE_KICK_BASE64__', load_b64('backgrounds/soccerBicycleKick.b64'))
+       .replace('__SOCCER_HEADER_GOLD_BASE64__', load_b64('backgrounds/soccerHeaderGold.b64')))
    open('artifact.html', 'w', encoding='utf-8').write(fragment)
 
    marker = '<div class="wrap">'
