@@ -257,6 +257,14 @@ single greedy word-wrap would.
     which stacks 8 copies) — the flat "bubble-letter" shadow look from
     packaging/poster design (see "Velvet Vibes", "Color Shadow",
     "Streaming Now").
+  - **Pop Outline** — hard offset shadow duplicate (effect color) plus a
+    thick black stroke outline on the main fill, for a bold graffiti/
+    sticker look (see "Graffiti Tag", "Funky Retro").
+  - **Pop Layers** — two-tone layered chunky extrude: a darkened tier
+    (via new `shadeColor()` helper) plus the effect-color tier stacked
+    behind the main fill, for a pop-art/arcade look (see "Break Dance",
+    which also uses the new `stars` decor shape — scattered 5-point
+    stars — to echo that reference's star/lightning accents).
   All effects use the same color + strength slider (where applicable),
   and reset after the headline draws so they never bleed into the
   subtitle. (The "Feature Spotlight", "After Dark", "Marker Tag", and
