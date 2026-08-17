@@ -515,21 +515,6 @@ input[type="range"]{
 }
 .swatch-remove:hover{background:rgba(0,0,0,0.8);}
 
-.logo-swatches{display:flex;flex-wrap:wrap;gap:8px;}
-.logo-swatch{
-  height:52px;
-  padding:6px 12px;
-  background:#ffffff;
-  border:2px solid var(--line);
-  border-radius:8px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.logo-swatch.active{border-color:var(--accent);}
-.logo-swatch img{max-height:100%;max-width:100%;object-fit:contain;}
-
 .color-chips{display:flex;flex-wrap:wrap;gap:8px;}
 .color-chip{
   width:30px;height:30px;
@@ -883,10 +868,6 @@ input[type="range"]{
           <div class="field" id="customBgsField" style="display:none;margin-top:14px;">
             <label>My backgrounds <span class="fineprint" style="display:inline;margin:0;">(saved in this browser only)</span></label>
             <div class="swatches" id="customBgs"></div>
-          </div>
-          <div class="field" style="margin-top:14px;">
-            <label>SeatPick Logo</label>
-            <div class="logo-swatches" id="brandLogoSwatches"></div>
           </div>
           <div class="field" style="margin-top:14px;">
             <label>Logo overlay (optional)</label>
@@ -2245,56 +2226,6 @@ input[type="range"]{
   const logoSizeInput = document.getElementById('logoSize');
   const logoSizeVal = document.getElementById('logoSizeVal');
 
-  const TICKET_PATH = 'M20,25 L100,25 L100,34 A11,11 0 0 1 100,56 L100,95 L20,95 L20,86 A11,11 0 0 1 20,64 L20,25 Z';
-  function svgToDataUri(svg){ return 'data:image/svg+xml;base64,' + btoa(svg); }
-  function ticketIconSvg({ stroke, fill, filled }){
-    return filled
-      ? `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140"><circle cx="70" cy="70" r="60" fill="${fill}"/><path d="${TICKET_PATH}" transform="translate(10,10)" fill="#ffffff"/></svg>`
-      : `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140"><circle cx="70" cy="70" r="56" fill="none" stroke="${stroke}" stroke-width="8"/><path d="${TICKET_PATH}" transform="translate(10,10)" fill="${stroke}"/></svg>`;
-  }
-  function wordmarkSvg(color){
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="560" height="120" viewBox="0 0 560 120"><path d="${TICKET_PATH}" fill="${color}"/><text x="140" y="93" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="82" fill="${color}">SeatPick</text></svg>`;
-  }
-  const BRAND_LOGOS = {
-    circleOutline: { label:'Circle Outline', src: svgToDataUri(ticketIconSvg({ stroke:'#003BDE', filled:false })) },
-    circleFilled:  { label:'Circle Filled',  src: svgToDataUri(ticketIconSvg({ fill:'#003BDE', filled:true })) },
-    wordmarkBlue:  { label:'Wordmark Blue',  src: svgToDataUri(wordmarkSvg('#003BDE')) },
-    wordmarkBlack: { label:'Wordmark Black', src: svgToDataUri(wordmarkSvg('#000000')) }
-  };
-  const brandLogoSwatchesEl = document.getElementById('brandLogoSwatches');
-  Object.keys(BRAND_LOGOS).forEach(key => {
-    const logo = BRAND_LOGOS[key];
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'logo-swatch';
-    btn.dataset.key = key;
-    btn.title = logo.label;
-    const imgEl = document.createElement('img');
-    imgEl.src = logo.src;
-    imgEl.alt = logo.label;
-    imgEl.style.height = '100%';
-    imgEl.style.width = 'auto';
-    imgEl.style.flexShrink = '0';
-    btn.appendChild(imgEl);
-    btn.addEventListener('click', () => {
-      const img = new Image();
-      img.onload = () => {
-        state.logo.image = img;
-        state.logo.x = 0.5;
-        state.logo.y = 0.5;
-        logoUploadBtn.classList.remove('has-file');
-        logoUploadBtn.textContent = 'Upload a logo...';
-        logoControls.style.display = 'flex';
-        document.querySelectorAll('.logo-swatch').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        updateCanvasMode();
-        redraw();
-      };
-      img.src = logo.src;
-    });
-    brandLogoSwatchesEl.appendChild(btn);
-  });
-
   logoUploadBtn.addEventListener('click', () => logoFileInput.click());
   logoFileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
@@ -2307,7 +2238,6 @@ input[type="range"]{
       logoUploadBtn.classList.add('has-file');
       logoUploadBtn.textContent = file.name.length > 26 ? file.name.slice(0,23)+'...' : file.name;
       logoControls.style.display = 'flex';
-      document.querySelectorAll('.logo-swatch').forEach(b=>b.classList.remove('active'));
       updateCanvasMode();
       redraw();
     };
@@ -2325,7 +2255,6 @@ input[type="range"]{
     logoUploadBtn.classList.remove('has-file');
     logoUploadBtn.textContent = 'Upload a logo...';
     logoControls.style.display = 'none';
-    document.querySelectorAll('.logo-swatch').forEach(b=>b.classList.remove('active'));
     updateCanvasMode();
     redraw();
   });
