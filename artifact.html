@@ -960,6 +960,55 @@ input[type="range"]{
                 </div>
               </div>
             </div>
+          </div>
+
+          <div class="subgroup">
+            <div class="subgroup-head">
+              <span class="subgroup-title">Style &amp; effects</span>
+              <button class="section-clear" type="button" data-clear="effects">Clear</button>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label>Text effect</label>
+                <select id="effectSelect">
+                  <option value="none">None</option>
+                  <option value="shadow">Drop shadow</option>
+                  <option value="outline">Outline</option>
+                  <option value="glow">Glow</option>
+                  <option value="extrude">3D Extrude</option>
+                  <option value="chromatic">Chromatic Split</option>
+                  <option value="twoTone">Two-Tone Lines</option>
+                  <option value="highlighter">Highlighter Marker</option>
+                  <option value="neonTube">Neon Tube</option>
+                  <option value="hardShadow">Hard Shadow</option>
+                  <option value="popOutline">Pop Outline</option>
+                  <option value="popLayers">Pop Layers</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Effect color</label>
+                <div class="colorfield">
+                  <input type="color" id="effectColor" value="#000000">
+                  <span class="hex" id="effectColorHex">#000000</span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label>Effect strength</label>
+                <div class="slider-row">
+                  <input type="range" id="effectStrength" min="0" max="100" value="40">
+                  <span class="val" id="effectStrengthVal">40</span>
+                </div>
+              </div>
+              <div class="field">
+                <label>Tilt</label>
+                <div class="slider-row">
+                  <input type="range" id="tiltSlider" min="-12" max="12" value="0">
+                  <span class="val" id="tiltVal">0</span>
+                </div>
+              </div>
+            </div>
             <div class="row">
               <div class="field">
                 <label>Style</label>
@@ -974,6 +1023,23 @@ input[type="range"]{
                 <div class="colorfield">
                   <input type="color" id="badgeColor" value="#fff3c4">
                   <span class="hex" id="badgeColorHex">#FFF3C4</span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label>Text backdrop</label>
+                <select id="backdropStyle">
+                  <option value="off">Off</option>
+                  <option value="dark">Dark</option>
+                  <option value="light">Light</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Backdrop strength</label>
+                <div class="slider-row">
+                  <input type="range" id="backdropStrength" min="0" max="100" value="50">
+                  <span class="val" id="backdropStrengthVal">50</span>
                 </div>
               </div>
             </div>
@@ -1025,80 +1091,9 @@ input[type="range"]{
         </div>
       </div>
 
-      <div class="section" id="sec-effects">
-        <div class="section-head">
-          <h2>5. Effects</h2>
-          <div class="section-head-right">
-            <button class="section-clear" type="button" data-clear="effects">Clear</button>
-            <span class="chev">&#9662;</span>
-          </div>
-        </div>
-        <div class="section-body">
-          <div class="row">
-            <div class="field">
-              <label>Text effect</label>
-              <select id="effectSelect">
-                <option value="none">None</option>
-                <option value="shadow">Drop shadow</option>
-                <option value="outline">Outline</option>
-                <option value="glow">Glow</option>
-                <option value="extrude">3D Extrude</option>
-                <option value="chromatic">Chromatic Split</option>
-                <option value="twoTone">Two-Tone Lines</option>
-                <option value="highlighter">Highlighter Marker</option>
-                <option value="neonTube">Neon Tube</option>
-                <option value="hardShadow">Hard Shadow</option>
-                <option value="popOutline">Pop Outline</option>
-                <option value="popLayers">Pop Layers</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Effect color</label>
-              <div class="colorfield">
-                <input type="color" id="effectColor" value="#000000">
-                <span class="hex" id="effectColorHex">#000000</span>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="field">
-              <label>Effect strength</label>
-              <div class="slider-row">
-                <input type="range" id="effectStrength" min="0" max="100" value="40">
-                <span class="val" id="effectStrengthVal">40</span>
-              </div>
-            </div>
-            <div class="field">
-              <label>Tilt</label>
-              <div class="slider-row">
-                <input type="range" id="tiltSlider" min="-12" max="12" value="0">
-                <span class="val" id="tiltVal">0</span>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="field">
-              <label>Text backdrop</label>
-              <select id="backdropStyle">
-                <option value="off">Off</option>
-                <option value="dark">Dark</option>
-                <option value="light">Light</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Backdrop strength</label>
-              <div class="slider-row">
-                <input type="range" id="backdropStrength" min="0" max="100" value="50">
-                <span class="val" id="backdropStrengthVal">50</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div class="section" id="sec-export">
         <div class="section-head">
-          <h2>6. Export</h2>
+          <h2>5. Export</h2>
           <span class="chev">&#9662;</span>
         </div>
         <div class="section-body">
@@ -2840,6 +2835,11 @@ input[type="range"]{
         backdropStyleSelect.value = 'off';
         backdropStrengthInput.value = 50;
         backdropStrengthVal.textContent = '50';
+        state.badge = 'plain';
+        state.badgeColor = '#fff3c4';
+        document.querySelectorAll('#badgeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v==='plain'));
+        badgeColorInput.value = '#fff3c4';
+        badgeColorHex.textContent = '#FFF3C4';
         clearTemplateActive();
         redraw();
       }
