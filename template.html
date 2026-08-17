@@ -1278,6 +1278,13 @@ input[type="range"]{
     c.fill();
   }
 
+  function drawDecorSun(c, color){
+    c.fillStyle = color;
+    c.beginPath();
+    c.arc(W*0.5, H*0.36, 150, 0, Math.PI*2);
+    c.fill();
+  }
+
   function drawStar(c, cx, cy, r){
     const spikes = 5, innerR = r*0.42;
     c.beginPath();
@@ -1652,6 +1659,7 @@ input[type="range"]{
       if (state.decor.shape === 'blob') drawDecorBlob(c, state.decor.color);
       else if (state.decor.shape === 'starburst') drawDecorStarburst(c, state.decor.color);
       else if (state.decor.shape === 'stars') drawDecorStars(c, state.decor.color);
+      else if (state.decor.shape === 'sun') drawDecorSun(c, state.decor.color);
     }
 
     function drawLogo(){
@@ -2425,7 +2433,7 @@ input[type="range"]{
     badge:'plain', badgeColor:'#fff3c4',
     effect:'none', effectColor:'#000000', effectStrength:40, tilt:0,
     subtitleGap:30, subtitleFont:'system', subtitleSize:26,
-    bgType:'preset', decorShape:null,
+    bgType:'preset', decorShape:null, decorColor:null,
     backdrop:{ style:'off', strength:50 }
   };
 
@@ -2506,7 +2514,10 @@ input[type="range"]{
       effect:'popOutline', effectColor:'#111111', effectStrength:45, tilt:-4 },
     { key:'breakDance', name:'Break Dance', desc:'Bangers + pop layers, arcade pop-art',
       bg:'#7EDDE8', bgType:'color', font:'bangers', headlineColor:'#FFE066', subtitleColor:'#111111',
-      effect:'popLayers', effectColor:'#7C3AED', effectStrength:55, tilt:-2, decorShape:'stars' }
+      effect:'popLayers', effectColor:'#7C3AED', effectStrength:55, tilt:-2, decorShape:'stars' },
+    { key:'fujiCoffee', name:'Fuji Coffee', desc:'Fredoka + pop outline, retro sun badge',
+      bg:'grainPaper', font:'fredoka', headlineColor:'#F3B6CE', subtitleColor:'#1a1a1a',
+      effect:'popOutline', effectColor:'#1a1a1a', effectStrength:55, tilt:0, decorShape:'sun', decorColor:'#E4562F' }
   ].map(t => Object.assign({}, TPL_DEFAULTS, t));
 
   const templatesEl = document.getElementById('templates');
@@ -2523,7 +2534,7 @@ input[type="range"]{
       state.bg = tpl.bgType === 'color'
         ? { type:'color', color: tpl.bg, image:null }
         : { type:'preset', key: tpl.bg, image:null };
-      state.decor = { shape: tpl.decorShape, color: tpl.effectColor };
+      state.decor = { shape: tpl.decorShape, color: tpl.decorColor || tpl.effectColor };
       state.font = tpl.font;
       state.headlineColor = tpl.headlineColor;
       state.subtitleColor = tpl.subtitleColor;
