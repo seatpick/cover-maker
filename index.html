@@ -928,7 +928,8 @@ input[type="range"]{
             </div>
             <div class="field">
               <label for="headline">Headline text</label>
-              <textarea id="headline" maxlength="140">Your headline here</textarea>
+              <textarea id="headline" maxlength="140">Your headline
+here</textarea>
             </div>
             <div class="row">
               <div class="field">
@@ -946,8 +947,8 @@ input[type="range"]{
             <div class="field">
               <label>Size</label>
               <div class="slider-row">
-                <input type="range" id="fontSize" min="44" max="150" value="92">
-                <span class="val" id="fontSizeVal">92px</span>
+                <input type="range" id="fontSize" min="44" max="150" value="64">
+                <span class="val" id="fontSizeVal">64px</span>
               </div>
             </div>
             <div class="row">
@@ -1137,12 +1138,12 @@ input[type="range"]{
 
   const state = {
     bg: { type:'preset', key:'oliveNote', image:null },
-    headline: 'Your headline here',
+    headline: 'Your headline\nhere',
     subtitle: '',
     headlineColor: '#f5f2e8',
     subtitleColor: '#dcd8c4',
     font: 'archivo',
-    fontSize: 92,
+    fontSize: 64,
     subtitleFont: 'system',
     subtitleSize: 26,
     align: 'center',
@@ -2605,12 +2606,12 @@ input[type="range"]{
   document.getElementById('resetBtn').addEventListener('click', () => {
     state.bg = { type:'preset', key:'oliveNote', image:null };
     state.decor = { shape:null, color:null };
-    state.headline = 'Your headline here';
+    state.headline = 'Your headline\nhere';
     state.subtitle = '';
     state.headlineColor = '#f5f2e8';
     state.subtitleColor = '#dcd8c4';
     state.font = 'archivo';
-    state.fontSize = 92;
+    state.fontSize = 64;
     state.align = 'center';
     state.vAlign = 'middle';
     state.badge = 'plain';
@@ -2630,8 +2631,8 @@ input[type="range"]{
     headlineColorHex.textContent = state.headlineColor.toUpperCase();
     subtitleColorHex.textContent = state.subtitleColor.toUpperCase();
     fontSelect.value = state.font;
-    fontSizeInput.value = 92;
-    fontSizeVal.textContent = '92px';
+    fontSizeInput.value = 64;
+    fontSizeVal.textContent = '64px';
     badgeColorInput.value = state.badgeColor;
     badgeColorHex.textContent = state.badgeColor.toUpperCase();
     effectSelect.value = state.effect;
