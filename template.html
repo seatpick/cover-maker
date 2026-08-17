@@ -515,6 +515,21 @@ input[type="range"]{
 }
 .swatch-remove:hover{background:rgba(0,0,0,0.8);}
 
+.logo-swatches{display:flex;flex-wrap:wrap;gap:8px;}
+.logo-swatch{
+  height:52px;
+  padding:6px 12px;
+  background:#ffffff;
+  border:2px solid var(--line);
+  border-radius:8px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.logo-swatch.active{border-color:var(--accent);}
+.logo-swatch img{max-height:100%;max-width:100%;object-fit:contain;}
+
 .color-chips{display:flex;flex-wrap:wrap;gap:8px;}
 .color-chip{
   width:30px;height:30px;
@@ -868,6 +883,10 @@ input[type="range"]{
           <div class="field" id="customBgsField" style="display:none;margin-top:14px;">
             <label>My backgrounds <span class="fineprint" style="display:inline;margin:0;">(saved in this browser only)</span></label>
             <div class="swatches" id="customBgs"></div>
+          </div>
+          <div class="field" style="margin-top:14px;">
+            <label>SeatPick Logo</label>
+            <div class="logo-swatches" id="brandLogoSwatches"></div>
           </div>
           <div class="field" style="margin-top:14px;">
             <label>Logo overlay (optional)</label>
@@ -2226,6 +2245,43 @@ input[type="range"]{
   const logoSizeInput = document.getElementById('logoSize');
   const logoSizeVal = document.getElementById('logoSizeVal');
 
+  const BRAND_LOGOS = {
+    circleOutline: { label:'Circle Outline', src:'data:image/webp;base64,__LOGO_CIRCLE_OUTLINE_BASE64__' },
+    circleFilled:  { label:'Circle Filled',  src:'data:image/webp;base64,__LOGO_CIRCLE_FILLED_BASE64__' },
+    wordmarkBlue:  { label:'Wordmark Blue',  src:'data:image/webp;base64,__LOGO_WORDMARK_BLUE_BASE64__' },
+    wordmarkBlack: { label:'Wordmark Black', src:'data:image/webp;base64,__LOGO_WORDMARK_BLACK_BASE64__' }
+  };
+  const brandLogoSwatchesEl = document.getElementById('brandLogoSwatches');
+  Object.keys(BRAND_LOGOS).forEach(key => {
+    const logo = BRAND_LOGOS[key];
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'logo-swatch';
+    btn.dataset.key = key;
+    btn.title = logo.label;
+    const imgEl = document.createElement('img');
+    imgEl.src = logo.src;
+    imgEl.alt = logo.label;
+    btn.appendChild(imgEl);
+    btn.addEventListener('click', () => {
+      const img = new Image();
+      img.onload = () => {
+        state.logo.image = img;
+        state.logo.x = 0.5;
+        state.logo.y = 0.5;
+        logoUploadBtn.classList.remove('has-file');
+        logoUploadBtn.textContent = 'Upload a logo...';
+        logoControls.style.display = 'flex';
+        document.querySelectorAll('.logo-swatch').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        updateCanvasMode();
+        redraw();
+      };
+      img.src = logo.src;
+    });
+    brandLogoSwatchesEl.appendChild(btn);
+  });
+
   logoUploadBtn.addEventListener('click', () => logoFileInput.click());
   logoFileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
@@ -2238,6 +2294,7 @@ input[type="range"]{
       logoUploadBtn.classList.add('has-file');
       logoUploadBtn.textContent = file.name.length > 26 ? file.name.slice(0,23)+'...' : file.name;
       logoControls.style.display = 'flex';
+      document.querySelectorAll('.logo-swatch').forEach(b=>b.classList.remove('active'));
       updateCanvasMode();
       redraw();
     };
@@ -2255,6 +2312,7 @@ input[type="range"]{
     logoUploadBtn.classList.remove('has-file');
     logoUploadBtn.textContent = 'Upload a logo...';
     logoControls.style.display = 'none';
+    document.querySelectorAll('.logo-swatch').forEach(b=>b.classList.remove('active'));
     updateCanvasMode();
     redraw();
   });

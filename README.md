@@ -362,7 +362,11 @@ over budget the tool shows a warning with a one-click "switch to WEBP".
        .replace('__LOBSTER_BASE64__', load_b64('fonts/lobster.b64'))
        .replace('__BASKETBALL_DUNK_BASE64__', load_b64('backgrounds/basketballDunk.b64'))
        .replace('__BASKETBALL_SPLATTER_BASE64__', load_b64('backgrounds/basketballSplatter.b64'))
-       .replace('__FAN_SCARVES_BASE64__', load_b64('backgrounds/fanScarves.b64')))
+       .replace('__FAN_SCARVES_BASE64__', load_b64('backgrounds/fanScarves.b64'))
+       .replace('__LOGO_CIRCLE_OUTLINE_BASE64__', load_b64('logos/circleOutline.b64'))
+       .replace('__LOGO_CIRCLE_FILLED_BASE64__', load_b64('logos/circleFilled.b64'))
+       .replace('__LOGO_WORDMARK_BLUE_BASE64__', load_b64('logos/wordmarkBlue.b64'))
+       .replace('__LOGO_WORDMARK_BLACK_BASE64__', load_b64('logos/wordmarkBlack.b64')))
    open('artifact.html', 'w', encoding='utf-8').write(fragment)
 
    marker = '<div class="wrap">'
