@@ -206,10 +206,13 @@ A separate upload, independent of background choice. Has:
 
 ## Fonts
 
-13 options via the Text section dropdown: Anton, Bebas Neue, Archivo
+15 options via the Text section dropdown: Anton, Bebas Neue, Archivo
 Black, Fredoka, Chewy, Bangers, Pacifico, Playfair Display, Permanent
-Marker, Caveat, **Rubik Wet Paint** (graffiti/spray-paint style), **Heebo**
-(Hebrew + Latin), **Cairo** (Arabic + Latin).
+Marker, Caveat, **Rubik Wet Paint** (graffiti/spray-paint style),
+**Lobster** (retro groovy connected script), **Baloo 2** (chunky
+rounded ExtraBold, ideal with the Pop Outline effect for a badge-logo
+look — see the "FUJI" reference request), **Heebo** (Hebrew + Latin),
+**Cairo** (Arabic + Latin).
 
 Each font has an `uppercase` flag in the `FONTS` registry — true for bold
 display faces, false for script/serif/handwritten/Hebrew/Arabic ones,
@@ -360,6 +363,7 @@ over budget the tool shows a warning with a one-click "switch to WEBP".
        .replace('__RIBBON_GRADIENT_BASE64__', load_b64('backgrounds/ribbonGradient.b64'))
        .replace('__SOCCER_FIELD_AERIAL_BASE64__', load_b64('backgrounds/soccerFieldAerial.b64'))
        .replace('__LOBSTER_BASE64__', load_b64('fonts/lobster.b64'))
+       .replace('__BALOO2_BASE64__', load_b64('fonts/baloo2.b64'))
        .replace('__BASKETBALL_DUNK_BASE64__', load_b64('backgrounds/basketballDunk.b64'))
        .replace('__BASKETBALL_SPLATTER_BASE64__', load_b64('backgrounds/basketballSplatter.b64'))
        .replace('__FAN_SCARVES_BASE64__', load_b64('backgrounds/fanScarves.b64')))
