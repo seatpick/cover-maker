@@ -709,7 +709,7 @@ input[type="range"]{
 <div class="wrap">
   <div class="masthead">
     <h1>Cover Maker</h1>
-    <p>1200 &times; 500 social covers &mdash; PNG, JPG or WEBP, kept under 120&nbsp;KB. For the content team.</p>
+    <p>1200 &times; 500 social covers &mdash; PNG, JPG or WEBP, kept under 350&nbsp;KB. For the content team.</p>
     <button class="wizard-trigger" type="button" id="wizardOpenBtn">&#10024; Build my cover</button>
   </div>
 
@@ -1120,7 +1120,7 @@ input[type="range"]{
           <button class="btn" id="downloadBtn" type="button">Download cover.webp</button>
           <button class="btn ghost" id="resetBtn" type="button">Reset to defaults</button>
           <p class="fineprint" id="pngWarning" style="display:none;">
-            This PNG is over 120&nbsp;KB and can't be compressed further &mdash;
+            This PNG is over 350&nbsp;KB and can't be compressed further &mdash;
             <a id="switchWebp">switch to WEBP</a> to bring it under budget.
           </p>
         </div>
@@ -1131,7 +1131,7 @@ input[type="range"]{
 
 <script>
 (function(){
-  const LIMIT_BYTES = 120000;
+  const LIMIT_BYTES = 350000;
   const W = 1200, H = 500;
   const MOBILE_CROP_RATIO = 4/3; // approximate card-thumbnail crop; update once the real ratio is known
 
@@ -2698,8 +2698,8 @@ input[type="range"]{
     bar.classList.toggle('bad', over);
     fig.textContent = kb + ' KB';
     text.textContent = isFinal
-      ? (over ? 'Over budget - try WEBP or a lower-detail background.' : 'Exported - within the 120 KB limit.')
-      : (over ? 'Estimated size is over 120 KB at current quality.' : 'Estimated export size.');
+      ? (over ? 'Over budget - try WEBP or a lower-detail background.' : 'Exported - within the 350 KB limit.')
+      : (over ? 'Estimated size is over 350 KB at current quality.' : 'Estimated export size.');
   }
 
   async function findBestBlob(mime){
@@ -2707,7 +2707,7 @@ input[type="range"]{
       const blob = await toBlobAsync(stage, mime);
       return { blob, quality:null };
     }
-    let lo = 0.3, hi = 0.95, best = null, bestQ = null;
+    let lo = 0.75, hi = 0.98, best = null, bestQ = null;
     for (let i=0;i<7;i++){
       const mid = (lo+hi)/2;
       const blob = await toBlobAsync(stage, mime, mid);
