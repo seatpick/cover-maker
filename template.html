@@ -2245,11 +2245,21 @@ input[type="range"]{
   const logoSizeInput = document.getElementById('logoSize');
   const logoSizeVal = document.getElementById('logoSizeVal');
 
+  const TICKET_PATH = 'M20,25 L100,25 L100,34 A11,11 0 0 1 100,56 L100,95 L20,95 L20,86 A11,11 0 0 1 20,64 L20,25 Z';
+  function svgToDataUri(svg){ return 'data:image/svg+xml;base64,' + btoa(svg); }
+  function ticketIconSvg({ stroke, fill, filled }){
+    return filled
+      ? `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140"><circle cx="70" cy="70" r="60" fill="${fill}"/><path d="${TICKET_PATH}" transform="translate(10,10)" fill="#ffffff"/></svg>`
+      : `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140"><circle cx="70" cy="70" r="56" fill="none" stroke="${stroke}" stroke-width="8"/><path d="${TICKET_PATH}" transform="translate(10,10)" fill="${stroke}"/></svg>`;
+  }
+  function wordmarkSvg(color){
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="560" height="120" viewBox="0 0 560 120"><path d="${TICKET_PATH}" fill="${color}"/><text x="140" y="93" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="82" fill="${color}">SeatPick</text></svg>`;
+  }
   const BRAND_LOGOS = {
-    circleOutline: { label:'Circle Outline', src:'data:image/webp;base64,__LOGO_CIRCLE_OUTLINE_BASE64__' },
-    circleFilled:  { label:'Circle Filled',  src:'data:image/webp;base64,__LOGO_CIRCLE_FILLED_BASE64__' },
-    wordmarkBlue:  { label:'Wordmark Blue',  src:'data:image/webp;base64,__LOGO_WORDMARK_BLUE_BASE64__' },
-    wordmarkBlack: { label:'Wordmark Black', src:'data:image/webp;base64,__LOGO_WORDMARK_BLACK_BASE64__' }
+    circleOutline: { label:'Circle Outline', src: svgToDataUri(ticketIconSvg({ stroke:'#003BDE', filled:false })) },
+    circleFilled:  { label:'Circle Filled',  src: svgToDataUri(ticketIconSvg({ fill:'#003BDE', filled:true })) },
+    wordmarkBlue:  { label:'Wordmark Blue',  src: svgToDataUri(wordmarkSvg('#003BDE')) },
+    wordmarkBlack: { label:'Wordmark Black', src: svgToDataUri(wordmarkSvg('#000000')) }
   };
   const brandLogoSwatchesEl = document.getElementById('brandLogoSwatches');
   Object.keys(BRAND_LOGOS).forEach(key => {
@@ -2262,6 +2272,9 @@ input[type="range"]{
     const imgEl = document.createElement('img');
     imgEl.src = logo.src;
     imgEl.alt = logo.label;
+    imgEl.style.height = '100%';
+    imgEl.style.width = 'auto';
+    imgEl.style.flexShrink = '0';
     btn.appendChild(imgEl);
     btn.addEventListener('click', () => {
       const img = new Image();

@@ -195,7 +195,23 @@ default preset without touching anything saved.
 
 ## Logo overlay
 
-A separate upload, independent of background choice. Has:
+**SeatPick Logo** — 4 official variants (Circle Outline, Circle Filled,
+Wordmark Blue, Wordmark Black), one click applies as the logo overlay.
+These are **generated as inline SVG at runtime**, not image files —
+`TICKET_PATH` (a hand-traced ticket-icon path) plus `ticketIconSvg()`/
+`wordmarkSvg()` build an SVG string per variant, `svgToDataUri()`
+base64-encodes it into a `data:image/svg+xml;base64,...` URI. True
+vector: crisp at any logo-size slider value or export resolution,
+zero image assets to maintain. The wordmark text uses a generic bold
+system sans-serif (`Arial, Helvetica, sans-serif` @ weight 800) as a
+close approximation, **not the exact official brand typeface** — this
+was a deliberate best-effort reconstruction from reference screenshots
+(no source SVG/Figma access at the time), not sourced from real vector
+files. If a pixel-exact match is ever needed, replace `TICKET_PATH`
+and the wordmark font with the real brand asset's actual path/font.
+
+A separate upload, independent of background choice, still exists for
+anything else (sponsor/partner logos, etc). Has:
 - **Size** slider.
 - **Drag to reposition** — click/touch-drag the logo directly on the
   canvas (hit-tests the logo's own bounding box first, falls through to
@@ -362,11 +378,7 @@ over budget the tool shows a warning with a one-click "switch to WEBP".
        .replace('__LOBSTER_BASE64__', load_b64('fonts/lobster.b64'))
        .replace('__BASKETBALL_DUNK_BASE64__', load_b64('backgrounds/basketballDunk.b64'))
        .replace('__BASKETBALL_SPLATTER_BASE64__', load_b64('backgrounds/basketballSplatter.b64'))
-       .replace('__FAN_SCARVES_BASE64__', load_b64('backgrounds/fanScarves.b64'))
-       .replace('__LOGO_CIRCLE_OUTLINE_BASE64__', load_b64('logos/circleOutline.b64'))
-       .replace('__LOGO_CIRCLE_FILLED_BASE64__', load_b64('logos/circleFilled.b64'))
-       .replace('__LOGO_WORDMARK_BLUE_BASE64__', load_b64('logos/wordmarkBlue.b64'))
-       .replace('__LOGO_WORDMARK_BLACK_BASE64__', load_b64('logos/wordmarkBlack.b64')))
+       .replace('__FAN_SCARVES_BASE64__', load_b64('backgrounds/fanScarves.b64')))
    open('artifact.html', 'w', encoding='utf-8').write(fragment)
 
    marker = '<div class="wrap">'
