@@ -376,6 +376,7 @@ over budget the tool shows a warning with a one-click "switch to WEBP".
        '<!doctype html>\n<html lang="en">\n<head>\n'
        '<meta charset="utf-8">\n'
        '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+       '<meta name="robots" content="noindex, nofollow">\n'
        + head_bits + '</head>\n<body>\n' + body_bits + '\n</body>\n</html>\n'
    )
    open('index.html', 'w', encoding='utf-8').write(standalone)
