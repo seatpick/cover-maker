@@ -178,6 +178,10 @@ Map, and Arena Bowl all as direct cleanup asks):
   template) — recreates the visual language of a torn-jersey collage
   cover without needing a licensed photo.
 - *Original set*: Flat Pitch, Minimal Black, Bubble Cluster.
+- *Marketplace-poster pastels* (flat color + grain, punchier than the
+  pastel-minimalism set): Coral Punch, Sage Mist, Petal Pink, Turf
+  Green, Lavender Mist — added alongside the 8 marketplace-reference
+  fonts above, pulled from those same reference images' backgrounds.
 
 Users can also **upload their own photo** (cover-fit cropped to 1200x500,
 **draggable** — click/touch-drag directly on the canvas to reposition the
@@ -206,13 +210,32 @@ A separate upload, independent of background choice. Has:
 
 ## Fonts
 
-15 options via the Text section dropdown: Anton, Bebas Neue, Archivo
+23 options via the Text section dropdown: Anton, Bebas Neue, Archivo
 Black, Fredoka, Chewy, Bangers, Pacifico, Playfair Display, Permanent
 Marker, Caveat, **Rubik Wet Paint** (graffiti/spray-paint style),
 **Lobster** (retro groovy connected script), **Baloo 2** (chunky
 rounded ExtraBold, ideal with the Pop Outline effect for a badge-logo
 look — see the "FUJI" reference request), **Heebo** (Hebrew + Latin),
-**Cairo** (Arabic + Latin).
+**Cairo** (Arabic + Latin), plus 8 added from marketplace font
+reference images (Google Fonts free close-matches, not the actual
+paid fonts — no license to embed those): **Bagel Fat One** (blob
+bubble caps), **Metal Mania** (grunge/distressed), **Sriracha** (bold
+brush script), **Titan One** (playful block caps), **Bungee** (bold
+condensed, pairs well with Pop Outline/Pop Layers), **Kalam**
+(hand-lettered), **Luckiest Guy** (wobbly bubble caps), **Alfa Slab
+One** (retro slab serif).
+
+**Boot-time preload gotcha:** every font used by the tool must be
+listed in the `document.fonts.load(...)` array at the bottom of
+`template.html` (searched for near `// ---------- boot ----------`).
+Canvas `fillText` does NOT wait for a `@font-face` to finish loading
+the way DOM text does — if a font is missing from that preload list,
+the very first render can silently draw in the browser's fallback
+sans-serif instead of the real font, with no error. This bit Lobster
+and Baloo 2 when they were first added (fixed retroactively) and was
+caught immediately for the 8-font batch above by testing a fresh page
+load — always add new fonts to that list, not just the `FONTS`
+registry.
 
 Each font has an `uppercase` flag in the `FONTS` registry — true for bold
 display faces, false for script/serif/handwritten/Hebrew/Arabic ones,
@@ -364,6 +387,14 @@ over budget the tool shows a warning with a one-click "switch to WEBP".
        .replace('__SOCCER_FIELD_AERIAL_BASE64__', load_b64('backgrounds/soccerFieldAerial.b64'))
        .replace('__LOBSTER_BASE64__', load_b64('fonts/lobster.b64'))
        .replace('__BALOO2_BASE64__', load_b64('fonts/baloo2.b64'))
+       .replace('__BAGELFATONE_BASE64__', load_b64('fonts/bagelfatone.b64'))
+       .replace('__METALMANIA_BASE64__', load_b64('fonts/metalmania.b64'))
+       .replace('__SRIRACHA_BASE64__', load_b64('fonts/sriracha.b64'))
+       .replace('__TITANONE_BASE64__', load_b64('fonts/titanone.b64'))
+       .replace('__BUNGEE_BASE64__', load_b64('fonts/bungee.b64'))
+       .replace('__KALAM_BASE64__', load_b64('fonts/kalam.b64'))
+       .replace('__LUCKIESTGUY_BASE64__', load_b64('fonts/luckiestguy.b64'))
+       .replace('__ALFASLABONE_BASE64__', load_b64('fonts/alfaslabone.b64'))
        .replace('__BASKETBALL_DUNK_BASE64__', load_b64('backgrounds/basketballDunk.b64'))
        .replace('__BASKETBALL_SPLATTER_BASE64__', load_b64('backgrounds/basketballSplatter.b64'))
        .replace('__FAN_SCARVES_BASE64__', load_b64('backgrounds/fanScarves.b64'))
