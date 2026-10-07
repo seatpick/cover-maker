@@ -244,6 +244,8 @@ single greedy word-wrap would.
 
 ## Headline style & effects
 
+**Current dropdown (modern redesign):** None, Drop shadow, Outline, Glow, Highlighter Marker. The older loud effects (3D Extrude, Chromatic Split, Two-Tone Lines, Neon Tube, Hard Shadow, Pop Outline, Pop Layers) were removed from the dropdown; their render code in `template.html` is now unreachable. The descriptions below are historical.
+
 - **Pill badge**: rounded chip behind the headline (no underline — that
   was removed per feedback).
 - **Slant banner**: `state.badge = 'plain'|'badge'|'banner'` (was a
