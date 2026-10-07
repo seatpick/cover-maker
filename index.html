@@ -1684,28 +1684,11 @@ here</textarea>
   }
 
   const PRESETS = {
-    solidPitch: {
-      label:'Flat Pitch',
-      swatch:'#3fae2a',
-      text:'#0b1200', sub:'#0b1200',
-      draw(c){ c.fillStyle = '#3fae2a'; c.fillRect(0,0,W,H); addGrain(c, 0.045); }
-    },
     solidBlack: {
       label:'Minimal Black',
       swatch:'#0a0a0a',
       text:'#a6ff3d', sub:'#ffffff',
       draw(c){ c.fillStyle = '#0a0a0a'; c.fillRect(0,0,W,H); addGrain(c, 0.05); }
-    },
-    bubbleCluster: {
-      label:'Bubble Cluster',
-      swatch:'#ff8fab',
-      text:'#ffffff', sub:'#fff0f5',
-      draw(c){
-        c.fillStyle = '#ff8fab';
-        c.fillRect(0,0,W,H);
-        drawBubbleCluster(c);
-        addGrain(c, 0.045);
-      }
     },
     grainPaper: {
       label:'Grain Paper',
@@ -1773,12 +1756,6 @@ here</textarea>
         addGrain(c, 0.06);
       }
     },
-    stadiumCrowd: {
-      label:'Stadium Crowd',
-      swatch:'linear-gradient(180deg,#141a33,#241633)',
-      text:'#ffffff', sub:'#ffd23f',
-      draw(c){ drawStadiumCrowd(c); }
-    },
     brandNavy: {
       label:'Brand Navy',
       swatch:'#19213D',
@@ -1821,18 +1798,6 @@ here</textarea>
       text:'#2a271f', sub:'#514c3e',
       draw(c){ c.fillStyle = '#C7C0B2'; c.fillRect(0,0,W,H); addGrain(c, 0.05); }
     },
-    tornFabric: {
-      label:'Torn Fabric',
-      swatch:'linear-gradient(135deg,#6e1638,#4a0e28)',
-      text:'#ffffff', sub:'#e8c9d8',
-      draw(c){ drawTornFabric(c); }
-    },
-    coralPunch: {
-      label:'Coral Punch',
-      swatch:'#FF6B5A',
-      text:'#fff3ea', sub:'#2b120c',
-      draw(c){ c.fillStyle = '#FF6B5A'; c.fillRect(0,0,W,H); addGrain(c, 0.05); }
-    },
     sageMist: {
       label:'Sage Mist',
       swatch:'#E4EAE5',
@@ -1844,12 +1809,6 @@ here</textarea>
       swatch:'#F2C4C6',
       text:'#3d1f21', sub:'#6b3f41',
       draw(c){ c.fillStyle = '#F2C4C6'; c.fillRect(0,0,W,H); addGrain(c, 0.04); }
-    },
-    turfGreen: {
-      label:'Turf Green',
-      swatch:'#2F6B47',
-      text:'#f0f5f0', sub:'#c9e3d1',
-      draw(c){ c.fillStyle = '#2F6B47'; c.fillRect(0,0,W,H); addGrain(c, 0.05); }
     },
     lavenderMist: {
       label:'Lavender Mist',

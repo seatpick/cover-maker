@@ -138,6 +138,8 @@ half the file size for this kind of soft/gradient-heavy photography.
 
 ## Backgrounds
 
+**Removed in the modern redesign:** Flat Pitch, Bubble Cluster, Stadium Crowd, Torn Fabric, Coral Punch and Turf Green (loud/dated). The descriptions below are historical.
+
 18 presets (down to 19 from 32 after removing Brand Blue, Maroon Fade,
 Royal Blue, Crimson Arc, Cyan Ring, Coral Corner, Retro Sunset, Duotone
 Split, Halftone Fade, Soccer Pitch, Baseball Field, Basketball Court,
