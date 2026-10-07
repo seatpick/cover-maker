@@ -31,38 +31,27 @@ runtime (everything — including all 13 display fonts — is inlined).
 
 ## The "Build my cover" wizard
 
-A green **"✨ Build my cover"** button in the masthead opens a modal:
-headline + subtitle text fields, a Topic picker (**Sports** — Soccer,
-Football, Basketball, Tennis, Hockey, Baseball, Boxing, Motorsport —
-and **Music** — Pop, Rock, Metal, K-Pop, Indie, Hip-Hop, EDM, Latin,
-Country — 17 topics total), and a Vibe picker (Fun/Serious/
-Professional). "Build it" applies a cover and closes the modal; a small
-🎲 button next to it re-rolls a fresh variation for the same topic/vibe
-without closing, so you can shuffle through options before committing.
+A **"Build my cover"** button in the masthead opens a modal: headline +
+subtitle fields, then three pickers:
 
-This does **not** reuse the template gallery — it's a small generative
-system of its own. `TOPIC_COLOR_VARIANTS` gives each topic **two**
-background+accent color-pair options chosen to actually look like the
-topic (Tennis is court-green `#2E7D32` + tennis-ball yellow-green,
-Soccer is pitch-green, Basketball is orange+black, Boxing is deep
-red/black, Hip-Hop is black+gold, EDM is midnight-blue+cyan, etc.), and
-`VIBE_STYLE_VARIANTS` gives each vibe **two** font+effect+tilt options
-(Fun → Chewy+highlighter or Bangers+outline, Serious → Anton+shadow or
-Bebas+glow, Professional → Archivo Black or Playfair Display, both
-clean/no effect). Build/Shuffle pick a random variant from each side —
-2 colors × 2 styles = 4 possible looks per topic/vibe pair, not just 1 —
-then combine into `bg`/`headlineColor`/`subtitleColor`/`font`/`effect`/
-`effectColor`/`tilt`, applied the same way a template click is. Headline/
-subtitle text is set from the modal's own fields — deliberately not
-AI-generated copy, just carrying over what you typed in the wizard.
+1. **Blog type (required)** - the six pillars from the US blog plan
+   (`us-content-guide/content/20-blog-overview.md`): US Sports Guides,
+   Seasonal Events & Playoffs, Concerts & Tours, City & Local, Trust &
+   Reviews, Buyer Education.
+2. **Topic (optional)** - the 8 sports and 9 music chips; click again to
+   clear. With no topic, a topic suited to the blog type is picked for colour.
+3. **Vibe** - Auto (default, uses the blog type's own backgrounds), Light,
+   Dark or Bold.
 
-An earlier version mapped topic+vibe to existing template *cards*
-instead of generating colors directly — replaced after feedback that it
-didn't give accurate-enough colors per topic (e.g. Tennis should read
-green, and reusing an unrelated template didn't guarantee that). The
-topic list and per-topic/vibe variation count both grew after a direct
-follow-up ask to add more options and make the results feel less
-repetitive/more "smart."
+`PILLARS` (in `template.html`) maps each blog type to a set of
+`TYPE_STYLES` indexes, preferred background modes and fallback topics, e.g.
+Sports = poster capitals on navy/glow/bold; City = editorial serif or spaced
+caps on white/tint. Colours come from `wizardPool(topic)`, which ranks the
+Figma-100 + Wada palettes by hue distance to the topic (`TOPIC_HUES`).
+"Build it" applies one random combination and closes the modal; there is no
+shuffle button. Headline/subtitle are always the user's own words. Styles
+that use the accent word mark the last word, unless the user already put
+`*asterisks*` in.
 
 ## Layout / sections (rail, top to bottom)
 
@@ -210,20 +199,17 @@ A separate upload, independent of background choice. Has:
 
 ## Fonts
 
-23 options via the Text section dropdown: Anton, Bebas Neue, Archivo
-Black, Fredoka, Chewy, Bangers, Pacifico, Playfair Display, Permanent
-Marker, Caveat, **Rubik Wet Paint** (graffiti/spray-paint style),
-**Lobster** (retro groovy connected script), **Baloo 2** (chunky
-rounded ExtraBold, ideal with the Pop Outline effect for a badge-logo
-look — see the "FUJI" reference request), **Heebo** (Hebrew + Latin),
-**Cairo** (Arabic + Latin), plus 8 added from marketplace font
-reference images (Google Fonts free close-matches, not the actual
-paid fonts — no license to embed those): **Bagel Fat One** (blob
-bubble caps), **Metal Mania** (grunge/distressed), **Sriracha** (bold
-brush script), **Titan One** (playful block caps), **Bungee** (bold
-condensed, pairs well with Pop Outline/Pop Layers), **Kalam**
-(hand-lettered), **Luckiest Guy** (wobbly bubble caps), **Alfa Slab
-One** (retro slab serif).
+Older display fonts: Anton, Bebas Neue, Archivo Black, Fredoka, Chewy,
+Bangers, Pacifico, Playfair Display, Permanent Marker, Caveat, Rubik Wet
+Paint, Lobster, Baloo 2, Heebo and Cairo (the last two for Hebrew/Arabic),
+plus Bagel Fat One, Metal Mania, Sriracha, Titan One, Bungee, Kalam,
+Luckiest Guy and Alfa Slab One (free look-alikes of marketplace references).
+
+Added for the modern redesign (all embedded as base64 in `fonts/*.b64`):
+Wix Madefor Display/Text, Poppins SemiBold/Regular, Figtree
+ExtraBold/Medium, Plus Jakarta Sans ExtraBold, Bricolage Grotesque Bold,
+Jost, Shippori Mincho, Zen Kaku Gothic New. The app chrome itself uses
+Figtree ("Figtree UI").
 
 **Boot-time preload gotcha:** every font used by the tool must be
 listed in the `document.fonts.load(...)` array at the bottom of
@@ -324,6 +310,29 @@ single greedy word-wrap would.
   box — center now lands within 1-2px of true center across fonts and
   single-line/headline+subtitle cases.
 
+## Modern redesign: palettes, type styles, accent word
+
+- **Palettes**: 100 Figma "color combinations" (sampled from the published
+  images) + 348 Wada "Dictionary of Color Combinations" sets, as
+  `FIGMA_PALETTES` / `WADA_PALETTES`. `buildScheme` turns a palette into a
+  background mode (`white`, `tint`, `navy`, `glow`, `bold`) with WCAG-checked
+  text, subtitle and accent colours (`mixToContrast`, 4.5:1). The 48-card
+  gallery (`GALLERY_IDS`, hue-interleaved) uses these.
+- **Type styles**: 12 `TYPE_STYLES` - sentence-case (Wix, Poppins, Figtree,
+  Bricolage), spaced capitals with a tracked-caps subtitle (Jost, Wix),
+  poster capitals (Bebas, Anton, Jakarta, Archivo), editorial serif
+  (Playfair) and Japanese minimal (Shippori + Zen Kaku). All are centred
+  (align center, vAlign middle) because covers are blog headers. Tilt is 0
+  everywhere (the slider remains, default 0).
+- **Case**: "Headline case" and "Subtitle case" selects (`state.caps`,
+  `state.subCaps`; subtitle caps add 0.16em tracking).
+- **Accent word**: wrap a word in `*asterisks*` for the accent colour and soft
+  highlight. Only 3 of the 12 styles use it (`accentWord:true`); `applyTpl`
+  marks the last word for those and strips asterisks for the rest. The
+  default headline is plain.
+- **Wrapping**: headlines wrap to the mobile-crop width (`MOBILE_CROP_RATIO`)
+  so they survive card thumbnails.
+
 ## Safe zone
 
 Two guide layers when "Show safe zone" is on:
@@ -387,6 +396,17 @@ over budget the tool shows a warning with a one-click "switch to WEBP".
        .replace('__SOCCER_FIELD_AERIAL_BASE64__', load_b64('backgrounds/soccerFieldAerial.b64'))
        .replace('__LOBSTER_BASE64__', load_b64('fonts/lobster.b64'))
        .replace('__BALOO2_BASE64__', load_b64('fonts/baloo2.b64'))
+       .replace('__FIGTREEXB_BASE64__', load_b64('fonts/figtreexb.b64'))
+       .replace('__FIGTREEMD_BASE64__', load_b64('fonts/figtreemd.b64'))
+       .replace('__POPPINSSB_BASE64__', load_b64('fonts/poppinssb.b64'))
+       .replace('__POPPINSRG_BASE64__', load_b64('fonts/poppinsrg.b64'))
+       .replace('__WIXDISPLAY_BASE64__', load_b64('fonts/wixdisplay.b64'))
+       .replace('__WIXTEXT_BASE64__', load_b64('fonts/wixtext.b64'))
+       .replace('__JAKARTAXB_BASE64__', load_b64('fonts/jakartaxb.b64'))
+       .replace('__BRICOLAGE_BASE64__', load_b64('fonts/bricolage.b64'))
+       .replace('__JOST_BASE64__', load_b64('fonts/jost.b64'))
+       .replace('__SHIPPORIMINCHO_BASE64__', load_b64('fonts/shipporimincho.b64'))
+       .replace('__ZENKAKU_BASE64__', load_b64('fonts/zenkaku.b64'))
        .replace('__BAGELFATONE_BASE64__', load_b64('fonts/bagelfatone.b64'))
        .replace('__METALMANIA_BASE64__', load_b64('fonts/metalmania.b64'))
        .replace('__SRIRACHA_BASE64__', load_b64('fonts/sriracha.b64'))

@@ -92,6 +92,97 @@
   font-display:block;
 }
 @font-face{
+  font-family:'Figtree XB';
+  src:url(data:font/woff2;base64,__FIGTREEXB_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
+  font-family:'Figtree MD';
+  src:url(data:font/woff2;base64,__FIGTREEMD_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
+  font-family:'Poppins SB';
+  src:url(data:font/woff2;base64,__POPPINSSB_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
+  font-family:'Poppins RG';
+  src:url(data:font/woff2;base64,__POPPINSRG_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
+  font-family:'Wix Display';
+  src:url(data:font/woff2;base64,__WIXDISPLAY_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
+  font-family:'Wix Text';
+  src:url(data:font/woff2;base64,__WIXTEXT_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
+  font-family:'Jakarta XB';
+  src:url(data:font/woff2;base64,__JAKARTAXB_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
+  font-family:'Bricolage Bold';
+  src:url(data:font/woff2;base64,__BRICOLAGE_BASE64__) format('woff2');
+  font-weight:400;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
+  font-family:'Figtree UI';
+  src:url(data:font/woff2;base64,__FIGTREEMD_BASE64__) format('woff2');
+  font-weight:400 600;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:'Figtree UI';
+  src:url(data:font/woff2;base64,__FIGTREEXB_BASE64__) format('woff2');
+  font-weight:700 900;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:'Jost';
+  src:url(data:font/woff2;base64,__JOST_BASE64__) format('woff2');
+  font-weight:500;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
+  font-family:'Shippori Mincho';
+  src:url(data:font/woff2;base64,__SHIPPORIMINCHO_BASE64__) format('woff2');
+  font-weight:600;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
+  font-family:'Zen Kaku Gothic New';
+  src:url(data:font/woff2;base64,__ZENKAKU_BASE64__) format('woff2');
+  font-weight:500;
+  font-style:normal;
+  font-display:block;
+}
+@font-face{
   font-family:'Bagel Fat One';
   src:url(data:font/woff2;base64,__BAGELFATONE_BASE64__) format('woff2');
   font-weight:400;
@@ -181,17 +272,18 @@
 }
 
 :root{
-  --bg:#f7f4ec;
+  --bg:#f4f5fa;
   --panel:#ffffff;
-  --panel-2:#f2efe3;
-  --line:#e2ddc8;
-  --line-soft:#ece8da;
-  --ink:#22261b;
-  --ink-dim:#767a68;
-  --accent:#0a9d58;
+  --panel-2:#f1f2f9;
+  --line:#e4e6f0;
+  --line-soft:#eceef6;
+  --ink:#1b1f3b;
+  --ink-dim:#6a7094;
+  --accent:#2f5bea;
   --accent-ink:#ffffff;
-  --danger:#c62839;
-  --warn:#b8790a;
+  --danger:#e2445c;
+  --warn:#d98a1c;
+  --shadow:0 1px 2px rgba(27,31,59,.05), 0 10px 28px rgba(27,31,59,.07);
 }
 
 *{box-sizing:border-box;}
@@ -607,6 +699,11 @@ input[type="range"]{
   justify-content:center;
 }
 .tpl-card.active{border-color:var(--accent);}
+.tpl-card.flat{box-shadow:inset 0 0 0 1px rgba(0,0,0,0.08);justify-content:space-between;padding:9px 10px;}
+.tpl-card.flat::before{display:none;}
+.tpl-card.flat .tpl-name{text-shadow:none;font-weight:600;letter-spacing:0.01em;}
+.tpl-card .tpl-dots{position:relative;z-index:1;display:flex;gap:3px;}
+.tpl-card .tpl-dots i{width:9px;height:9px;border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,0.12);display:block;}
 .tpl-card::before{
   content:'';
   position:absolute;
@@ -753,6 +850,33 @@ input[type="range"]{
   line-height:1.3;
 }
 .mock-article-byline{font-size:11px;color:#767a85;margin-top:5px;}
+
+/* ---- modern theme (Wix / Wiz / Monday-inspired): cool canvas, cobalt accent, soft shadows, pill controls ---- */
+body{font-family:"Figtree UI",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);}
+.masthead h1{font-size:24px;font-weight:800;letter-spacing:-0.02em;}
+.masthead{border-bottom:none;padding-bottom:6px;}
+.section{border:none;border-radius:18px;box-shadow:var(--shadow);padding:18px 18px 20px;}
+.section h2{font-size:15px;font-weight:800;text-transform:none;letter-spacing:-0.01em;color:var(--ink);}
+.section-clear{color:var(--accent);font-weight:700;}
+.stage-frame{border-radius:20px;box-shadow:var(--shadow);}
+input[type="text"],textarea,select{background:var(--panel-2);border:1px solid transparent;border-radius:12px;padding:10px 12px;}
+input[type="text"]:hover,textarea:hover,select:hover{border-color:var(--line);}
+input[type="text"]:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,91,234,.18);}
+.btn{border-radius:999px;padding:13px;font-weight:800;transition:background .15s,transform .05s;}
+.btn:hover{background:#2449c9;}
+.btn:active{transform:translateY(1px);}
+.btn.ghost{border:1px solid var(--line);color:var(--ink);background:#fff;}
+.btn.ghost:hover{background:var(--panel-2);}
+.wizard-trigger{border-radius:999px;padding:10px 20px;background:linear-gradient(135deg,#2f5bea,#6a5cff);box-shadow:0 6px 16px rgba(47,91,234,.28);}
+.wizard-chip{border-radius:999px;background:#fff;border:1px solid var(--line);font-weight:700;}
+.wizard-chip:hover{border-color:var(--accent);}
+.seg{border:none;background:var(--panel-2);border-radius:12px;padding:3px;gap:3px;}
+.seg button{border:none;border-radius:9px;background:transparent;padding:8px 6px;font-weight:600;}
+.seg button.active{background:#fff;color:var(--accent);box-shadow:0 1px 3px rgba(27,31,59,.14);}
+.tpl-card{border-radius:14px;}
+.tpl-card.active{border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,91,234,.18);}
+.modal-card{border-radius:22px;box-shadow:0 30px 80px rgba(27,31,59,.25);}
+.swatch,.color-chip{border-radius:12px;}
 </style>
 
 <div class="wrap">
@@ -777,7 +901,19 @@ input[type="range"]{
         <input type="text" class="wizard-text" id="wizardSubtitle" maxlength="140" placeholder="A short supporting line&hellip;">
       </div>
       <div class="wizard-step">
-        <label class="wizard-step-label">Topic</label>
+        <label class="wizard-step-label">Blog type</label>
+        <div class="wizard-chips" id="wizardPillars">
+          <button class="wizard-chip" type="button" data-pillar="sports">US Sports Guides</button>
+          <button class="wizard-chip" type="button" data-pillar="seasonal">Seasonal Events &amp; Playoffs</button>
+          <button class="wizard-chip" type="button" data-pillar="concerts">Concerts &amp; Tours</button>
+          <button class="wizard-chip" type="button" data-pillar="city">City &amp; Local</button>
+          <button class="wizard-chip" type="button" data-pillar="trust">Trust &amp; Reviews</button>
+          <button class="wizard-chip" type="button" data-pillar="education">Buyer Education</button>
+        </div>
+        <p class="fineprint" id="wizardPillarHint" style="margin-top:6px;">Pick the kind of post. The look is matched to it.</p>
+      </div>
+      <div class="wizard-step">
+        <label class="wizard-step-label">Topic (optional)</label>
         <p class="wizard-group-label">Sports</p>
         <div class="wizard-chips" id="wizardTopicsSports">
           <button class="wizard-chip" type="button" data-topic="soccer">Soccer</button>
@@ -805,14 +941,14 @@ input[type="range"]{
       <div class="wizard-step">
         <label class="wizard-step-label">Vibe</label>
         <div class="wizard-chips" id="wizardVibes">
-          <button class="wizard-chip" type="button" data-vibe="fun">Fun</button>
-          <button class="wizard-chip" type="button" data-vibe="serious">Serious</button>
-          <button class="wizard-chip" type="button" data-vibe="professional">Professional</button>
+          <button class="wizard-chip active" type="button" data-vibe="auto">Auto</button>
+          <button class="wizard-chip" type="button" data-vibe="light">Light</button>
+          <button class="wizard-chip" type="button" data-vibe="dark">Dark</button>
+          <button class="wizard-chip" type="button" data-vibe="bold">Bold</button>
         </div>
       </div>
       <div class="row">
         <button class="btn" id="wizardBuildBtn" type="button" style="flex:1;" disabled>Build it</button>
-        <button class="btn ghost" id="wizardShuffleBtn" type="button" title="Try another variation" style="flex:none;width:auto;margin-top:0;padding:12px 16px;" disabled>&#127922;</button>
       </div>
     </div>
   </div>
@@ -979,6 +1115,7 @@ input[type="range"]{
               <label for="headline">Headline text</label>
               <textarea id="headline" maxlength="140">Your headline
 here</textarea>
+              <p class="fineprint" style="margin-top:6px;">Tip: wrap one word in *asterisks* to give it the accent color.</p>
             </div>
             <div class="row">
               <div class="field">
@@ -1023,6 +1160,38 @@ here</textarea>
             <div class="subgroup-head">
               <span class="subgroup-title">Style &amp; effects</span>
               <button class="section-clear" type="button" data-clear="effects">Clear</button>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label>Accent word color</label>
+                <div class="colorfield">
+                  <input type="color" id="accentColor" value="#2f5bea">
+                  <span class="hex" id="accentColorHex">#2F5BEA</span>
+                </div>
+              </div>
+              <div class="field">
+                <label>Accent highlight</label>
+                <select id="accentHighlight">
+                  <option value="soft">Soft highlight</option>
+                  <option value="off">Color only</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label>Headline case</label>
+                <select id="capsSelect">
+                  <option value="off">As typed</option>
+                  <option value="on">UPPERCASE</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Subtitle case</label>
+                <select id="subCapsSelect">
+                  <option value="off">As typed</option>
+                  <option value="on">UPPERCASE, spaced</option>
+                </select>
+              </div>
             </div>
             <div class="row">
               <div class="field">
@@ -1203,6 +1372,10 @@ here</textarea>
     effectColor: '#000000',
     effectStrength: 40,
     tilt: 0,
+    tracking: 0,
+    accent: { color:'#2f5bea', highlight:true },
+    caps: false,
+    subCaps: false,
     subtitleGap: 30,
     backdrop: { style: 'off', strength: 50 },
     decor: { shape: null, color: null },
@@ -1223,6 +1396,17 @@ here</textarea>
     graffiti: { label:'Rubik Wet Paint - Graffiti',  family:'Rubik Wet Paint', uppercase:false },
     lobster:  { label:'Lobster - Retro Groovy Script', family:'Lobster',      uppercase:false },
     baloo2:   { label:'Baloo 2 - Chunky Rounded Bold', family:'Baloo 2',      uppercase:true },
+    wixDisplay:  { label:'Wix Madefor Display - Modern Light', family:'Wix Display',    uppercase:false },
+    wixText:     { label:'Wix Madefor Text - Clean Body',     family:'Wix Text',       uppercase:false },
+    poppinsSB:   { label:'Poppins SemiBold - Wiz-style',      family:'Poppins SB',     uppercase:false },
+    poppinsRG:   { label:'Poppins Regular - Body',            family:'Poppins RG',     uppercase:false },
+    figtreeXB:   { label:'Figtree ExtraBold - Monday-style',  family:'Figtree XB',     uppercase:false },
+    figtreeMD:   { label:'Figtree Medium - Body',             family:'Figtree MD',     uppercase:false },
+    jakartaXB:   { label:'Plus Jakarta Sans ExtraBold',       family:'Jakarta XB',     uppercase:false },
+    bricolage:   { label:'Bricolage Grotesque Bold',          family:'Bricolage Bold', uppercase:false },
+    jost:           { label:'Jost - Nordic Geometric',        family:'Jost',                uppercase:false },
+    shipporiMincho: { label:'Shippori Mincho - Japanese Serif', family:'Shippori Mincho',    uppercase:false },
+    zenKaku:        { label:'Zen Kaku Gothic - Japanese Sans',  family:'Zen Kaku Gothic New', uppercase:false },
     bagelFatOne: { label:'Bagel Fat One - Blob Bubble', family:'Bagel Fat One', uppercase:true },
     metalMania:  { label:'Metal Mania - Grunge Metal',  family:'Metal Mania',  uppercase:false },
     sriracha:    { label:'Sriracha - Bold Brush Script', family:'Sriracha',   uppercase:false },
@@ -1717,7 +1901,7 @@ here</textarea>
     let line = words[0];
     for (let i=1;i<words.length;i++){
       const test = line + ' ' + words[i];
-      if (c.measureText(test).width <= maxWidth){
+      if (c.measureText(test.replace(/\*/g,'')).width <= maxWidth){
         line = test;
       } else {
         lines.push(line);
@@ -1743,6 +1927,11 @@ here</textarea>
     } else if (state.bg.type === 'color'){
       c.fillStyle = state.bg.color;
       c.fillRect(0,0,W,H);
+    } else if (state.bg.type === 'glow'){
+      c.fillStyle = state.bg.color;
+      c.fillRect(0,0,W,H);
+      softBlob(c, W*0.84, H*0.05, 560, state.bg.glow);
+      softBlob(c, W*0.06, H*1.02, 430, state.bg.glow);
     } else if (preset){
       preset.draw(c);
     }
@@ -1766,13 +1955,31 @@ here</textarea>
 
     // headline
     const marginX = 100, marginTop = 45, marginBottom = 45;
-    const maxWidth = W - marginX*2;
+    // left-aligned text starts at the mobile-crop edge (not the canvas edge) so it survives card thumbnails
+    const leftX = Math.round((W - MOBILE_CROP_RATIO*H)/2) + 28;
+    // wrap to the mobile-crop width so long headlines never run past a card thumbnail
+    const mobileW = MOBILE_CROP_RATIO*H;
+    const maxWidth = state.align === 'left'
+      ? Math.min(W - leftX - marginX, mobileW - 56)
+      : Math.min(W - marginX*2, mobileW - 48);
     const size = state.fontSize;
     const family = FONTS[state.font].family;
     c.font = `${size}px "${family}", sans-serif`;
+    c.letterSpacing = (state.tracking*size) + 'px';
     c.textBaseline = 'alphabetic';
-    const headlineText = FONTS[state.font].uppercase ? (state.headline || '').toUpperCase() : (state.headline || '');
-    const headlineLines = wrapLines(c, headlineText, maxWidth);
+    const headlineText = (FONTS[state.font].uppercase || state.caps) ? (state.headline || '').toUpperCase() : (state.headline || '');
+    // *word* marks an accent word; carry the on/off state across wrapped lines
+    let inAccent = false;
+    const lineSegs = wrapLines(c, headlineText, maxWidth).map(raw => {
+      const segs = []; let cur = '';
+      for (const ch of raw){
+        if (ch === '*'){ if (cur) segs.push({ t:cur, a:inAccent }); cur = ''; inAccent = !inAccent; }
+        else cur += ch;
+      }
+      if (cur) segs.push({ t:cur, a:inAccent });
+      return segs;
+    });
+    const headlineLines = lineSegs.map(s => s.map(x => x.t).join(''));
     const lineHeight = size * (state.effect === 'twoTone' ? 0.92 : 1.06);
 
     const headlineAscentMetrics = c.measureText(headlineLines[0] || 'Hg');
@@ -1786,8 +1993,11 @@ here</textarea>
       : `${subSize}px "${FONTS[state.subtitleFont].family}", sans-serif`;
     const subtitleRtl = state.subtitleFont === 'system' ? FONTS[state.font].rtl : !!FONTS[state.subtitleFont].rtl;
     c.font = subFontCss;
+    const subTracking = state.subCaps ? (0.16*subSize) + 'px' : '0px';
+    c.letterSpacing = subTracking;
     const hasSub = !!state.subtitle.trim();
-    const subLines = hasSub ? wrapLines(c, state.subtitle, maxWidth) : [];
+    const subText = state.subCaps ? state.subtitle.toUpperCase() : state.subtitle;
+    const subLines = hasSub ? wrapLines(c, subText, maxWidth) : [];
     const subLineHeight = subSize * 1.3;
     let subMaxW = 0;
     subLines.forEach(line => { subMaxW = Math.max(subMaxW, c.measureText(line).width); });
@@ -1807,7 +2017,7 @@ here</textarea>
     else if (state.vAlign === 'bottom') startY = H - marginBottom - totalVisualHeight + headlineAscent;
     else startY = (H - totalVisualHeight)/2 + headlineAscent;
 
-    const xPos = state.align === 'left' ? marginX : W/2;
+    const xPos = state.align === 'left' ? leftX : W/2;
     c.textAlign = state.align === 'left' ? 'left' : 'center';
     c.direction = FONTS[state.font].rtl ? 'rtl' : 'ltr';
 
@@ -1820,6 +2030,7 @@ here</textarea>
     }
 
     c.font = `${size}px "${family}", sans-serif`;
+    c.letterSpacing = (state.tracking*size) + 'px';
     c.fillStyle = state.headlineColor;
 
     if (state.backdrop.style !== 'off'){
@@ -1877,6 +2088,27 @@ here</textarea>
     let y = startY;
     const highlighterPalette = ['#ffe066', '#ff8fd9', '#8fd8ff', '#c6ff6b'];
     headlineLines.forEach((line, li) => {
+      const segs = lineSegs[li];
+      const hasAcc = !FONTS[state.font].rtl && segs.some(s => s.a);
+      let segXs = null;
+      if (hasAcc){
+        const lw = c.measureText(line).width;
+        const x0 = state.align === 'left' ? xPos : xPos - lw/2;
+        let acc = '';
+        segXs = segs.map(s => { const x = x0 + c.measureText(acc).width; acc += s.t; return x; });
+        if (state.accent.highlight){
+          c.save();
+          c.shadowColor = 'transparent'; c.shadowBlur = 0;
+          segs.forEach((s,k) => {
+            if (!s.a) return;
+            const w = c.measureText(s.t).width, padX = size*0.12;
+            c.fillStyle = hexToRgba(state.accent.color, 0.17);
+            roundRect(c, segXs[k]-padX, y - size*0.82, w+padX*2, size*1.0, size*0.16);
+            c.fill();
+          });
+          c.restore();
+        }
+      }
       if (state.effect === 'highlighter'){
         const w = c.measureText(line).width;
         const padX = size*0.14, padY = size*0.08;
@@ -1945,7 +2177,16 @@ here</textarea>
         c.fillStyle = state.headlineColor;
       }
       if (state.effect === 'twoTone') c.fillStyle = li % 2 === 0 ? state.headlineColor : state.effectColor;
-      c.fillText(line, xPos, y);
+      if (hasAcc){
+        const ta = c.textAlign;
+        c.textAlign = 'left';
+        const base = c.fillStyle;
+        segs.forEach((s,k) => { c.fillStyle = s.a ? state.accent.color : base; c.fillText(s.t, segXs[k], y); });
+        c.fillStyle = base;
+        c.textAlign = ta;
+      } else {
+        c.fillText(line, xPos, y);
+      }
       if (state.effect === 'twoTone') c.fillStyle = state.headlineColor;
       y += lineHeight;
     });
@@ -1954,6 +2195,7 @@ here</textarea>
     if (hasSub){
       y += state.subtitleGap - lineHeight + subLineHeight*0.1;
       c.font = subFontCss;
+      c.letterSpacing = subTracking;
       c.direction = subtitleRtl ? 'rtl' : 'ltr';
       c.fillStyle = state.subtitleColor;
       subLines.forEach(line => { c.fillText(line, xPos, y); y += subLineHeight; });
@@ -2502,6 +2744,25 @@ here</textarea>
     redraw();
   });
 
+  const accentColorInput = document.getElementById('accentColor');
+  const accentColorHex = document.getElementById('accentColorHex');
+  const accentHighlightSelect = document.getElementById('accentHighlight');
+  const capsSelect = document.getElementById('capsSelect');
+  const subCapsSelect = document.getElementById('subCapsSelect');
+  capsSelect.addEventListener('change', () => { state.caps = capsSelect.value === 'on'; redraw(); });
+  subCapsSelect.addEventListener('change', () => { state.subCaps = subCapsSelect.value === 'on'; redraw(); });
+  accentColorInput.addEventListener('input', () => {
+    state.accent.color = accentColorInput.value;
+    accentColorHex.textContent = state.accent.color.toUpperCase();
+    clearTemplateActive();
+    redraw();
+  });
+  accentHighlightSelect.addEventListener('change', () => {
+    state.accent.highlight = accentHighlightSelect.value === 'soft';
+    clearTemplateActive();
+    redraw();
+  });
+
   const backdropStyleSelect = document.getElementById('backdropStyle');
   const backdropStrengthInput = document.getElementById('backdropStrength');
   const backdropStrengthVal = document.getElementById('backdropStrengthVal');
@@ -2528,160 +2789,681 @@ here</textarea>
     backdrop:{ style:'off', strength:50 }
   };
 
-  const TEMPLATES = [
-    { key:'boldStatement', name:'Bold Statement', desc:'Minimal Black + Archivo Black',
-      bg:'solidBlack', font:'archivo', headlineColor:'#a6ff3d', subtitleColor:'#ffffff' },
-    { key:'calmRecap', name:'Calm Recap', desc:'Soft Wave + Archivo Black',
-      bg:'softWave', font:'archivo', headlineColor:'#22263a', subtitleColor:'#5b4a6b' },
-    { key:'handwrittenNote', name:'Handwritten Note', desc:'Grain Paper + Pacifico',
-      bg:'grainPaper', font:'pacifico', headlineColor:'#2b2318', subtitleColor:'#6b5a3f' },
-    { key:'fanZone', name:'Fan Zone', desc:'Stadium Crowd + Archivo Black',
-      bg:'stadiumCrowd', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#ffd23f' },
-    { key:'quietStatement', name:'Quiet Statement', desc:'Quiet Arc + Archivo Black',
-      bg:'quietArc', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#a6ff3d' },
-    { key:'quietSage', name:'Quiet Sage', desc:'Sage Minimal + Caveat',
-      bg:'sageMinimal', font:'caveat', headlineColor:'#2b3328', subtitleColor:'#4a5645' },
-    { key:'stoneEditorial', name:'Stone Editorial', desc:'Stone Gray + Playfair Display',
-      bg:'stoneGray', font:'playfair', headlineColor:'#2a271f', subtitleColor:'#514c3e' },
-    { key:'oliveField', name:'Olive Field', desc:'Olive Note + Archivo Black',
-      bg:'oliveNote', font:'archivo', headlineColor:'#f5f2e8', subtitleColor:'#dcd8c4' },
-    { key:'newDrop', name:'New Drop', desc:'Minimal Black + Chewy + neon glow',
-      bg:'#111111', bgType:'color', font:'chewy', headlineColor:'#ffffff', subtitleColor:'#ffffff',
-      effect:'glow', effectColor:'#b6ff6e', effectStrength:60, tilt:-4 },
-    { key:'planetArcadia', name:'Planet Arcadia', desc:'Stone Gray + Archivo Black + chromatic split',
-      bg:'stoneGray', font:'archivo', headlineColor:'#14141a', subtitleColor:'#4a4a4a',
-      effect:'chromatic', effectColor:'#000000', effectStrength:55, tilt:0 },
-    { key:'flairScript', name:'Flair', desc:'Blush Minimal + Caveat + soft shadow',
-      bg:'blushMinimal', font:'caveat', headlineColor:'#6b1230', subtitleColor:'#8a4a52',
-      effect:'shadow', effectColor:'#f7c9d9', effectStrength:55, tilt:0 },
-    { key:'highlightWords', name:'Highlight My Words', desc:'Stone Gray + Archivo Black + highlighter marker',
-      bg:'stoneGray', font:'archivo', headlineColor:'#1a1a2e', subtitleColor:'#3a3a3a',
-      effect:'highlighter', effectColor:'#ffe066', effectStrength:40, tilt:-2 },
-    { key:'bulkDeal', name:'Bulk Deal', desc:'Grain Paper + Archivo Black + two-tone lines',
-      bg:'grainPaper', font:'archivo', headlineColor:'#8b3fd1', subtitleColor:'#3d2f5c',
-      effect:'twoTone', effectColor:'#12224f', effectStrength:40, tilt:0 },
-    { key:'concertLineup', name:'Concert Lineup', desc:'Minimal Black + Anton, bold pink',
-      bg:'solidBlack', font:'anton', headlineColor:'#e88ac4', subtitleColor:'#e88ac4' },
-    { key:'neonEditorial', name:'Neon Editorial', desc:'Quiet Arc + Bebas Neue + glow',
-      bg:'quietArc', font:'bebas', headlineColor:'#c6ff6b', subtitleColor:'#c6ff6b',
-      effect:'glow', effectColor:'#c6ff6b', effectStrength:50, tilt:0 },
-    { key:'kpop', name:'K-Pop', desc:'Fredoka + highlighter marker, pastel glam',
-      bg:'#FFD6E8', bgType:'color', font:'fredoka', headlineColor:'#6C4CE0', subtitleColor:'#6C4CE0',
-      effect:'highlighter', effectColor:'#6EE7B7', effectStrength:40, tilt:-3 },
-    { key:'soccer', name:'Soccer', desc:'Archivo Black + shadow',
-      bg:'#0B3D24', bgType:'color', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#ffffff',
-      effect:'shadow', effectColor:'#A6FF3D', effectStrength:45, tilt:0 },
-    { key:'streetwear', name:'Streetwear', desc:'Archivo Black + highlighter marker',
-      bg:'#111111', bgType:'color', font:'archivo', headlineColor:'#ffffff', subtitleColor:'#ffffff',
-      effect:'highlighter', effectColor:'#FF7A1A', effectStrength:40, tilt:-2 },
-    { key:'editorialGenre', name:'Editorial', desc:'Archivo Black, clean',
-      bg:'#6B7B4F', bgType:'color', font:'archivo', headlineColor:'#F5F2E8', subtitleColor:'#F5F2E8' },
-    { key:'velvetVibes', name:'Velvet Vibes', desc:'Chewy + hard shadow, bubbly',
-      bg:'#8B5CF6', bgType:'color', font:'chewy', headlineColor:'#FFFFFF', subtitleColor:'#FFFFFF',
-      effect:'hardShadow', effectColor:'#F2568C', effectStrength:60, tilt:-3 },
-    { key:'colorShadow', name:'Color Shadow', desc:'Archivo Black + hard shadow',
-      bg:'#E8E4DC', bgType:'color', font:'archivo', headlineColor:'#123B3A', subtitleColor:'#123B3A',
-      effect:'hardShadow', effectColor:'#6EE7B7', effectStrength:55, tilt:0 },
-    { key:'streamingNow', name:'Streaming Now', desc:'Fredoka + hard shadow, bubbly',
-      bg:'#F2A6D8', bgType:'color', font:'fredoka', headlineColor:'#FFFFFF', subtitleColor:'#FFFFFF',
-      effect:'hardShadow', effectColor:'#2F7A4F', effectStrength:55, tilt:0 },
-    { key:'ivyAndBrie', name:'Ivy & Brie', desc:'Playfair Display, elegant',
-      bg:'#C9B8E8', bgType:'color', font:'playfair', headlineColor:'#5B2A86', subtitleColor:'#5B2A86' },
-    { key:'todayBold', name:'Today', desc:'Fredoka + outline',
-      bg:'#FF7A1A', bgType:'color', font:'fredoka', headlineColor:'#FFFFFF', subtitleColor:'#FFFFFF',
-      effect:'outline', effectColor:'#FFE066', effectStrength:55, tilt:0 },
-    { key:'teamSync', name:'Team Sync', desc:'Archivo Black, clean minimal',
-      bg:'#6B7A6D', bgType:'color', font:'archivo', headlineColor:'#F5F2E8', subtitleColor:'#F5F2E8' },
-    { key:'loveEditorial', name:'Love', desc:'Playfair Display, editorial',
-      bg:'#F7F4EE', bgType:'color', font:'playfair', headlineColor:'#141413', subtitleColor:'#141413' },
-    { key:'teamRip', name:'Team Rip', desc:'Torn Fabric + slant banner',
-      bg:'tornFabric', font:'anton', headlineColor:'#181818', subtitleColor:'#ffffff',
-      badge:'banner', badgeColor:'#f5f2ea' },
-    { key:'graffitiTag', name:'Graffiti Tag', desc:'Rubik Wet Paint + pop outline',
-      bg:'#F2C200', bgType:'color', font:'graffiti', headlineColor:'#FFFFFF', subtitleColor:'#111111',
-      effect:'popOutline', effectColor:'#111111', effectStrength:55, tilt:-3 },
-    { key:'funkyRetro', name:'Funky Retro', desc:'Lobster + pop outline, 70s groovy',
-      bg:'#F2D3B0', bgType:'color', font:'lobster', headlineColor:'#E8397F', subtitleColor:'#111111',
-      effect:'popOutline', effectColor:'#111111', effectStrength:45, tilt:-4 },
-    { key:'breakDance', name:'Break Dance', desc:'Bangers + pop layers, arcade pop-art',
-      bg:'#7EDDE8', bgType:'color', font:'bangers', headlineColor:'#FFE066', subtitleColor:'#111111',
-      effect:'popLayers', effectColor:'#7C3AED', effectStrength:55, tilt:-2, decorShape:'stars' }
-  ].map(t => Object.assign({}, TPL_DEFAULTS, t));
+  // ---------- palettes: Figma "100 color combinations" + Sanzo Wada's Dictionary of Color Combinations ----------
+  // Each entry: [id, name, comma-separated hex without #]
+  const FIGMA_PALETTES = [
+    ['f1','Stormy morning','6a8aa8,38495a,beddfc,88bdf2'],
+    ['f2','Mossy hollow','3d4126,b9c095,d4de94,636b2f'],
+    ['f3','Blue eclipse','272657,0f0e47,8686ad,515081'],
+    ['f4','Lush forest','68ba7f,243e2c,2e6f40,ceffdc'],
+    ['f5','Green juice','48872b,4cbb16,2a3324,39542b'],
+    ['f6','Chili spice','fea996,380009,cd1c18,9b1213'],
+    ['f7','Chocolate truffle','fcfcfc,fdfbd4,7f4a19,38240d,c05800,191919'],
+    ['f8','Ink wash','fcfcfc,ffffe3,5c5c5c,cbcbcb,6d8196'],
+    ['f9','Golden taupe','fcfcfc,fdfbd4,d8b74b,ce8946,bdb76b,191919'],
+    ['f10','Wisteria bloom','fcfcfc,d7d7ff,d8bfd8,9400d3,ed80e9,191919'],
+    ['f11','Burnt sienna','fcfcfc,f4a460,e5644a,f5f5dc,a0522d,191919'],
+    ['f12','Blooming romance','660032,005209,46920f,e573ac'],
+    ['f13','Desert dusk','a3574e,be7587,e68057,993a8c'],
+    ['f14','Lavender fields','bcb96a,d06dfc,fdfad5,c1bfff'],
+    ['f15','Hydrangea','ac56c3,ff9ce9,ff8ca1,ffc3ba'],
+    ['f16','Cactus flower','8fc67f,92e5b9,e491a6,855764'],
+    ['f17','Wildflowers','519754,be92be,a9dcab,dbaaa6'],
+    ['f18','Country garden','723480,808135,ffffe3,dbd4ff'],
+    ['f19','Lotus garden','ff867a,6b413d,aeebb4,ecaee7'],
+    ['f20','Iris garden','a47dac,82ab7d,6b6b4f,6a2477'],
+    ['f21','Fresh peach','dcb16b,ffd4ac,ffb6ac,e39a7a'],
+    ['f22','Golden hour','fcfcfc,ffc519,e0b0ff,ededc8,cfb53b,191919'],
+    ['f23','Spiced chai','fcfcfc,fdfbd8,8d5a2b,d47e30,191919'],
+    ['f24','Cherry blossom','fcfcfc,f3cccc,d5f3d8,ffb7c5,191919'],
+    ['f25','Evening rose','fcfcfc,8e4585,dfaaaa,4a4a4a,996666,191919'],
+    ['f26','Pastel garden','fcfcfc,cc6f7f,a2ae9d,54463a,f0b8b8,191919'],
+    ['f27','Tuscan sunset','fcfcfc,e5644a,9988a1,ffd3ac,8a2b0e,191919'],
+    ['f28','Zesty lemon','b3b248,d7d58a,fee665,ffff66'],
+    ['f29','California beaches','7c99ab,ffbf67,65c4ff,66f4ff'],
+    ['f30','Freshly squeezed','ffbf01,f2cf7e,ff7901,ffe642'],
+    ['f31','Pistachio dream','e3f0a2,42d674,80ef81,b9dba2'],
+    ['f32','Mango popsicle','f1742f,edd378,f2ba49,f2e82a'],
+    ['f33','Guava','d05377,ff845a,ffb678,e55347'],
+    ['f34','Glowing horizon','43eaff,feb344,ff7e44,4271fe'],
+    ['f35','Sunny day','807141,ffbf01,017eff,2300ff'],
+    ['f36','Retro sunset','fcfcfc,c4621c,069494,ffce1b,b7410e,191919'],
+    ['f37','Bubblegum pop','fcfcfc,ff78bb,97f7fd,069494,191919'],
+    ['f38','Cotton candy skies','fcfcfc,f5b8d5,b9a2e9,b8e3e9,191919'],
+    ['f39','Electric kiwi','fcfcfc,dfff00,d1ff19,000000,ffff00,191919'],
+    ['f40','Watermelon splash','fcfcfc,4a4a4a,fc7a91,89f336,adebb3,191919'],
+    ['f41','Alchemical reaction','5c7f3f,9d00ff,6bff00,de811d'],
+    ['f42','Electropop','f900ff,5200ff,ccff01,ff6a00'],
+    ['f43','Cool revival','01aeff,00dd93,00ff53,01ffff'],
+    ['f44','Neon jungle','38a710,89f337,f23599,a936f3'],
+    ['f45','Sharp edge','898989,4effbc,ff4d4e,d9d9d9'],
+    ['f46','Electric fusion','ff6800,ffa900,01f0ff,00ff80'],
+    ['f47','Fireworks','e88b38,c000ac,ee2200,960116'],
+    ['f48','Space berries','8b1946,fe3eb5,fb6a2b,ffb8dc'],
+    ['f49','Pop art','fcfcfc,ffff00,19f1ff,ff46a2,ee4b2b'],
+    ['f50','Retro calm','fcfcfc,00f0ff,ff3a19,2cff05,5a5a5a,191919'],
+    ['f51','Neon noir','fcfcfc,191919,bf00ff,2cff05,2d2d2d'],
+    ['f52','Tropical punch','fcfcfc,ff8e56,fce883,ffc0cb,069494,191919'],
+    ['f53','Cobalt sky','fcfcfc,82c8e5,1959b3,000080,6d8196'],
+    ['f54','Technicolor dream','fcfcfc,ff19ff,ccff00,00ffff,191970,191919'],
+    ['f55','Jewel box','fcfcfc,61cd85,9966cc,cfb53b,0f52ba'],
+    ['f56','Salt and pepper','d4d4d4,2b2b2b,b3b3b3'],
+    ['f57','Quite clear','4e1717,174c38,cbcbcb'],
+    ['f58','Gothic noir','000000,988686,5c4f4f,d2d0d0'],
+    ['f59','Yacht club','225f73,723e22,bbbdbd'],
+    ['f60','Quiet luxury','f6e6c9,ac9d8d,d9bbb0,e8d69f'],
+    ['f61','Night sands','80775d,cbbd94,564a23,fbe8b3'],
+    ['f62','Harbor haze','736f60,ac9e91,919eae,5b8dc5'],
+    ['f63','Old photograph','545233,fdfad5,878571,d9d7b6'],
+    ['f64','Cappuccino','c6c0b9,715e46,432701,d7b588'],
+    ['f65','Breakfast tea','341c08,ccbfb1,ffd4ac,664c35'],
+    ['f66','Cozy campfire','670f08,8a6f28,885129,ae7a33'],
+    ['f67','Stone path','fcfcfc,ada493,968f83,e8e5df,191919'],
+    ['f68','Desert mirage','fcfcfc,c8b98c,98a869,272757,e35336,191919'],
+    ['f69','Honeycomb','fcfcfc,fffdd0,ffc720,f9e076,895129,191919'],
+    ['f70','Urban loft','fcfcfc,000000,a6a4a4,a35e47,464646'],
+    ['f71','Spiced mocha','fcfcfc,f5f5dc,7d5f4b,d47e30,6d3b07,191919'],
+    ['f72','Charming seaside','c9fdf2,b6f2d2,85d1dc,b3ebf1'],
+    ['f73','Calm blue','517992,77b2d5,90d4ff,58baff'],
+    ['f74','Beachfront views','6f632e,ede8d0,dcd1ee,acbeec'],
+    ['f75','Under the moonlight','cbccfe,292866,5d5c99,a3a3cc'],
+    ['f76','Lavender lullaby','8f6fce,9ff0ff,b6c7ea,a4a5f4'],
+    ['f77','Minty fresh','bfffec,558b70,80cfa9,99fbcc'],
+    ['f78','Combination 78','d99e82,ae83da,d6d981,80d8cf'],
+    ['f79','Siltstone','cba35a,cbbd94,fff5b9,ffb26f'],
+    ['f80','Emerald odyssey','0b3d30,3ebb9f,72e6ca,006850'],
+    ['f81','Ocean tide','005c5c,00d1d1,00adae,4152d7'],
+    ['f82','Peach skyline','496580,b9fff5,ffdbba,baddff'],
+    ['f83','Mountain mist','fcfcfc,01796f,7b8da0,b0c4de,5a5a5a,191919'],
+    ['f84','Morning dew','fcfcfc,c4c4c4,b7efef,d3d3d3,adebb3,191919'],
+    ['f85','Frozen lake','fcfcfc,7b8da0,add8e6,000080'],
+    ['f86','Olive grove','fcfcfc,636b2f,8c8c19,228b22'],
+    ['f87','Coastal morning','fcfcfc,f5f5dc,9dcb80,89cff0,191919'],
+    ['f88','Eucalyptus grove','fcfcfc,b9b494,4b6e48,898989,191919'],
+    ['f89','Soft spring','89cfaa,90b9d6,6495ed,85decb'],
+    ['f90','Autumn leaves','62441a,db9b3a,feb344,b37e2e'],
+    ['f91','Winter chill','507d82,b7e4ea,0b2e32,94b1b5'],
+    ['f92','Spring energy','00bf33,89f337,4fe0ca,fffc30'],
+    ['f93','Pumpkin spice season','322215,bd5202,8b4c1d,544823'],
+    ['f94','Island oasis','ffae26,ccff01,9de05a,fff27e'],
+    ['f95','Autumn orchard','fcfcfc,995791,2e6f40,daa520,660033,191919'],
+    ['f96','Tropical rainforest','fcfcfc,4f7942,61cd85,71aa34,7e8c54,191919'],
+    ['f97','Wildflower meadow','fcfcfc,82c8e5,7cfc00,fdb813,191919'],
+    ['f98','Harvest moon','fcfcfc,a52a2a,8c1936,ffce1b,be5103,191919'],
+    ['f99','Winter berry','fcfcfc,992234,add8e6,2e6f40,191919'],
+    ['f100','Summer breeze','fcfcfc,ffed4e,82c8e5,f88379,e6d8c4,191919']
+  ];
+  const WADA_PALETTES = [
+    ['w1','Wada No. 1','d96629,0093a5'],
+    ['w2','Wada No. 2','f99d1b,12354e'],
+    ['w3','Wada No. 3','bb7125,ffefae'],
+    ['w4','Wada No. 4','c5a56e,59256a'],
+    ['w5','Cossack Green & Vandar Poel\'s Blue','437742,064f6e'],
+    ['w6','Wada No. 6','f48067,051230'],
+    ['w7','Wada No. 7','f37420,b4cdc2'],
+    ['w8','Wada No. 8','c27544,b5b1d8'],
+    ['w9','Wada No. 9','642d5e,80719e'],
+    ['w10','Wada No. 10','c27544,8b835b'],
+    ['w11','Wada No. 11','ebd3a2,a2b0ad'],
+    ['w12','Wada No. 12','c5a56e,099197'],
+    ['w13','Wada No. 13','bb7125,8c4c62'],
+    ['w14','Wada No. 14','f27291,fbe6a0'],
+    ['w15','Wada No. 15','00978d,b5b1d8'],
+    ['w16','Vandyke Red & Pale King\'s Blue','82241f,a7d4e4'],
+    ['w17','Wada No. 17','da525d,00b49b'],
+    ['w18','Wada No. 18','d1b0a7,4e1d4c'],
+    ['w19','Wada No. 19','653514,87c540'],
+    ['w20','Wada No. 20','78cdd0,ca92a8'],
+    ['w21','Wada No. 21','f48067,00b49b'],
+    ['w22','Wada No. 22','fff200,1c4286'],
+    ['w23','Wada No. 23','fdc57e,9a72aa'],
+    ['w24','Wada No. 24','644b1e,8c4c62'],
+    ['w25','Wada No. 25','c55347,bce4e5'],
+    ['w26','Wada No. 26','f3a257,71502f'],
+    ['w27','Wada No. 27','f8b6ba,34454c'],
+    ['w28','Wada No. 28','762c19,051230'],
+    ['w29','Wada No. 29','84875e,97acc8'],
+    ['w30','Wada No. 30','ab2439,a2b0ad'],
+    ['w31','Wada No. 31','dd4027,ffefae'],
+    ['w32','Wada No. 32','d8a37b,87c540'],
+    ['w33','Wada No. 33','bb7125,34454c'],
+    ['w34','Wada No. 34','f37f94,b6bfc1'],
+    ['w35','Wada No. 35','b59392,a62c37'],
+    ['w36','Wada No. 36','c19f2c,b5decc'],
+    ['w37','Wada No. 37','a84222,59256a'],
+    ['w38','Wada No. 38','1a7444,1c4286'],
+    ['w39','Wada No. 39','cc1236,005b8d'],
+    ['w40','Wada No. 40','c56127,b2b73e'],
+    ['w41','Wada No. 41','8b835b,78cdd0'],
+    ['w42','Wada No. 42','e2b540,4f4086'],
+    ['w43','Wada No. 43','f8b6ba,a36aa5'],
+    ['w44','Wada No. 44','00908a,5a82b3'],
+    ['w45','Wada No. 45','fdd4bd,f8ed43'],
+    ['w46','Wada No. 46','f37420,111314'],
+    ['w47','Wada No. 47','c55347,c0a9b3'],
+    ['w48','Wada No. 48','b73f74,005b8d'],
+    ['w49','Pale King\'s Blue & Blue','a7d4e4,006eb8'],
+    ['w50','Wada No. 50','ebd3a2,4e1d4c'],
+    ['w51','Wada No. 51','a62c37,006eb8'],
+    ['w52','Wada No. 52','f5ecc2,111314'],
+    ['w53','Wada No. 53','f99d1b,4e1d4c'],
+    ['w54','Wada No. 54','00978d,a5c8d1'],
+    ['w55','Wada No. 55','d46d7a,ffffff'],
+    ['w56','Wada No. 56','c0a9b3,4f4086'],
+    ['w57','Wada No. 57','7a4456,34454c'],
+    ['w58','Hay\'s Russet & Sea Green','793327,00b49b'],
+    ['w59','Wada No. 59','f37f94,b09f36'],
+    ['w60','Wada No. 60','ffefae,12354e'],
+    ['w61','Wada No. 61','c7d14f,501345'],
+    ['w62','Wada No. 62','fff200,111314'],
+    ['w63','Wada No. 63','6d4145,0093a5'],
+    ['w64','Wada No. 64','a36aa5,66629c'],
+    ['w65','Wada No. 65','c19f2c,78cdd0'],
+    ['w66','Wada No. 66','d6b43e,6b7140'],
+    ['w67','Wada No. 67','5a82b3,12354e'],
+    ['w68','Wada No. 68','b59392,fff200'],
+    ['w69','Wada No. 69','a1a39a,111314'],
+    ['w70','Wada No. 70','bb7125,555832'],
+    ['w71','Wada No. 71','ab2439,d8a37b'],
+    ['w72','Sulpher Yellow & Pale King\'s Blue','f5ecc2,a7d4e4'],
+    ['w73','Wada No. 73','71502f,8fa071'],
+    ['w74','Wada No. 74','b5decc,099197'],
+    ['w75','Pale King\'s Blue & Violet Blue','a7d4e4,40456a'],
+    ['w76','Wada No. 76','ffefae,a1a39a'],
+    ['w77','Eugenia Red | B & Vandar Poel\'s Blue','da525d,064f6e'],
+    ['w78','Wada No. 78','eeb480,62c6bf'],
+    ['w79','Wada No. 79','762c19,099197'],
+    ['w80','Wada No. 80','f5ecc2,9a72aa'],
+    ['w81','Wada No. 81','f3a257,a1a39a'],
+    ['w82','Hay\'s Russet & Dusky Madder Violet','793327,4e1d4c'],
+    ['w83','Wada No. 83','c1c494,40456a'],
+    ['w84','Wada No. 84','fdd4bd,112f2c'],
+    ['w85','Wada No. 85','c56127,007190'],
+    ['w86','Wada No. 86','bb7125,00b49b'],
+    ['w87','Wada No. 87','f8b6ba,b2b73e'],
+    ['w88','Wada No. 88','fdd4bd,006eb8'],
+    ['w89','Wada No. 89','f99d1b,40456a'],
+    ['w90','Wada No. 90','f37f94,a36aa5'],
+    ['w91','Wada No. 91','6d4145,c16b27'],
+    ['w92','Wada No. 92','f58e84,00978d'],
+    ['w93','Wada No. 93','b09f36,a5c8d1'],
+    ['w94','Wada No. 94','ebd3a2,004f46'],
+    ['w95','Hay\'s Russet & Dull Violet Black','793327,1e0e3f'],
+    ['w96','Wada No. 96','e2b540,837e31'],
+    ['w97','Wada No. 97','f8b6ba,c55347'],
+    ['w98','Wada No. 98','762c19,40456a'],
+    ['w99','Wada No. 99','ffefae,0093a5'],
+    ['w100','Wada No. 100','96874d,80719e'],
+    ['w101','Wada No. 101','e0b3b6,1c4286'],
+    ['w102','Wada No. 102','ebd3a2,c16b27'],
+    ['w103','Wada No. 103','c27544,4e1d4c'],
+    ['w104','Wada No. 104','a62c37,f5ecc2'],
+    ['w105','Wada No. 105','e0b3b6,719470'],
+    ['w106','Wada No. 106','007190,1e0e3f'],
+    ['w107','Wada No. 107','ffdd00,848061'],
+    ['w108','Wada No. 108','f37f94,a84222'],
+    ['w109','Wada No. 109','ffefae,42533e'],
+    ['w110','Wada No. 110','7c4226,4b3317'],
+    ['w111','Wada No. 111','ffefae,afd472'],
+    ['w112','Wada No. 112','f48067,111314'],
+    ['w113','Wada No. 113','fdd4bd,4b3317'],
+    ['w114','Wada No. 114','fcb315,007190'],
+    ['w115','Wada No. 115','fbe6a0,f15a30'],
+    ['w116','Wada No. 116','e0b3b6,6450a1'],
+    ['w117','Wada No. 117','cc1236,111314'],
+    ['w118','Wada No. 118','e2b540,4b3317'],
+    ['w119','Wada No. 119','a5c8d1,12354e'],
+    ['w120','Wada No. 120','e0b3b6,ab2439'],
+    ['w121','Wada No. 121','7c4226,d8a37b,555832'],
+    ['w122','Wada No. 122','cc1236,fdbf68,00978d'],
+    ['w123','Wada No. 123','f58e84,f8ed43,7a4456'],
+    ['w124','Wada No. 124','802626,e2b540,a6a159'],
+    ['w125','Wada No. 125','d1b0a7,0093a5,40456a'],
+    ['w126','Wada No. 126','ebd3a2,e2b540,1c4286'],
+    ['w127','Wada No. 127','fdc57e,648f7b,66629c'],
+    ['w128','Wada No. 128','f8b6ba,62c6bf,9a72aa'],
+    ['w129','Wada No. 129','ffdd00,bc892b,97acc8'],
+    ['w130','Wada No. 130','bb7125,a62c37,4f4086'],
+    ['w131','Wada No. 131','bb7125,d96629,00939b'],
+    ['w132','Wada No. 132','f5ecc2,f3a257,b09f36'],
+    ['w133','Wada No. 133','82241f,b09f36,00b49b'],
+    ['w134','Wada No. 134','f37f94,9a72aa,59256a'],
+    ['w135','Wada No. 135','f5ecc2,437742,97acc8'],
+    ['w136','Wada No. 136','cb2f43,009465,59256a'],
+    ['w137','Wada No. 137','c55347,fdc57e,648f7b'],
+    ['w138','Wada No. 138','f3a257,f8ed43,62c6bf'],
+    ['w139','Wada No. 139','97acc8,051230,b6bfc1'],
+    ['w140','Wada No. 140','f3a257,007190,34454c'],
+    ['w141','Wada No. 141','f37420,afd472,12354e'],
+    ['w142','Wada No. 142','a94151,c19f2c,97acc8'],
+    ['w143','Wada No. 143','006eb8,b984af,a1a39a'],
+    ['w144','Wada No. 144','b73f74,f37420,111314'],
+    ['w145','Wada No. 145','7c4226,b2b73e,1e0e3f'],
+    ['w146','Wada No. 146','bc892b,635a3a,1a7444'],
+    ['w147','Wada No. 147','f27291,82241f,b5decc'],
+    ['w148','Wada No. 148','d6b43e,fcb315,0093a5'],
+    ['w149','Wada No. 149','d6b43e,f37420,112f2c'],
+    ['w150','Wada No. 150','fdd4bd,b2b73e,b4cdc2'],
+    ['w151','Wada No. 151','f5ecc2,f99d1b,064f6e'],
+    ['w152','Etruscan Red & Hay\'s Russet','c55347,793327,a5c8d1'],
+    ['w153','Wada No. 153','f37f94,fcb315,b2b73e'],
+    ['w154','Wada No. 154','cc1236,fff200,006eb8'],
+    ['w155','Wada No. 155','eb5324,00978d,051230'],
+    ['w156','Wada No. 156','d6b43e,96d1aa,4f4086'],
+    ['w157','Wada No. 157','7d133a,d6b43e,5a82b3'],
+    ['w158','Wada No. 158','f8ed43,c27544,87c540'],
+    ['w159','Wada No. 159','bc892b,78cdd0,b5b1d8'],
+    ['w160','Wada No. 160','c19f2c,71502f,547076'],
+    ['w161','Wada No. 161','7c4226,eeb480,005b8d'],
+    ['w162','Wada No. 162','d46d7a,8fa071,b984af'],
+    ['w163','Wada No. 163','ffdd00,b5decc,007190'],
+    ['w164','Wada No. 164','dd4027,fcb315,4f4086'],
+    ['w165','Wada No. 165','e0b3b6,f27291,6d4145'],
+    ['w166','Wada No. 166','f48067,fbe6a0,112f2c'],
+    ['w167','Ecru & Pale King\'s Blue','c2ae93,a7d4e4,064f6e'],
+    ['w168','Lemon Yellow & Vandar Poel\'s Blue','f8ed43,064f6e,8c4c62'],
+    ['w169','Wada No. 169','f8b6ba,ffefae,a1a39a'],
+    ['w170','Wada No. 170','b73f74,fcb315,59256a'],
+    ['w171','Wada No. 171','802626,f99d1b,b4cdc2'],
+    ['w172','Wada No. 172','c27544,007190,59256a'],
+    ['w173','Wada No. 173','f8ed43,762c19,b5decc'],
+    ['w174','Wada No. 174','f8b6ba,c0a9b3,7a4456'],
+    ['w175','Wada No. 175','eeb480,c1c494,6450a1'],
+    ['w176','Wada No. 176','f9c1ce,fdd4bd,78cdd0'],
+    ['w177','Wada No. 177','802626,96874d,b5b1d8'],
+    ['w178','Wada No. 178','ebd3a2,a5c8d1,099197'],
+    ['w179','Wada No. 179','dd4027,f3a257,1c4286'],
+    ['w180','Wada No. 180','fdc57e,9a72aa,b6bfc1'],
+    ['w181','Wada No. 181','a62c37,4f4086,501345'],
+    ['w182','Wada No. 182','bb7125,4b3317,051230'],
+    ['w183','Wada No. 183','70727c,8c4c62,59256a'],
+    ['w184','Wada No. 184','f27291,ebd3a2,848061'],
+    ['w185','Wada No. 185','b59392,c55347,ffefae'],
+    ['w186','Hay\'s Russet & Ochraceous Salmon','793327,d8a37b,006eb8'],
+    ['w187','Wada No. 187','005b8d,c0a9b3,a36aa5'],
+    ['w188','Wada No. 188','8fa071,97acc8,96d1aa'],
+    ['w189','Wada No. 189','f8ed43,253122,62c6bf'],
+    ['w190','Wada No. 190','ebd3a2,d96629,111314'],
+    ['w191','Wada No. 191','b59392,e2b540,006eb8'],
+    ['w192','Wada No. 192','fdbf68,4b3317,70727c'],
+    ['w193','Wada No. 193','f48067,fbe6a0,00908a'],
+    ['w194','Wada No. 194','eb5324,fdd4bd,5a82b3'],
+    ['w195','Wada No. 195','f27291,ffefae,b6bfc1'],
+    ['w196','Citron Yellow & Pale King\'s Blue','b2b73e,a7d4e4,6450a1'],
+    ['w197','Wada No. 197','f37f94,66629c,b6bfc1'],
+    ['w198','Wada No. 198','ae5224,ffdd00,489b6e'],
+    ['w199','Wada No. 199','ab544d,806e4b,1c4286'],
+    ['w200','Wada No. 200','a62c37,c1c494,719470'],
+    ['w201','Wada No. 201','f48067,837e31,96d1aa'],
+    ['w202','Wada No. 202','b5decc,96d1aa,34454c'],
+    ['w203','Wada No. 203','ffefae,eea78c,555832'],
+    ['w204','Wada No. 204','b73f74,c27544,a5c8d1'],
+    ['w205','Wada No. 205','802626,eea78c,4f4086'],
+    ['w206','Wada No. 206','f8b6ba,f3a257,c27544'],
+    ['w207','Wada No. 207','a36752,b4cdc2,111314'],
+    ['w208','Wada No. 208','f5ecc2,099197,007190'],
+    ['w209','Wada No. 209','ebd3a2,f99d1b,97acc8'],
+    ['w210','Wada No. 210','fdc57e,f8ed43,555832'],
+    ['w211','Wada No. 211','f68c50,a6a159,051230'],
+    ['w212','Wada No. 212','ab2439,986f2d,97acc8'],
+    ['w213','Wada No. 213','eea78c,ffdd00,a7d4e4'],
+    ['w214','Wada No. 214','ebd3a2,a36752,4f4086'],
+    ['w215','Wada No. 215','fdbf68,006eb8,bf5892'],
+    ['w216','Wada No. 216','eb5324,489b6e,111314'],
+    ['w217','Wada No. 217','802626,d8a37b,1a7444'],
+    ['w218','Wada No. 218','005b8d,b5b1d8,70727c'],
+    ['w219','Wada No. 219','eb5324,719470,004f46'],
+    ['w220','Wada No. 220','b71f57,d8a37b,a36aa5'],
+    ['w221','Wada No. 221','a62c37,b6bfc1,111314'],
+    ['w222','Wada No. 222','e2b540,f99d1b,c16b27'],
+    ['w223','Wada No. 223','b59392,d8a37b,b5decc'],
+    ['w224','Wada No. 224','f27291,547076,7a4456'],
+    ['w225','Wada No. 225','cc1236,004f46,704357'],
+    ['w226','Wada No. 226','6d4145,fdbf68,4f4086'],
+    ['w227','Wada No. 227','f9c1ce,a5c8d1,0093a5'],
+    ['w228','Wada No. 228','a62c37,ffefae,b6bfc1'],
+    ['w229','Wada No. 229','f3a257,253122,b6bfc1'],
+    ['w230','Wada No. 230','f48067,b5decc,96d1aa'],
+    ['w231','Cameo Pink & Hay\'s Russet','e0b3b6,793327,5a82b3'],
+    ['w232','Wada No. 232','cc1236,eeb480,051230'],
+    ['w233','Wada No. 233','a62c37,96874d,40456a'],
+    ['w234','Wada No. 234','fdc57e,71502f,a7d4e4'],
+    ['w235','Wada No. 235','ebd3a2,f99d1b,c0a9b3'],
+    ['w236','Wada No. 236','bc892b,1c4286,84565b'],
+    ['w237','Wada No. 237','a62c37,762c19,97acc8'],
+    ['w238','Wada No. 238','d8a37b,501345,a1a39a'],
+    ['w239','Wada No. 239','b59392,cab356,b4cdc2'],
+    ['w240','Wada No. 240','f6917e,fff200,0093a5'],
+    ['w241','Wada No. 241','dd4027,ffefae,c5a56e,547076'],
+    ['w242','Wada No. 242','f37f94,ae5224,1a7444,111314'],
+    ['w243','Wada No. 243','bb7125,ebd3a2,6b7140,34454c'],
+    ['w244','Wada No. 244','b59392,c56127,6d7e77,007190'],
+    ['w245','Wada No. 245','a62c37,819238,12354e,34454c'],
+    ['w246','Wada No. 246','f8b6ba,a84222,f5ecc2,fdc57e'],
+    ['w247','Wada No. 247','bb7125,ffdd00,00978d,1c4286'],
+    ['w248','Wada No. 248','f37f94,bc892b,b5b1d8,704357'],
+    ['w249','Hay\'s Russet & Ecru','793327,c2ae93,d6b43e,547076'],
+    ['w250','Wada No. 250','cab356,f15a30,00b49b,bce4e5'],
+    ['w251','Wada No. 251','a72144,fff200,1a7444,34454c'],
+    ['w252','Wada No. 252','da525d,bb7125,c19f2c,099197'],
+    ['w253','Wada No. 253','f8ed43,f68c50,501345,34454c'],
+    ['w254','Wada No. 254','f8b6ba,f5ecc2,837e31,ca92a8'],
+    ['w255','Wada No. 255','bb7125,cab356,78cdd0,111314'],
+    ['w256','Wada No. 256','eea78c,f37420,009465,111314'],
+    ['w257','Wada No. 257','e31f26,fcb315,006eb8,a36aa5'],
+    ['w258','Wada No. 258','802626,eeb480,837e31,007190'],
+    ['w259','Wada No. 259','f8ed43,099197,005b8d,a1a39a'],
+    ['w260','Wada No. 260','d46d7a,eea78c,b4cdc2,00b49b'],
+    ['w261','Wada No. 261','a72144,ffefae,78cdd0,a1a39a'],
+    ['w262','Wada No. 262','da525d,ebd3a2,b09f36,437742'],
+    ['w263','Wada No. 263','ae5224,eeb480,b5decc,34454c'],
+    ['w264','Wada No. 264','f8b6ba,dd4027,b7c2a9,0093a5'],
+    ['w265','Wada No. 265','d46d7a,ffdd00,a6a159,1e0e3f'],
+    ['w266','Wada No. 266','e31f26,ebd3a2,8fa071,00978d'],
+    ['w267','Wada No. 267','fdbf68,f99d1b,00978d,006eb8'],
+    ['w268','Wada No. 268','b59392,bb7125,253122,bce4e5'],
+    ['w269','Wada No. 269','bb7125,802626,a36aa5,111314'],
+    ['w270','Wada No. 270','da525d,f5ecc2,6b7140,437742'],
+    ['w271','Wada No. 271','b71f57,96d1aa,099197,112f2c'],
+    ['w272','Wada No. 272','ffefae,f37420,b5decc,97acc8'],
+    ['w273','Wada No. 273','f9c1ce,7d133a,a36752,b6bfc1'],
+    ['w274','Wada No. 274','f15a30,8b835b,5a82b3,9a72aa'],
+    ['w275','Wada No. 275','c55347,c2ae93,762c19,7a4456'],
+    ['w276','Wada No. 276','f37f94,fdd4bd,afd472,111314'],
+    ['w277','Wada No. 277','f27291,b73f74,837e31,1e0e3f'],
+    ['w278','Wada No. 278','fdbf68,d6b43e,437742,004f46'],
+    ['w279','Wada No. 279','bb7125,eea78c,c2ae93,12354e'],
+    ['w280','Wada No. 280','da525d,555832,ca92a8,7a4456'],
+    ['w281','Wada No. 281','ffefae,00978d,96d1aa,007190'],
+    ['w282','Wada No. 282','da525d,c59f6b,96d1aa,b984af'],
+    ['w283','Wada No. 283','ab544d,802626,719470,62c6bf'],
+    ['w284','Wada No. 284','e2625e,ffdd00,00b49b,004f46'],
+    ['w285','Wada No. 285','b59392,ae5224,f15a30,b5decc'],
+    ['w286','Wada No. 286','ae5224,fcb315,00939b,40456a'],
+    ['w287','Wada No. 287','f37f94,cab356,a7d4e4,78cdd0'],
+    ['w288','Wada No. 288','f99d1b,644b1e,7a4456,111314'],
+    ['w289','Wada No. 289','f8ed43,c7d14f,40456a,1e0e3f'],
+    ['w290','Wada No. 290','6d4145,ffefae,555832,96d1aa'],
+    ['w291','Wada No. 291','c7d14f,00b49b,96d1aa,78cdd0'],
+    ['w292','Wada No. 292','ffefae,eeb480,c5a56e,c2ae93'],
+    ['w293','Wada No. 293','bb7125,b5decc,709390,489b6e'],
+    ['w294','Wada No. 294','f5ecc2,fdbf68,437742,97acc8'],
+    ['w295','Wada No. 295','fdbf68,fff200,006eb8,1e0e3f'],
+    ['w296','Wada No. 296','f5ecc2,d8a37b,71502f,34454c'],
+    ['w297','Wada No. 297','ae5224,f99d1b,6b7140,40456a'],
+    ['w298','Wada No. 298','bb7125,f8ed43,f15a30,111314'],
+    ['w299','Wada No. 299','c53c69,eea78c,819238,007190'],
+    ['w300','Wada No. 300','f48067,fdbf68,b5decc,78cdd0'],
+    ['w301','Wada No. 301','e31f26,ebd3a2,8fa071,a36aa5'],
+    ['w302','Wada No. 302','fdbf68,c2ae93,bce4e5,007190'],
+    ['w303','Wada No. 303','fbe6a0,f15a30,253122,b6bfc1'],
+    ['w304','Hay\'s Russet & Cream Yellow','793327,fdbf68,8b835b,00978d'],
+    ['w305','Wada No. 305','eeb480,ffdd00,b2b73e,b5decc'],
+    ['w306','Wada No. 306','f8ed43,00978d,009465,bce4e5'],
+    ['w307','Wada No. 307','cc1236,b5b1d8,a36aa5,501345'],
+    ['w308','Wada No. 308','d1b0a7,cb2f43,d96629,96d1aa'],
+    ['w309','Wada No. 309','f3a257,f68c50,40456a,064f6e'],
+    ['w310','Wada No. 310','f5ecc2,eeb480,837e31,253122'],
+    ['w311','Wada No. 311','ab2439,fdbf68,b7c2a9,c7d14f'],
+    ['w312','Wada No. 312','ae5224,f99d1b,709390,005b8d'],
+    ['w313','Wada No. 313','cc1236,fff200,1a7444,111314'],
+    ['w314','Eosine Pink & Hay\'s Russet','f37f94,793327,1c4286,4e1d4c'],
+    ['w315','Wada No. 315','f48067,f5ecc2,f3a257,bf5892'],
+    ['w316','Wada No. 316','82241f,009465,4f4086,59256a'],
+    ['w317','Wada No. 317','fcc79b,c2ae93,f8ed43,b5decc'],
+    ['w318','Wada No. 318','806e4b,42533e,004f46,112f2c'],
+    ['w319','Wada No. 319','bb7125,ffdd00,f99d1b,437742'],
+    ['w320','Wada No. 320','f58e84,f5ecc2,819238,a5c8d1'],
+    ['w321','Wada No. 321','b59392,f5ecc2,253122,97acc8'],
+    ['w322','Wada No. 322','e31f26,a84222,bf5892,6450a1'],
+    ['w323','Wada No. 323','fdc57e,b2b73e,762c19,111314'],
+    ['w324','Wada No. 324','ab2439,5a82b3,a36aa5,b6bfc1'],
+    ['w325','Wada No. 325','da525d,fbe6a0,e2b540,112f2c'],
+    ['w326','Wada No. 326','f5ecc2,f15a30,afd472,87c540'],
+    ['w327','Wada No. 327','f37f94,bb7125,c2ae93,c0a9b3'],
+    ['w328','Wada No. 328','a84222,f68c50,4b3317,00908a'],
+    ['w329','Wada No. 329','fdbf68,c0a9b3,501345,34454c'],
+    ['w330','Wada No. 330','c1c494,bce4e5,97acc8,099197'],
+    ['w331','Wada No. 331','c53c69,1e0e3f,9a72aa,4f4086'],
+    ['w332','Wada No. 332','f58e84,cb2f43,253122,004f46'],
+    ['w333','Wada No. 333','ae5224,f8ed43,96d1aa,006eb8'],
+    ['w334','Wada No. 334','fdd4bd,837e31,afd472,007190'],
+    ['w335','Wada No. 335','82241f,f99d1b,4f4086,34454c'],
+    ['w336','Eosine Pink & Hay\'s Russet','f37f94,793327,ffefae,42533e'],
+    ['w337','Wada No. 337','6d4145,ca92a8,713b4c,111314'],
+    ['w338','Wada No. 338','a62c37,fcb315,004f46,c0a9b3'],
+    ['w339','Wada No. 339','d8a37b,d96629,a5c8d1,40456a'],
+    ['w340','Wada No. 340','f15a30,00b49b,b6bfc1,111314'],
+    ['w341','Wada No. 341','f48067,437742,253122,a5c8d1'],
+    ['w342','Wada No. 342','f8b6ba,fdbf68,986f2d,253122'],
+    ['w343','Wada No. 343','ae5224,ebd3a2,635a3a,064f6e'],
+    ['w344','Wada No. 344','fdc57e,1c4286,a36aa5,111314'],
+    ['w345','Hay\'s Russet & Nile Blue','793327,bce4e5,62c6bf,6450a1'],
+    ['w346','Wada No. 346','b73f74,b5decc,c7d14f,6d7e77'],
+    ['w347','Wada No. 347','a6a159,00b49b,005b8d,b984af'],
+    ['w348','Wada No. 348','c1c494,437742,253122,501345']
+  ];
+  const GALLERY_IDS = ["f8", "f7", "f9", "f11", "f21", "f22", "f28", "f2", "f39", "f49", "f5", "f40", "f44", "f4", "f17", "f31", "f43", "f77", "f78", "f29", "f36", "f37", "f1", "f34", "f3", "f35", "f38", "f10", "f14", "f15", "f25", "f47", "f6", "f12", "f16", "f56", "w121", "w123", "w150", "w135", "w146", "w122", "w125", "w126", "w175", "w134", "w181", "w157"];
+
+  const ALL_PALETTES = FIGMA_PALETTES.concat(WADA_PALETTES).map(p => ({ id:p[0], name:p[1], c:p[2].split(',').map(h => '#'+h) }));
+  const PALETTE_BY_ID = {};
+  ALL_PALETTES.forEach(p => { PALETTE_BY_ID[p.id] = p; });
+
+  const INK = '#1f1f1d', PAPER = '#faf9f6';
+  function hx2rgb(h){ const v = h.replace('#',''); return [0,2,4].map(i => parseInt(v.substr(i,2),16)); }
+  function relLum(h){
+    const [r,g,b] = hx2rgb(h).map(x => { x/=255; return x<=0.03928 ? x/12.92 : Math.pow((x+0.055)/1.055,2.4); });
+    return 0.2126*r + 0.7152*g + 0.0722*b;
+  }
+  function contrastRatio(a,b){ const la = relLum(a), lb = relLum(b); return (Math.max(la,lb)+0.05)/(Math.min(la,lb)+0.05); }
+  function mixHex(a,b,t){
+    const A = hx2rgb(a), B = hx2rgb(b);
+    return '#' + A.map((x,i) => Math.round(x+(B[i]-x)*t).toString(16).padStart(2,'0')).join('');
+  }
+  function hsOf(h){
+    const [r,g,b] = hx2rgb(h).map(x => x/255);
+    const mx = Math.max(r,g,b), mn = Math.min(r,g,b), d = mx-mn;
+    let hue = 0;
+    if (d){
+      if (mx===r) hue = ((g-b)/d)%6; else if (mx===g) hue = (b-r)/d+2; else hue = (r-g)/d+4;
+      hue *= 60; if (hue<0) hue += 360;
+    }
+    return { h:hue, s: mx ? d/mx : 0, v:mx };
+  }
+
+  function hslOf(h){
+    const [r,g,b] = hx2rgb(h).map(x => x/255);
+    const mx = Math.max(r,g,b), mn = Math.min(r,g,b), l = (mx+mn)/2, d = mx-mn;
+    const s = d ? d/(1-Math.abs(2*l-1)) : 0;
+    return { h:hsOf(h).h, s, l };
+  }
+  function hslToHex(h,s,l){
+    const c = (1-Math.abs(2*l-1))*s, x = c*(1-Math.abs((h/60)%2-1)), m = l-c/2;
+    const [r,g,b] = h<60?[c,x,0]:h<120?[x,c,0]:h<180?[0,c,x]:h<240?[0,x,c]:h<300?[x,0,c]:[c,0,x];
+    return '#' + [r,g,b].map(v => Math.round((v+m)*255).toString(16).padStart(2,'0')).join('');
+  }
+  // the palette's own character colour: most saturated swatch that is not near-black
+  function domColor(colors){
+    let best = colors[0], bs = -1;
+    colors.forEach(c => { const o = hsOf(c); const w = o.s*(o.v > 0.3 ? 1 : 0.3); if (w > bs){ bs = w; best = c; } });
+    return best;
+  }
+
+  function mixToContrast(fg, bg, min){
+    // nudge fg toward the readable end until it clears `min` contrast against bg
+    const target = relLum(bg) > 0.4 ? '#000000' : '#ffffff';
+    let out = fg;
+    for (let i=0; i<40 && contrastRatio(bg,out) < min; i++) out = mixHex(out, target, 0.06);
+    return out;
+  }
+  // the palette's character colour, made vivid enough to read as an accent
+  function accentSource(colors){
+    const dom = domColor(colors), h = hslOf(dom);
+    if (h.s < 0.18) return dom;
+    return hslToHex(h.h, Math.max(h.s, 0.55), Math.min(Math.max(h.l, 0.42), 0.55));
+  }
+
+  // Modern, Wix / Wiz / Monday-style schemes: a neutral canvas plus ONE vivid accent.
+  // modes: white (airy near-white), tint (pastel of the accent), navy (deep ink), glow (navy + accent light), bold (accent fill)
+  const SLATE = '#1b1f3b';
+  function buildScheme(colors, mode){
+    const acc = accentSource(colors), h = hslOf(acc);
+    let bg, bgType = 'color', glow = null, text, accent, subBase;
+    if (mode === 'white' || mode === 'tint'){
+      bg = mode === 'white' ? mixHex('#ffffff', acc, 0.04) : mixHex('#ffffff', acc, 0.15);
+      text = SLATE; subBase = '#4b5070';
+      accent = mixToContrast(acc, bg, 4.5);
+    } else if (mode === 'navy' || mode === 'glow'){
+      bg = hslToHex(h.h, Math.min(Math.max(h.s,0.3),0.55), 0.09);
+      if (mode === 'glow'){ bgType = 'glow'; glow = acc; }
+      text = '#ffffff'; subBase = '#b7bdd9';
+      accent = mixToContrast(mixHex(acc,'#ffffff',0.35), bg, 4.5);
+    } else { // bold
+      bg = hslToHex(h.h, Math.max(h.s,0.5), 0.42);
+      if (contrastRatio(bg,'#ffffff') < 4.5) bg = mixToContrast(bg, '#ffffff', 4.5);
+      text = '#ffffff'; subBase = '#ffffff';
+      accent = mixHex(bg, '#ffffff', 0.82);
+    }
+    const sub = mixToContrast(subBase, bg, 4.5);
+    return { bg, bgType, glow, text, accent, sub };
+  }
+  const GALLERY_MODES = ['white','navy','tint','glow','bold','white','tint','navy','glow','white'];
+  function autoMode(colors, i){ return GALLERY_MODES[i % GALLERY_MODES.length]; }
+
+  // Five straight-set, modern type pairings with real hierarchy: heavy/large headline, lighter small subtitle.
+  const TYPE_STYLES = [
+    // sentence-case, large and clean
+    { font:'wixDisplay',  size:92,  subFont:'wixText',   subSize:32, gap:48, tracking:-0.035 },
+    { font:'poppinsSB',   size:80,  subFont:'poppinsRG', subSize:30, gap:46, tracking:-0.025, accentWord:true },
+    { font:'figtreeXB',   size:90,  subFont:'figtreeMD', subSize:32, gap:46, tracking:-0.035 },
+    { font:'bricolage',   size:88,  subFont:'wixText',   subSize:30, gap:44, tracking:-0.035, accentWord:true },
+    // spaced capitals with a small tracked-caps subtitle (Wix marketing "eyebrow" look)
+    { font:'jost',        size:58,  subFont:'jost',      subSize:24, gap:48, tracking:0.14,   caps:true, subCaps:true },
+    { font:'wixDisplay',  size:62,  subFont:'wixText',   subSize:24, gap:46, tracking:0.08,   caps:true, subCaps:true },
+    // heavy / condensed poster capitals
+    { font:'bebas',       size:112, subFont:'figtreeMD', subSize:30, gap:36, tracking:0.02,   caps:true },
+    { font:'anton',       size:92, subFont:'poppinsRG', subSize:28, gap:40, tracking:0.01,   caps:true },
+    { font:'jakartaXB',   size:76,  subFont:'figtreeMD', subSize:30, gap:44, tracking:-0.01,  caps:true },
+    { font:'archivo',     size:84,  subFont:'wixText',   subSize:30, gap:44, tracking:-0.01,  caps:true },
+    // editorial serif and Japanese minimal
+    { font:'playfair',    size:84,  subFont:'figtreeMD', subSize:22, gap:44, tracking:-0.01,  subCaps:true, accentWord:true },
+    { font:'shipporiMincho', size:74, subFont:'zenKaku', subSize:26, gap:44, tracking:0.03 }
+  ];
+  function specFrom(colors, mode, styleIdx){
+    const sc = buildScheme(colors, mode), st = TYPE_STYLES[styleIdx % TYPE_STYLES.length];
+    return {
+      bg:sc.bg, bgType:sc.bgType, glow:sc.glow, font:st.font, fontSize:st.size,
+      headlineColor:sc.text, subtitleColor:sc.sub, accentColor:sc.accent, accentHighlight:true,
+      subtitleFont:st.subFont, subtitleSize:st.subSize, subtitleGap:st.gap, tracking:st.tracking,
+      effect:'none', effectColor:sc.accent, effectStrength:40, tilt:0,
+      caps:!!st.caps, subCaps:!!st.subCaps, accentWord:!!st.accentWord,
+      align:'center', vAlign:'middle', badge:'plain', badgeColor:'#fff3c4',
+      decorShape:null, backdrop:{ style:'off', strength:50 }
+    };
+  }
+
+  const DEFAULT_TPL = 'f8'; // Ink wash
+  // interleave so neighbouring cards differ in hue (the list is stored hue-sorted)
+  const GALLERY_ORDER = [DEFAULT_TPL].concat(GALLERY_IDS.filter(id => id !== DEFAULT_TPL)
+    .map((id,i,arr) => ({ id, k:(i*7) % arr.length })).sort((a,b) => a.k - b.k).map(x => x.id));
+  const TEMPLATES = GALLERY_ORDER.map((id,i) => {
+    const p = PALETTE_BY_ID[id];
+    return Object.assign({}, TPL_DEFAULTS, specFrom(p.c, i === 0 ? 'glow' : autoMode(p.c, i), i === 0 ? 0 : i + 1), { key:id, name:p.name, palette:p.c });
+  });
+
+  function applyTpl(tpl, btn, keepMarks){
+    // accent word: presets that use it mark the last word; the rest show the headline plain
+    if (tpl.accentWord !== undefined){
+      let h = state.headline || '';
+      if (tpl.accentWord && h.indexOf('*') === -1 && /\s/.test(h.trim())) h = h.replace(/(\S+)(\s*)$/, '*$1*$2');
+      else if (!tpl.accentWord && !keepMarks) h = h.replace(/\*/g, '');
+      state.headline = h; headlineInput.value = h;
+    }
+    state.caps = !!tpl.caps; state.subCaps = !!tpl.subCaps;
+    capsSelect.value = state.caps ? 'on' : 'off';
+    subCapsSelect.value = state.subCaps ? 'on' : 'off';
+    state.bg = tpl.bgType === 'glow'
+      ? { type:'glow', color: tpl.bg, glow: tpl.glow, image:null }
+      : tpl.bgType === 'color'
+        ? { type:'color', color: tpl.bg, image:null }
+        : { type:'preset', key: tpl.bg, image:null };
+    state.decor = { shape: tpl.decorShape, color: tpl.effectColor };
+    state.tracking = tpl.tracking || 0;
+    state.accent = { color: tpl.accentColor || '#2f5bea', highlight: tpl.accentHighlight !== false };
+    accentColorInput.value = state.accent.color;
+    accentColorHex.textContent = state.accent.color.toUpperCase();
+    accentHighlightSelect.value = state.accent.highlight ? 'soft' : 'off';
+    state.font = tpl.font;
+    state.headlineColor = tpl.headlineColor;
+    state.subtitleColor = tpl.subtitleColor;
+    state.align = tpl.align;
+    state.vAlign = tpl.vAlign;
+    state.badge = tpl.badge;
+    state.badgeColor = tpl.badgeColor;
+    state.effect = tpl.effect;
+    state.effectColor = tpl.effectColor;
+    state.effectStrength = tpl.effectStrength;
+    state.tilt = tpl.tilt;
+    state.subtitleGap = tpl.subtitleGap;
+    state.subtitleFont = tpl.subtitleFont;
+    state.subtitleSize = tpl.subtitleSize;
+    state.backdrop = { ...(tpl.backdrop || { style:'off', strength:50 }) };
+    if (tpl.fontSize){
+      state.fontSize = tpl.fontSize;
+      fontSizeInput.value = tpl.fontSize;
+      fontSizeVal.textContent = tpl.fontSize + 'px';
+    }
+    backdropStyleSelect.value = state.backdrop.style;
+    backdropStrengthInput.value = state.backdrop.strength;
+    backdropStrengthVal.textContent = state.backdrop.strength;
+
+    subtitleGapInput.value = tpl.subtitleGap;
+    subtitleGapVal.textContent = tpl.subtitleGap + 'px';
+    subtitleFontSelect.value = tpl.subtitleFont;
+    subtitleSizeInput.value = tpl.subtitleSize;
+    subtitleSizeVal.textContent = tpl.subtitleSize + 'px';
+    fontSelect.value = tpl.font;
+    headlineColorInput.value = tpl.headlineColor;
+    subtitleColorInput.value = tpl.subtitleColor;
+    headlineColorHex.textContent = tpl.headlineColor.toUpperCase();
+    subtitleColorHex.textContent = tpl.subtitleColor.toUpperCase();
+    badgeColorInput.value = tpl.badgeColor;
+    badgeColorHex.textContent = tpl.badgeColor.toUpperCase();
+    effectSelect.value = tpl.effect;
+    effectColorInput.value = tpl.effectColor;
+    effectColorHex.textContent = tpl.effectColor.toUpperCase();
+    effectStrengthInput.value = tpl.effectStrength;
+    effectStrengthVal.textContent = tpl.effectStrength;
+    tiltSlider.value = tpl.tilt;
+    tiltVal.textContent = tpl.tilt;
+
+    document.querySelectorAll('#alignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v===tpl.align));
+    document.querySelectorAll('#vAlignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v===tpl.vAlign));
+    document.querySelectorAll('#badgeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v===tpl.badge));
+
+    uploadBtn.classList.remove('has-file');
+    uploadBtn.textContent = 'Upload a photo...';
+    document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.color-chip').forEach(s=>s.classList.remove('active'));
+
+    clearTemplateActive();
+    if (btn) btn.classList.add('active');
+    updateCanvasMode();
+    redraw();
+  }
 
   const templatesEl = document.getElementById('templates');
   TEMPLATES.forEach(tpl => {
     const btn = document.createElement('button');
-    btn.className = 'tpl-card' + (tpl.key === 'oliveField' ? ' active' : '');
+    btn.className = 'tpl-card flat' + (tpl.key === DEFAULT_TPL ? ' active' : '');
     btn.type = 'button';
     btn.dataset.key = tpl.key;
-    btn.style.background = tpl.bgType === 'color'
-      ? `linear-gradient(135deg, ${tpl.bg} 60%, ${tpl.effectColor || tpl.bg} 100%)`
-      : PRESETS[tpl.bg].swatch;
-    btn.innerHTML = `<span class="tpl-name">${tpl.name}</span>`;
-    btn.addEventListener('click', () => {
-      state.bg = tpl.bgType === 'color'
-        ? { type:'color', color: tpl.bg, image:null }
-        : { type:'preset', key: tpl.bg, image:null };
-      state.decor = { shape: tpl.decorShape, color: tpl.effectColor };
-      state.font = tpl.font;
-      state.headlineColor = tpl.headlineColor;
-      state.subtitleColor = tpl.subtitleColor;
-      state.align = tpl.align;
-      state.vAlign = tpl.vAlign;
-      state.badge = tpl.badge;
-      state.badgeColor = tpl.badgeColor;
-      state.effect = tpl.effect;
-      state.effectColor = tpl.effectColor;
-      state.effectStrength = tpl.effectStrength;
-      state.tilt = tpl.tilt;
-      state.subtitleGap = tpl.subtitleGap;
-      state.subtitleFont = tpl.subtitleFont;
-      state.subtitleSize = tpl.subtitleSize;
-      state.backdrop = { ...(tpl.backdrop || { style:'off', strength:50 }) };
-      backdropStyleSelect.value = state.backdrop.style;
-      backdropStrengthInput.value = state.backdrop.strength;
-      backdropStrengthVal.textContent = state.backdrop.strength;
-
-      subtitleGapInput.value = tpl.subtitleGap;
-      subtitleGapVal.textContent = tpl.subtitleGap + 'px';
-      subtitleFontSelect.value = tpl.subtitleFont;
-      subtitleSizeInput.value = tpl.subtitleSize;
-      subtitleSizeVal.textContent = tpl.subtitleSize + 'px';
-      fontSelect.value = tpl.font;
-      headlineColorInput.value = tpl.headlineColor;
-      subtitleColorInput.value = tpl.subtitleColor;
-      headlineColorHex.textContent = tpl.headlineColor.toUpperCase();
-      subtitleColorHex.textContent = tpl.subtitleColor.toUpperCase();
-      badgeColorInput.value = tpl.badgeColor;
-      badgeColorHex.textContent = tpl.badgeColor.toUpperCase();
-      effectSelect.value = tpl.effect;
-      effectColorInput.value = tpl.effectColor;
-      effectColorHex.textContent = tpl.effectColor.toUpperCase();
-      effectStrengthInput.value = tpl.effectStrength;
-      effectStrengthVal.textContent = tpl.effectStrength;
-      tiltSlider.value = tpl.tilt;
-      tiltVal.textContent = tpl.tilt;
-
-      document.querySelectorAll('#alignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v===tpl.align));
-      document.querySelectorAll('#vAlignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v===tpl.vAlign));
-      document.querySelectorAll('#badgeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v===tpl.badge));
-
-      uploadBtn.classList.remove('has-file');
-      uploadBtn.textContent = 'Upload a photo...';
-
-      document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
-      document.querySelectorAll('.color-chip').forEach(s=>s.classList.remove('active'));
-      if (tpl.bgType !== 'color'){
-        const matchSwatch = document.querySelector(`.swatch[data-key="${tpl.bg}"]`);
-        if (matchSwatch) matchSwatch.classList.add('active');
-      }
-
-      clearTemplateActive();
-      btn.classList.add('active');
-      updateCanvasMode();
-
-      redraw();
-    });
+    btn.style.background = tpl.bgType === 'glow'
+      ? `radial-gradient(circle at 85% 0%, ${tpl.glow}aa, transparent 62%), ${tpl.bg}`
+      : tpl.bg;
+    const dots = tpl.palette.slice(0,5).map(c => `<i style="background:${c}"></i>`).join('');
+    btn.innerHTML = `<span class="tpl-name" style="color:${tpl.headlineColor}">${tpl.name}</span><span class="tpl-dots">${dots}</span>`;
+    btn.addEventListener('click', () => applyTpl(tpl, btn));
     templatesEl.appendChild(btn);
   });
 
@@ -2692,64 +3474,11 @@ here</textarea>
   });
 
   document.getElementById('resetBtn').addEventListener('click', () => {
-    state.bg = { type:'preset', key:'oliveNote', image:null };
-    state.decor = { shape:null, color:null };
     state.headline = 'Your headline\nhere';
     state.subtitle = '';
-    state.headlineColor = '#f5f2e8';
-    state.subtitleColor = '#dcd8c4';
-    state.font = 'archivo';
-    state.fontSize = 64;
-    state.align = 'center';
-    state.vAlign = 'middle';
-    state.badge = 'plain';
-    state.badgeColor = '#fff3c4';
-    state.effect = 'none';
-    state.effectColor = '#000000';
-    state.effectStrength = 40;
-    state.tilt = 0;
-    state.subtitleGap = 30;
-    state.subtitleFont = 'system';
-    state.subtitleSize = 26;
-    state.backdrop = { style:'off', strength:50 };
     headlineInput.value = state.headline;
     subtitleInput.value = '';
-    headlineColorInput.value = state.headlineColor;
-    subtitleColorInput.value = state.subtitleColor;
-    headlineColorHex.textContent = state.headlineColor.toUpperCase();
-    subtitleColorHex.textContent = state.subtitleColor.toUpperCase();
-    fontSelect.value = state.font;
-    fontSizeInput.value = 64;
-    fontSizeVal.textContent = '64px';
-    badgeColorInput.value = state.badgeColor;
-    badgeColorHex.textContent = state.badgeColor.toUpperCase();
-    effectSelect.value = state.effect;
-    effectColorInput.value = state.effectColor;
-    effectColorHex.textContent = state.effectColor.toUpperCase();
-    effectStrengthInput.value = state.effectStrength;
-    effectStrengthVal.textContent = state.effectStrength;
-    tiltSlider.value = 0;
-    tiltVal.textContent = '0';
-    subtitleGapInput.value = 30;
-    subtitleGapVal.textContent = '30px';
-    subtitleFontSelect.value = 'system';
-    subtitleSizeInput.value = 26;
-    subtitleSizeVal.textContent = '26px';
-    backdropStyleSelect.value = 'off';
-    backdropStrengthInput.value = 50;
-    backdropStrengthVal.textContent = '50';
-    uploadBtn.classList.remove('has-file');
-    uploadBtn.textContent = 'Upload a photo...';
-    document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
-    document.querySelector('.swatch[data-key="oliveNote"]').classList.add('active');
-    document.querySelectorAll('.color-chip').forEach(s=>s.classList.remove('active'));
-    document.querySelectorAll('#alignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v==='center'));
-    document.querySelectorAll('#vAlignSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v==='middle'));
-    document.querySelectorAll('#badgeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v==='plain'));
-    clearTemplateActive();
-    document.querySelector('.tpl-card[data-key="oliveField"]').classList.add('active');
-    updateCanvasMode();
-    redraw();
+    document.querySelector('.tpl-card[data-key="' + DEFAULT_TPL + '"]').click();
   });
 
   // ---------- size estimate + export ----------
@@ -2931,6 +3660,10 @@ here</textarea>
         backdropStyleSelect.value = 'off';
         backdropStrengthInput.value = 50;
         backdropStrengthVal.textContent = '50';
+        state.accent = { color:'#2f5bea', highlight:true };
+        accentColorInput.value = '#2f5bea';
+        accentColorHex.textContent = '#2F5BEA';
+        accentHighlightSelect.value = 'soft';
         state.badge = 'plain';
         state.badgeColor = '#fff3c4';
         document.querySelectorAll('#badgeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v==='plain'));
@@ -2955,44 +3688,55 @@ here</textarea>
 
   // ---------- wizard ----------
 
-  const TOPIC_STYLE = {
-    soccer:     { colors:[{bg:'#14532D',accent:'#A6FF3D'},{bg:'#0B3D24',accent:'#FFFFFF'},{bg:'#1B5E20',accent:'#DCEE6B'}], fonts:['anton','bebas','archivo'], effects:['shadow','outline','hardShadow'], presets:['solidPitch','quietArc'], decor:[null,null,'blob'] },
-    football:   { colors:[{bg:'#2B3A1E',accent:'#B5651D'},{bg:'#3B2A1E',accent:'#D9A441'},{bg:'#1F2A14',accent:'#E8C77A'}], fonts:['anton','bebas','archivo'], effects:['shadow','hardShadow','extrude'], presets:['grainPaper','stadiumCrowd'], decor:[null] },
-    basketball: { colors:[{bg:'#D2601A',accent:'#1D1D1D'},{bg:'#C9541F',accent:'#FFFFFF'},{bg:'#E06A22',accent:'#111111'}], fonts:['anton','bebas','bangers'], effects:['hardShadow','outline','extrude'], presets:['deepGlow'], decor:[null,'starburst'] },
-    tennis:     { colors:[{bg:'#2E7D32',accent:'#DCEE6B'},{bg:'#1B5E20',accent:'#FFFFFF'},{bg:'#33691E',accent:'#F0F4C3'}], fonts:['archivo','bebas','playfair'], effects:['shadow','none','outline'], presets:['sageMinimal'], decor:[null] },
-    hockey:     { colors:[{bg:'#0B2A4A',accent:'#FFFFFF'},{bg:'#0D3B66',accent:'#9AA0A6'},{bg:'#123A5E',accent:'#CFE8FF'}], fonts:['anton','bebas','archivo'], effects:['neonTube','hardShadow','shadow'], presets:['deepGlow','quietArc'], decor:[null] },
-    baseball:   { colors:[{bg:'#1D3B2A',accent:'#C41E3A'},{bg:'#123420',accent:'#FFFFFF'},{bg:'#1B4332',accent:'#F4D35E'}], fonts:['bebas','archivo','anton'], effects:['shadow','hardShadow','outline'], presets:['grainPaper'], decor:[null] },
-    boxing:     { colors:[{bg:'#8B0000',accent:'#111111'},{bg:'#111111',accent:'#E8384F'},{bg:'#3A0000',accent:'#FFFFFF'}], fonts:['anton','bebas','bangers'], effects:['hardShadow','extrude','chromatic'], presets:['deepGlow','solidBlack'], decor:[null,'starburst'] },
-    motorsport: { colors:[{bg:'#111111',accent:'#E10600'},{bg:'#1A1A1A',accent:'#F2C200'},{bg:'#0D0D0D',accent:'#00D2FF'}], fonts:['anton','archivo','bebas'], effects:['chromatic','neonTube','hardShadow'], presets:['quietArc'], decor:[null] },
-    pop:        { colors:[{bg:'#FF3B8D',accent:'#FFE066'},{bg:'#6C4CE0',accent:'#FFE066'},{bg:'#E8384F',accent:'#111111'},{bg:'#111111',accent:'#00E5FF'},{bg:'#F2C200',accent:'#111111'},{bg:'#1B1B3A',accent:'#FF3B8D'}], fonts:['chewy','bangers','pacifico','anton','archivo'], effects:['highlighter','outline','twoTone','hardShadow','chromatic'], presets:['bubbleCluster','deepGlow','solidBlack','inkDuotone'], decor:[null,'blob','starburst'] },
-    rock:       { colors:[{bg:'#121212',accent:'#E8384F'},{bg:'#1A1A1A',accent:'#9AA0A6'},{bg:'#0A0A0A',accent:'#FF3B3B'}], fonts:['bangers','anton','graffiti'], effects:['extrude','chromatic','hardShadow'], presets:['solidBlack','deepGlow'], decor:[null,'starburst'] },
-    metal:      { colors:[{bg:'#0A0A0A',accent:'#9AA0A6'},{bg:'#111111',accent:'#E8384F'},{bg:'#000000',accent:'#C0C0C0'}], fonts:['graffiti','bangers','anton'], effects:['neonTube','chromatic','extrude'], presets:['solidBlack'], decor:[null] },
-    kpop:       { colors:[{bg:'#F2A6D8',accent:'#6C4CE0'},{bg:'#D6BCFA',accent:'#FF3B8D'},{bg:'#FBD1E8',accent:'#7C3AED'}], fonts:['chewy','pacifico','fredoka'], effects:['twoTone','highlighter','outline'], presets:['bubbleCluster','softWave'], decor:[null,'blob'] },
-    indie:      { colors:[{bg:'#D9A441',accent:'#6B4A2E'},{bg:'#C9A26B',accent:'#3A2DE0'},{bg:'#E4C489',accent:'#2B2B2B'}], fonts:['caveat','playfair','marker'], effects:['none','shadow','outline'], presets:['grainPaper','warmSand'], decor:[null] },
-    hiphop:     { colors:[{bg:'#111111',accent:'#D4AF37'},{bg:'#1A1A1A',accent:'#FFFFFF'},{bg:'#0D0D0D',accent:'#F2C200'}], fonts:['graffiti','anton','bangers'], effects:['hardShadow','extrude','chromatic'], presets:['solidBlack','deepGlow'], decor:[null,'starburst'] },
-    edm:        { colors:[{bg:'#0A0A2A',accent:'#00E5FF'},{bg:'#12123A',accent:'#FF3B8D'},{bg:'#160A3A',accent:'#7C3AED'}], fonts:['bebas','anton','archivo'], effects:['neonTube','glow','chromatic'], presets:['deepGlow','quietArc'], decor:[null] },
-    latin:      { colors:[{bg:'#C9302C',accent:'#FFC72C'},{bg:'#E8384F',accent:'#FFFFFF'},{bg:'#D9432C',accent:'#FFE066'}], fonts:['bangers','pacifico','chewy'], effects:['outline','highlighter','twoTone'], presets:['bubbleCluster'], decor:[null,'blob'] },
-    country:    { colors:[{bg:'#6B4226',accent:'#D9A441'},{bg:'#4A2E1A',accent:'#FFFFFF'},{bg:'#5C3A22',accent:'#F0D9A6'}], fonts:['caveat','playfair','marker'], effects:['none','shadow','outline'], presets:['warmSand','grainPaper'], decor:[null] }
+  // Topic -> hue range (degrees) so colours feel right for the subject. neutral:true = low-saturation palettes.
+  const TOPIC_HUES = {
+    soccer:{h:[85,160]}, football:{h:[15,45]}, basketball:{h:[8,38]}, tennis:{h:[60,120]},
+    hockey:{h:[190,235]}, baseball:{h:[350,15]}, boxing:{h:[350,12]}, motorsport:{h:[352,10]},
+    pop:{h:[300,345]}, rock:{neutral:true}, metal:{neutral:true}, kpop:{h:[255,335]},
+    indie:{h:[25,55]}, hiphop:{neutral:true}, edm:{h:[195,270]}, latin:{h:[5,35]}, country:{h:[22,45]}
   };
-  const FONT_TAGS = { anton:['bold'], bebas:['bold'], archivo:['clean','bold'], fredoka:['fun'], chewy:['fun'], bangers:['fun','edgy'], pacifico:['fun','elegant'], playfair:['elegant','clean'], marker:['fun','edgy'], caveat:['fun'], graffiti:['edgy','fun'] };
-  const EFFECT_TAGS = { none:['clean'], shadow:['clean','bold'], outline:['fun','bold'], glow:['bold','edgy'], extrude:['bold','edgy'], chromatic:['edgy'], twoTone:['fun'], highlighter:['fun'], neonTube:['edgy','bold'], hardShadow:['bold','fun'] };
-  const PRESET_TAGS = { solidPitch:['clean','bold'], quietArc:['clean','bold'], grainPaper:['clean','elegant'], stadiumCrowd:['bold','edgy'], deepGlow:['bold','edgy'], solidBlack:['clean','bold','edgy'], sageMinimal:['clean','elegant'], bubbleCluster:['fun'], softWave:['fun','elegant'], inkDuotone:['bold','edgy'], warmSand:['clean','elegant'] };
-  const VIBE_CONFIG = {
-    fun:          { tags:['fun','edgy'], strength:[35,60], tilt:[-6,6] },
-    serious:      { tags:['bold','edgy'], strength:[35,55], tilt:[-2,2] },
-    professional: { tags:['clean','elegant'], strength:[0,30], tilt:[0,0] }
-  };
-  function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-  function randInt(range){ return Math.round(range[0] + Math.random()*(range[1]-range[0])); }
-  function pickTagged(pool, tagMap, allowedTags){
-    const filtered = pool.filter(key => (tagMap[key]||[]).some(t => allowedTags.includes(t)));
-    return pickRandom(filtered.length ? filtered : pool);
+  function paletteHue(colors){
+    let best = null, bs = 0;
+    colors.forEach(c => { const o = hsOf(c); if (o.s > bs && o.v > 0.25){ bs = o.s; best = o; } });
+    return best && bs > 0.2 ? best.h : null;
+  }
+  function hueDist(h, range){
+    const a = range[0], b = range[1];
+    if (a <= b ? (h >= a && h <= b) : (h >= a || h <= b)) return 0;
+    const d = x => Math.min(Math.abs(h-x), 360-Math.abs(h-x));
+    return Math.min(d(a), d(b));
+  }
+  function wizardPool(topicKey){
+    const t = TOPIC_HUES[topicKey];
+    return ALL_PALETTES.map(p => {
+      const h = paletteHue(p.c);
+      const score = t.neutral ? (h === null ? 0 : 40) : (h === null ? 60 : hueDist(h, t.h));
+      return { p, score: score + Math.random()*6 };
+    }).sort((x,y) => x.score - y.score).slice(0, 14).map(x => x.p);
   }
 
-  let wizardTopic = null, wizardVibe = null;
+  // Blog type (the six pillars from the US blog plan) -> look: type styles (indexes into TYPE_STYLES),
+  // preferred background modes, and the topics whose colours suit it when no topic is picked.
+  const PILLARS = {
+    sports:    { hint:'Poster capitals on deep or bold colour. Built to feel like match day.',
+                 styles:[6,7,8,9], modes:['navy','glow','bold'], topics:['football','basketball','baseball','hockey','soccer','motorsport'] },
+    seasonal:  { hint:'Big, high-contrast capitals on dark. Playoffs, finals, one-off events.',
+                 styles:[7,6,5,8], modes:['navy','glow'], topics:['football','basketball','baseball','boxing','motorsport'] },
+    concerts:  { hint:'Vivid colour with a highlighted word. Tours, festivals, line-ups.',
+                 styles:[1,3,8,5], modes:['glow','bold','tint'], topics:['pop','kpop','edm','latin','rock','indie'] },
+    city:      { hint:'Calm, editorial and airy. Venue and city guides.',
+                 styles:[4,10,0,11], modes:['white','tint','navy'], topics:['indie','tennis','country','hockey'] },
+    trust:     { hint:'Clean sentence case on white or soft tint. Reviews and safety.',
+                 styles:[0,2,5,1], modes:['white','tint'], topics:['hockey','edm','tennis'] },
+    education: { hint:'Friendly and clear, with a highlighted word. How-to and explainers.',
+                 styles:[2,3,1,0], modes:['tint','white','glow'], topics:['soccer','tennis','indie','pop'] }
+  };
+  const VIBE_MODES = { light:['white','tint'], dark:['navy','glow'], bold:['bold'] };
+
+  let wizardPillar = null, wizardTopic = null, wizardVibe = 'auto';
   const wizardOverlay = document.getElementById('wizardOverlay');
   const wizardBuildBtn = document.getElementById('wizardBuildBtn');
-  const wizardShuffleBtn = document.getElementById('wizardShuffleBtn');
+  const wizardPillarHint = document.getElementById('wizardPillarHint');
 
   document.getElementById('wizardOpenBtn').addEventListener('click', () => {
     wizardOverlay.style.display = 'flex';
@@ -3004,13 +3748,22 @@ here</textarea>
     if (e.target === wizardOverlay) wizardOverlay.style.display = 'none';
   });
 
-  document.querySelectorAll('#wizardTopicsSports .wizard-chip, #wizardTopicsMusic .wizard-chip').forEach(chip => {
+  document.querySelectorAll('#wizardPillars .wizard-chip').forEach(chip => {
     chip.addEventListener('click', () => {
-      document.querySelectorAll('#wizardTopicsSports .wizard-chip, #wizardTopicsMusic .wizard-chip').forEach(c=>c.classList.remove('active'));
+      document.querySelectorAll('#wizardPillars .wizard-chip').forEach(c=>c.classList.remove('active'));
       chip.classList.add('active');
-      wizardTopic = chip.dataset.topic;
-      wizardBuildBtn.disabled = !(wizardTopic && wizardVibe);
-      wizardShuffleBtn.disabled = !(wizardTopic && wizardVibe);
+      wizardPillar = chip.dataset.pillar;
+      wizardPillarHint.textContent = PILLARS[wizardPillar].hint;
+      wizardBuildBtn.disabled = false;
+    });
+  });
+  const topicChips = document.querySelectorAll('#wizardTopicsSports .wizard-chip, #wizardTopicsMusic .wizard-chip');
+  topicChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const was = chip.classList.contains('active');
+      topicChips.forEach(c=>c.classList.remove('active'));
+      wizardTopic = was ? null : chip.dataset.topic;   // click again to clear
+      if (!was) chip.classList.add('active');
     });
   });
   document.querySelectorAll('#wizardVibes .wizard-chip').forEach(chip => {
@@ -3018,85 +3771,42 @@ here</textarea>
       document.querySelectorAll('#wizardVibes .wizard-chip').forEach(c=>c.classList.remove('active'));
       chip.classList.add('active');
       wizardVibe = chip.dataset.vibe;
-      wizardBuildBtn.disabled = !(wizardTopic && wizardVibe);
-      wizardShuffleBtn.disabled = !(wizardTopic && wizardVibe);
     });
   });
 
   function applyWizardVariant(){
-    const topic = TOPIC_STYLE[wizardTopic];
-    const vibe = VIBE_CONFIG[wizardVibe];
-    if (!topic || !vibe) return;
+    const P = PILLARS[wizardPillar];
+    if (!P) return;
+    const pick1 = arr => arr[Math.floor(Math.random()*arr.length)];
+    const topic = wizardTopic || pick1(P.topics);
+    const pool = wizardPool(topic);
+    const pick = pick1(pool);
+    const modes = wizardVibe === 'auto' ? P.modes : (VIBE_MODES[wizardVibe] || P.modes);
+    const spec = specFrom(pick.c, pick1(modes), pick1(P.styles));
 
-    const colors = pickRandom(topic.colors);
-    const font = pickTagged(topic.fonts, FONT_TAGS, vibe.tags);
-    const effect = pickTagged(topic.effects, EFFECT_TAGS, vibe.tags);
-    const effectStrength = randInt(vibe.strength);
-    const tilt = randInt(vibe.tilt);
-    const vibeMatchedPresets = topic.presets.filter(key => (PRESET_TAGS[key]||[]).some(t => vibe.tags.includes(t)));
-    const usePreset = vibeMatchedPresets.length && Math.random() < 0.35;
-    const presetKey = usePreset ? pickRandom(vibeMatchedPresets) : null;
-    const decorShape = !usePreset ? pickRandom(topic.decor) : null;
-
-    let headlineColor, subtitleColor, effectColor;
-    if (usePreset){
-      state.bg = { type:'preset', key: presetKey, image:null };
-      headlineColor = PRESETS[presetKey].text;
-      subtitleColor = PRESETS[presetKey].sub;
-      effectColor = PRESETS[presetKey].sub;
-    } else {
-      state.bg = { type:'color', color: colors.bg, image:null };
-      headlineColor = autoContrastColor(colors.bg);
-      subtitleColor = headlineColor;
-      effectColor = colors.accent;
-    }
-    state.decor = { shape: decorShape, color: colors.accent };
-    state.font = font;
-    state.headlineColor = headlineColor;
-    state.subtitleColor = subtitleColor;
-    state.effect = effect;
-    state.effectColor = effectColor;
-    state.effectStrength = effectStrength;
-    state.tilt = tilt;
-
+    // headline / subtitle are always the user's own words, never generated
     const wizHeadline = document.getElementById('wizardHeadline').value.trim();
     const wizSubtitle = document.getElementById('wizardSubtitle').value.trim();
-    if (wizHeadline){ state.headline = wizHeadline; headlineInput.value = wizHeadline; }
+    if (wizHeadline){
+      // the user's own words; the style may accent the last word (unless they marked one with *asterisks*)
+      state.headline = wizHeadline; headlineInput.value = wizHeadline;
+    }
     if (wizSubtitle){ state.subtitle = wizSubtitle; subtitleInput.value = wizSubtitle; }
 
-    fontSelect.value = font;
-    headlineColorInput.value = headlineColor;
-    subtitleColorInput.value = subtitleColor;
-    headlineColorHex.textContent = headlineColor.toUpperCase();
-    subtitleColorHex.textContent = subtitleColor.toUpperCase();
-    effectSelect.value = effect;
-    effectColorInput.value = effectColor;
-    effectColorHex.textContent = effectColor.toUpperCase();
-    effectStrengthInput.value = effectStrength;
-    effectStrengthVal.textContent = effectStrength;
-    tiltSlider.value = tilt;
-    tiltVal.textContent = tilt;
-
-    uploadBtn.classList.remove('has-file');
-    uploadBtn.textContent = 'Upload a photo...';
-    document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('active'));
-    document.querySelectorAll('.color-chip').forEach(s=>s.classList.remove('active'));
-    clearTemplateActive();
-    updateCanvasMode();
-    redraw();
+    applyTpl(Object.assign({}, TPL_DEFAULTS, spec), null, true);
   }
 
   wizardBuildBtn.addEventListener('click', () => {
     applyWizardVariant();
     wizardOverlay.style.display = 'none';
   });
-  wizardShuffleBtn.addEventListener('click', () => {
-    applyWizardVariant();
-  });
 
   // ---------- boot ----------
 
-  function boot(){ redraw(); }
+  function boot(){
+    const d = document.querySelector('.tpl-card[data-key="' + DEFAULT_TPL + '"]');
+    if (d) d.click(); else redraw();
+  }
   if (document.fonts && document.fonts.load){
     Promise.all([
       document.fonts.load('400 100px Anton'),
@@ -3112,6 +3822,17 @@ here</textarea>
       document.fonts.load('400 100px "Rubik Wet Paint"'),
       document.fonts.load('400 100px Lobster'),
       document.fonts.load('800 100px "Baloo 2"'),
+      document.fonts.load('400 100px "Figtree XB"'),
+      document.fonts.load('400 100px "Figtree MD"'),
+      document.fonts.load('400 100px "Poppins SB"'),
+      document.fonts.load('400 100px "Poppins RG"'),
+      document.fonts.load('400 100px "Wix Display"'),
+      document.fonts.load('400 100px "Wix Text"'),
+      document.fonts.load('400 100px "Jakarta XB"'),
+      document.fonts.load('400 100px "Bricolage Bold"'),
+      document.fonts.load('500 100px Jost'),
+      document.fonts.load('600 100px "Shippori Mincho"'),
+      document.fonts.load('500 100px "Zen Kaku Gothic New"'),
       document.fonts.load('400 100px "Bagel Fat One"'),
       document.fonts.load('400 100px "Metal Mania"'),
       document.fonts.load('400 100px Sriracha'),
