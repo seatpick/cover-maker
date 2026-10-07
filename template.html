@@ -1026,7 +1026,7 @@ input[type="text"]:focus,textarea:focus,select:focus{outline:none;border-color:v
         <div class="section-body">
           <input type="text" class="filter-input" id="backgroundFilter" placeholder="Filter backgrounds&hellip;">
           <div class="field" style="margin-bottom:8px;">
-            <label style="margin-bottom:8px;">Team backgrounds (licensed photos)</label>
+            <label style="margin-bottom:8px;">Club colours (brand colours only)</label>
             <div class="swatches" id="teamSwatches"></div>
           </div>
           <div class="field" style="margin-bottom:0;">
@@ -1807,40 +1807,168 @@ here</textarea>
       swatch:'#DED7EC',
       text:'#241d33', sub:'#4a3f5e',
       draw(c){ c.fillStyle = '#DED7EC'; c.fillRect(0,0,W,H); addGrain(c, 0.04); }
+    },
+    risingSun: {
+      label:'Rising Sun',
+      swatch:'#EFC9BC',
+      text:'#2a1d18', sub:'#5a4339',
+      draw(c){
+        c.fillStyle = '#F6F1E7'; c.fillRect(0,0,W,H);
+        c.fillStyle = '#F2D3C6'; c.beginPath(); c.arc(W*0.5, H*0.5, H*0.64, 0, Math.PI*2); c.fill();
+        addGrain(c, 0.03);
+      }
+    },
+    seigaiha: {
+      label:'Indigo Waves',
+      swatch:'#243a68',
+      text:'#ffffff', sub:'#c9d3ee',
+      draw(c){
+        c.fillStyle = '#1F3157'; c.fillRect(0,0,W,H);
+        c.strokeStyle = 'rgba(255,255,255,0.09)'; c.lineWidth = 2;
+        const r = 54;
+        for (let row = 0; row < H/(r*0.5) + 2; row++){
+          for (let col = -1; col < W/(r*2) + 2; col++){
+            const cx = col*r*2 + (row%2 ? r : 0), cy = row*r*0.5;
+            for (let k = 3; k >= 1; k--){ c.beginPath(); c.arc(cx, cy, r*k/3, Math.PI, 0); c.stroke(); }
+          }
+        }
+      }
+    },
+    aiIro: {
+      label:'Ai-iro Indigo',
+      swatch:'#2a4678',
+      text:'#ffffff', sub:'#cdd8f0',
+      draw(c){
+        const g = c.createLinearGradient(0,0,W,H); g.addColorStop(0,'#16254a'); g.addColorStop(1,'#2f4d82');
+        c.fillStyle = g; c.fillRect(0,0,W,H);
+        const r = c.createRadialGradient(W*0.8,H*0.15,0,W*0.8,H*0.15,H*1.1);
+        r.addColorStop(0,'rgba(160,190,255,0.28)'); r.addColorStop(1,'rgba(160,190,255,0)');
+        c.fillStyle = r; c.fillRect(0,0,W,H);
+      }
+    },
+    matchaFade: {
+      label:'Matcha Fade',
+      swatch:'#D3E0B9',
+      text:'#1f2a16', sub:'#43533a',
+      draw(c){
+        const g = c.createLinearGradient(0,0,0,H); g.addColorStop(0,'#EFF3E2'); g.addColorStop(1,'#CFDDB2');
+        c.fillStyle = g; c.fillRect(0,0,W,H); addGrain(c, 0.03);
+      }
+    },
+    sakuraSoft: {
+      label:'Sakura Soft',
+      swatch:'#F4CFD6',
+      text:'#3a1f26', sub:'#6b4650',
+      draw(c){
+        c.fillStyle = '#FBEDEE'; c.fillRect(0,0,W,H);
+        const r = c.createRadialGradient(W*0.2,H*0.9,0,W*0.2,H*0.9,H*1.2);
+        r.addColorStop(0,'rgba(240,170,185,0.65)'); r.addColorStop(1,'rgba(240,170,185,0)');
+        c.fillStyle = r; c.fillRect(0,0,W,H);
+        const r2 = c.createRadialGradient(W*0.9,H*0.1,0,W*0.9,H*0.1,H*0.9);
+        r2.addColorStop(0,'rgba(255,215,200,0.7)'); r2.addColorStop(1,'rgba(255,215,200,0)');
+        c.fillStyle = r2; c.fillRect(0,0,W,H);
+      }
+    },
+    kintsugi: {
+      label:'Kintsugi',
+      swatch:'#1c1b19',
+      text:'#f4efe4', sub:'#cfc6b0',
+      draw(c){
+        c.fillStyle = '#1c1b19'; c.fillRect(0,0,W,H);
+        c.strokeStyle = 'rgba(201,162,75,0.85)'; c.lineWidth = 2.5; c.lineJoin = 'round';
+        c.beginPath(); c.moveTo(-10, H*0.95); c.lineTo(W*0.18, H*0.88); c.lineTo(W*0.3, H*0.93); c.lineTo(W*0.46, H*0.84); c.lineTo(W*0.55, H*0.88); c.lineTo(W*0.74, H*0.76); c.lineTo(W*1.01, H*0.82); c.stroke();
+        c.lineWidth = 1.5; c.beginPath(); c.moveTo(W*0.46, H*0.84); c.lineTo(W*0.49, H*1.01); c.stroke();
+        addGrain(c, 0.04);
+      }
+    },
+    gridLines: {
+      label:'Grid',
+      swatch:'#EEF2FB',
+      text:'#12163a', sub:'#454c78',
+      draw(c){
+        c.fillStyle = '#F5F7FC'; c.fillRect(0,0,W,H);
+        c.strokeStyle = 'rgba(40,70,160,0.09)'; c.lineWidth = 1;
+        for (let x = 0; x <= W; x += 60){ c.beginPath(); c.moveTo(x+0.5,0); c.lineTo(x+0.5,H); c.stroke(); }
+        for (let y = 0; y <= H; y += 60){ c.beginPath(); c.moveTo(0,y+0.5); c.lineTo(W,y+0.5); c.stroke(); }
+      }
+    },
+    dotGrid: {
+      label:'Dot Grid',
+      swatch:'#FAF7F2',
+      text:'#1d1b18', sub:'#5a554c',
+      draw(c){
+        c.fillStyle = '#FAF7F2'; c.fillRect(0,0,W,H);
+        c.fillStyle = 'rgba(0,0,0,0.13)';
+        for (let x = 24; x < W; x += 36) for (let y = 24; y < H; y += 36){ c.beginPath(); c.arc(x,y,2,0,Math.PI*2); c.fill(); }
+      }
+    },
+    meshNight: {
+      label:'Mesh Night',
+      swatch:'#1a1840',
+      text:'#ffffff', sub:'#c9cff0',
+      draw(c){
+        c.fillStyle = '#0B1020'; c.fillRect(0,0,W,H);
+        const blob = (x,y,r,col) => { const g = c.createRadialGradient(x,y,0,x,y,r); g.addColorStop(0,col); g.addColorStop(1,'rgba(0,0,0,0)'); c.fillStyle = g; c.fillRect(0,0,W,H); };
+        blob(W*0.12,H*0.15,H*1.1,'rgba(25,211,245,0.38)');
+        blob(W*0.88,H*0.85,H*1.1,'rgba(255,61,154,0.36)');
+        blob(W*0.55,H*0.5,H*0.9,'rgba(108,75,255,0.34)');
+      }
+    },
+    pastelAurora: {
+      label:'Pastel Aurora',
+      swatch:'#DCD2FF',
+      text:'#1a1740', sub:'#4a4670',
+      draw(c){
+        c.fillStyle = '#FFFFFF'; c.fillRect(0,0,W,H);
+        const blob = (x,y,r,col) => { const g = c.createRadialGradient(x,y,0,x,y,r); g.addColorStop(0,col); g.addColorStop(1,'rgba(255,255,255,0)'); c.fillStyle = g; c.fillRect(0,0,W,H); };
+        blob(W*0.15,H*0.2,H*1.1,'rgba(205,190,255,0.9)');
+        blob(W*0.85,H*0.25,H*1.0,'rgba(180,222,255,0.9)');
+        blob(W*0.55,H*1.0,H*1.0,'rgba(255,214,196,0.9)');
+      }
+    },
+    cobaltBlock: {
+      label:'Cobalt Block',
+      swatch:'#2F5BEA',
+      text:'#ffffff', sub:'#dbe4ff',
+      draw(c){
+        c.fillStyle = '#2F5BEA'; c.fillRect(0,0,W,H);
+        c.fillStyle = 'rgba(255,255,255,0.12)'; c.beginPath(); c.arc(W*0.95, H*0.05, H*0.9, 0, Math.PI*2); c.fill();
+        c.fillStyle = 'rgba(8,20,80,0.18)'; c.beginPath(); c.arc(W*0.02, H*1.0, H*0.7, 0, Math.PI*2); c.fill();
+      }
     }
   };
 
-  // ---------- team backgrounds (licensed photos, baked in) ----------
+  // ---------- club colours (brand colours only: no crests, logos or artwork) ----------
 
   const TEAM_BACKGROUNDS = {};
-  function registerTeamBackground(key, label, dataUri, textColor, subColor){
-    const img = new Image();
-    img.onload = () => { if (state.bg.type==='preset' && state.bg.key===key) redraw(); };
-    img.src = dataUri;
-    TEAM_BACKGROUNDS[key] = {
-      label: label,
-      swatch: 'url(' + dataUri + ') center/cover',
-      text: textColor, sub: subColor,
-      isTeam: true,
-      draw(c){ if (img.complete && img.naturalWidth) drawCoverImageInto(c, img, 0.5, 0.5, W, H); }
-    };
+  function clubBg(key, label, swatch, text, sub, draw){
+    TEAM_BACKGROUNDS[key] = { label, swatch, text, sub, isTeam:true, draw };
   }
+  const bar = (c, col, x, y, w, h) => { c.fillStyle = col; c.fillRect(x, y, w, h); };
+  const wash = (c, x, y, r, col) => { const g = c.createRadialGradient(x,y,0,x,y,r); g.addColorStop(0,col); g.addColorStop(1,'rgba(0,0,0,0)'); c.fillStyle = g; c.fillRect(0,0,W,H); };
 
-  registerTeamBackground('teamMatchNight', 'Match Night', 'data:image/webp;base64,__MATCH_NIGHT_BASE64__', '#ffffff', '#bcd9ff');
-  registerTeamBackground('teamGoalNet', 'Goal Net', 'data:image/webp;base64,__GOAL_NET_BASE64__', '#ffffff', '#bcd9ff');
-  registerTeamBackground('teamPurpleCircles', 'Purple Circles', 'data:image/webp;base64,__PURPLE_CIRCLES_BASE64__', '#ffffff', '#ffe1e6');
-  registerTeamBackground('teamRecordPlayer', 'Record Player', 'data:image/webp;base64,__RECORD_PLAYER_BASE64__', '#ffffff', '#d6ffe6');
-  registerTeamBackground('teamSquigglySparkle', 'Squiggly Sparkle', 'data:image/webp;base64,__SQUIGGLY_SPARKLE_BASE64__', '#ffffff', '#e4d9ff');
-  registerTeamBackground('teamTealOrbs', 'Teal Orbs', 'data:image/webp;base64,__TEAL_ORBS_BASE64__', '#ffffff', '#bfe9e9');
-  registerTeamBackground('teamHalftoneRecord', 'Halftone Record', 'data:image/webp;base64,__HALFTONE_RECORD_BASE64__', '#ffffff', '#d7eef0');
-  registerTeamBackground('teamStarburstPop', 'Starburst Pop', 'data:image/webp;base64,__STARBURST_POP_BASE64__', '#ffffff', '#ffe1e1');
-  registerTeamBackground('teamHandDrawnFlowers', 'Hand-Drawn Flowers', 'data:image/webp;base64,__HAND_DRAWN_FLOWERS_BASE64__', '#ffffff', '#ffe9f2');
-  registerTeamBackground('teamRibbonGradient', 'Ribbon Gradient', 'data:image/webp;base64,__RIBBON_GRADIENT_BASE64__', '#ffffff', '#d8e4ff');
-  registerTeamBackground('teamSoccerFieldAerial', 'Soccer Field Aerial', 'data:image/webp;base64,__SOCCER_FIELD_AERIAL_BASE64__', '#ffffff', '#d6ffe1');
-  registerTeamBackground('teamBasketballDunk', 'Basketball Dunk', 'data:image/webp;base64,__BASKETBALL_DUNK_BASE64__', '#141414', '#3d3d3d');
-  registerTeamBackground('teamBasketballSplatter', 'Basketball Splatter', 'data:image/webp;base64,__BASKETBALL_SPLATTER_BASE64__', '#141414', '#3d2f1f');
-  registerTeamBackground('teamFanScarves', 'Fan Scarves', 'data:image/webp;base64,__FAN_SCARVES_BASE64__', '#ffffff', '#e0c8c8');
-  registerTeamBackground('teamConcertCrowd', 'Concert Crowd', 'data:image/webp;base64,__CONCERT_CROWD_BASE64__', '#ffffff', '#d6e8e0');
+  clubBg('clubArsenalRed', 'Arsenal Red', '#DB0007', '#ffffff', '#ffffff', c => {
+    c.fillStyle = '#DB0007'; c.fillRect(0,0,W,H); wash(c, W*0.5, H*0.1, H*1.2, 'rgba(255,60,60,0.35)');
+  });
+  clubBg('clubArsenalNavy', 'Arsenal Navy & Gold', '#063672', '#ffffff', '#E0CF9C', c => {
+    c.fillStyle = '#063672'; c.fillRect(0,0,W,H); bar(c,'#9C824A',0,0,W,8); bar(c,'#9C824A',0,H-8,W,8);
+  });
+  clubBg('clubManUtdRed', 'Man United Red', '#DA291C', '#ffffff', '#ffffff', c => {
+    c.fillStyle = '#DA291C'; c.fillRect(0,0,W,H); bar(c,'#FFE500',0,H-10,W,10);
+  });
+  clubBg('clubManUtdBlack', 'Man United Black & Yellow', '#111111', '#ffffff', '#FFE500', c => {
+    c.fillStyle = '#111111'; c.fillRect(0,0,W,H); bar(c,'#DA291C',0,0,W,10); bar(c,'#FFE500',0,10,W,4);
+  });
+  clubBg('clubFifaBlue', 'FIFA Blue', '#0A3A8C', '#ffffff', '#E3C98A', c => {
+    const g = c.createLinearGradient(0,0,W,H); g.addColorStop(0,'#0A3A8C'); g.addColorStop(1,'#062255');
+    c.fillStyle = g; c.fillRect(0,0,W,H);
+  });
+  clubBg('clubFifaGold', 'FIFA Navy & Gold', '#062255', '#ffffff', '#E7D3A0', c => {
+    c.fillStyle = '#062255'; c.fillRect(0,0,W,H); wash(c, W*0.5, H*1.05, H*1.3, 'rgba(201,162,75,0.5)');
+  });
+  clubBg('clubFifaSilver', 'FIFA Silver', '#DDE1E8', '#062255', '#3a4a70', c => {
+    c.fillStyle = '#DDE1E8'; c.fillRect(0,0,W,H); bar(c,'#C9A24B',0,H-8,W,8);
+  });
 
   Object.assign(PRESETS, TEAM_BACKGROUNDS);
 

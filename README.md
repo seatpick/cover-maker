@@ -18,9 +18,6 @@ runtime (everything — including all 13 display fonts — is inlined).
   license): `anton`, `bebas`, `archivo`, `fredoka`, `chewy`, `bangers`,
   `pacifico`, `playfair`, `marker` (Permanent Marker), `caveat`, `graffiti`
   (Rubik Wet Paint), `heebo-latin`/`heebo-hebrew`, `cairo-latin`/`cairo-arabic`.
-- `backgrounds/*.b64` — base64 of each licensed "Team background" photo
-  (see below). The matching raw image files (`backgrounds/*.webp`) are
-  gitignored — only the base64 text is committed, same pattern as fonts.
 - `artifact.html` — generated bare fragment (no doctype/head/body — the
   Claude Artifact tool supplies its own skeleton). Publish this one via
   the Artifact tool.
@@ -101,40 +98,24 @@ The stage column (left) has the canvas, safe-zone toggle, size estimate,
 and (below all of that, collapsed by default) the "Preview in a blog"
 mockups.
 
-## Team backgrounds (licensed photos & illustrations)
+## Club colours and designed backgrounds
 
-A small, separate gallery above the procedural presets, for actual
-licensed imagery the team has the rights to use. Two real photos —
-**Match Night** (aerial night stadium) and **Goal Net** (ball hitting
-the net, close crop) — plus eight licensed illustration/graphic assets:
-**Purple Circles, Record Player, Squiggly Sparkle, Teal Orbs, Halftone
-Record, Starburst Pop, Hand-Drawn Flowers, Ribbon Gradient**. Unlike
-everything else in this tool, these are real raster images, not
-canvas-drawn recreations — same embed technique applies to both
-photos and illustrations.
+The 15 licensed photos/illustrations ("Team backgrounds") were removed in the
+modern redesign, along with `backgrounds/*.b64` and the regen-script lines
+for them. They remain in git history before commit `80b49d2`.
 
-**How it works:** each one is baked directly into `template.html` as a
-base64 data URI (`registerTeamBackground(key, label, dataUri, ...)`,
-merged into the same `PRESETS` object everything else uses, so templates/
-swatch-active-state/reset all treat it identically to a procedural
-preset — it just draws a cover-fit photo instead of running a draw
-function). This is a deliberate architecture choice: the tool is a
-single static file with no backend, and the Claude Artifact mirror
-blocks loading images from external URLs, so "shared with the whole
-team" can only mean "compiled into the file everyone loads" — there's
-no self-serve shared-upload option without building real backend
-infrastructure (a different, bigger project). Practical implication:
-**adding or swapping a team background requires a code change +
-redeploy** (ask for it same as any other tool change) — it is not
-something anyone can add themselves the way "My Backgrounds" works.
+**Club colours** (`clubBg(...)`, `isTeam:true`, shown in their own gallery):
+Arsenal Red, Arsenal Navy & Gold, Man United Red, Man United Black &
+Yellow, FIFA Blue, FIFA Navy & Gold, FIFA Silver. These use **brand colours
+only** - no crests, logos, kit art or wordmarks. Hexes came from public
+colour references (Arsenal #DB0007/#063672/#9C824A, Man United
+#DA291C/#FFE500, FIFA approx #0A3A8C/#062255/#C9A24B); the actual brand books
+are not public, and FIFA publishes no official hex values, so check against
+the real guidelines before relying on them.
 
-**To add another one:** crop/save the source photo to exactly 1200x500
-(cover-fit centered, or pick a deliberate focus crop), save it as
-`backgrounds/<name>.webp`, base64-encode it to `backgrounds/<name>.b64`,
-add a `registerTeamBackground(...)` call, and add the matching
-`.replace('__<NAME>_BASE64__', ...)` line to the regen script below.
-WebP was chosen over JPEG for these — same visual quality at roughly
-half the file size for this kind of soft/gradient-heavy photography.
+**Designed backgrounds** (code-drawn, in `PRESETS`): Rising Sun, Indigo
+Waves (seigaiha), Ai-iro Indigo, Matcha Fade, Sakura Soft, Kintsugi (Japanese
+design); Grid, Dot Grid, Mesh Night, Pastel Aurora, Cobalt Block (Wix/Wiz).
 
 ## Backgrounds
 
@@ -387,17 +368,6 @@ over budget the tool shows a warning with a one-click "switch to WEBP".
        .replace('__HEEBO_HEBREW_BASE64__', load_b64('fonts/heebo-hebrew.b64'))
        .replace('__CAIRO_LATIN_BASE64__', load_b64('fonts/cairo-latin.b64'))
        .replace('__CAIRO_ARABIC_BASE64__', load_b64('fonts/cairo-arabic.b64'))
-       .replace('__MATCH_NIGHT_BASE64__', load_b64('backgrounds/match-night.b64'))
-       .replace('__GOAL_NET_BASE64__', load_b64('backgrounds/goal-net.b64'))
-       .replace('__PURPLE_CIRCLES_BASE64__', load_b64('backgrounds/purpleCircles.b64'))
-       .replace('__RECORD_PLAYER_BASE64__', load_b64('backgrounds/recordPlayer.b64'))
-       .replace('__SQUIGGLY_SPARKLE_BASE64__', load_b64('backgrounds/squigglySparkle.b64'))
-       .replace('__TEAL_ORBS_BASE64__', load_b64('backgrounds/tealOrbs.b64'))
-       .replace('__HALFTONE_RECORD_BASE64__', load_b64('backgrounds/halftoneRecord.b64'))
-       .replace('__STARBURST_POP_BASE64__', load_b64('backgrounds/starburstPop.b64'))
-       .replace('__HAND_DRAWN_FLOWERS_BASE64__', load_b64('backgrounds/handDrawnFlowers.b64'))
-       .replace('__RIBBON_GRADIENT_BASE64__', load_b64('backgrounds/ribbonGradient.b64'))
-       .replace('__SOCCER_FIELD_AERIAL_BASE64__', load_b64('backgrounds/soccerFieldAerial.b64'))
        .replace('__LOBSTER_BASE64__', load_b64('fonts/lobster.b64'))
        .replace('__BALOO2_BASE64__', load_b64('fonts/baloo2.b64'))
        .replace('__FIGTREEXB_BASE64__', load_b64('fonts/figtreexb.b64'))
@@ -418,11 +388,7 @@ over budget the tool shows a warning with a one-click "switch to WEBP".
        .replace('__BUNGEE_BASE64__', load_b64('fonts/bungee.b64'))
        .replace('__KALAM_BASE64__', load_b64('fonts/kalam.b64'))
        .replace('__LUCKIESTGUY_BASE64__', load_b64('fonts/luckiestguy.b64'))
-       .replace('__ALFASLABONE_BASE64__', load_b64('fonts/alfaslabone.b64'))
-       .replace('__BASKETBALL_DUNK_BASE64__', load_b64('backgrounds/basketballDunk.b64'))
-       .replace('__BASKETBALL_SPLATTER_BASE64__', load_b64('backgrounds/basketballSplatter.b64'))
-       .replace('__FAN_SCARVES_BASE64__', load_b64('backgrounds/fanScarves.b64'))
-       .replace('__CONCERT_CROWD_BASE64__', load_b64('backgrounds/concertCrowd.b64')))
+       .replace('__ALFASLABONE_BASE64__', load_b64('fonts/alfaslabone.b64')))
    open('artifact.html', 'w', encoding='utf-8').write(fragment)
 
    marker = '<div class="wrap">'
