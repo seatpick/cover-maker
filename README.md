@@ -297,6 +297,8 @@ single greedy word-wrap would.
 
 ## Modern redesign: palettes, type styles, accent word
 
+- **Eyedropper**: every colour swatch has a dropper button (browser `EyeDropper` API, Chrome/Edge) that picks a colour from anywhere on screen, including other tabs. Hidden in browsers without the API (Safari, Firefox).
+
 - **Palettes**: 100 Figma "color combinations" (sampled from the published
   images) + 348 Wada "Dictionary of Color Combinations" sets, as
   `FIGMA_PALETTES` / `WADA_PALETTES`. `buildScheme` turns a palette into a
