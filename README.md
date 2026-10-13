@@ -295,6 +295,8 @@ single greedy word-wrap would.
 
 ## Modern redesign: palettes, type styles, accent word
 
+- **Accent highlight is off by default** everywhere (wheel, starters, wizard, gallery): the accent word is coloured text only. "Soft highlight (box behind the word)" is still an option under Style & effects.
+
 - **Design principles (from the "Cover Design 101" deck)**: a Colour wheel section (`harmonyScheme`: neighbours / opposites / neutral + 1, light or dark; one background, one title colour, one accent; opposites keep lightness apart), a live Cover checklist under the preview (`runChecks`, 8 auto checks + 2 reminders, samples the real background for contrast, Squint test blur), six starter templates (`p-*`, right after the default card), the "Cream & Cobalt" background, a headline character counter, serif/sans/display/script tags in the font picker, and in the wizard a Colour harmony choice plus optional team/artist colours (used exactly as given).
 - **Removed**: the Rubik Wet Paint (graffiti) font.
 

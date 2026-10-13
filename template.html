@@ -1274,8 +1274,8 @@ here</textarea>
               <div class="field">
                 <label>Accent highlight</label>
                 <select id="accentHighlight">
-                  <option value="soft">Soft highlight</option>
                   <option value="off">Color only</option>
+                  <option value="soft">Soft highlight (box behind the word)</option>
                 </select>
               </div>
             </div>
@@ -1473,7 +1473,7 @@ here</textarea>
     effectStrength: 40,
     tilt: 0,
     tracking: 0,
-    accent: { color:'#2f5bea', highlight:true },
+    accent: { color:'#2f5bea', highlight:false },
     caps: false,
     subCaps: false,
     bold: false,
@@ -3576,7 +3576,7 @@ here</textarea>
     const sc = buildScheme(colors, mode), st = TYPE_STYLES[styleIdx % TYPE_STYLES.length];
     return {
       bg:sc.bg, bgType:sc.bgType, glow:sc.glow, font:st.font, fontSize:st.size,
-      headlineColor:sc.text, subtitleColor:sc.sub, accentColor:sc.accent, accentHighlight:true,
+      headlineColor:sc.text, subtitleColor:sc.sub, accentColor:sc.accent, accentHighlight:false,
       subtitleFont:st.subFont, subtitleSize:st.subSize, subtitleGap:st.gap, tracking:st.tracking,
       effect:'none', effectColor:sc.accent, effectStrength:40, tilt:0,
       caps:!!st.caps, subCaps:!!st.subCaps, accentWord:!!st.accentWord,
@@ -3610,7 +3610,7 @@ here</textarea>
     const st = TYPE_STYLES[styleIdx % TYPE_STYLES.length];
     return {
       bg:sc.bg, bgType:sc.bgType, glow:sc.glow, font:st.font, fontSize:st.size,
-      headlineColor:sc.text, subtitleColor:sc.sub, accentColor:sc.accent, accentHighlight:true,
+      headlineColor:sc.text, subtitleColor:sc.sub, accentColor:sc.accent, accentHighlight:false,
       subtitleFont:st.subFont, subtitleSize:st.subSize, subtitleGap:st.gap, tracking:st.tracking,
       effect:'none', effectColor:sc.accent, effectStrength:40, tilt:0,
       caps:!!st.caps, subCaps:!!st.subCaps, accentWord: accentWord === undefined ? !!st.accentWord : accentWord,
@@ -3663,7 +3663,7 @@ here</textarea>
         : { type:'preset', key: tpl.bg, image:null };
     state.decor = { shape: tpl.decorShape, color: tpl.effectColor };
     state.tracking = tpl.tracking || 0;
-    state.accent = { color: tpl.accentColor || '#2f5bea', highlight: tpl.accentHighlight !== false };
+    state.accent = { color: tpl.accentColor || '#2f5bea', highlight: tpl.accentHighlight === true };
     accentColorInput.value = state.accent.color;
     accentColorHex.textContent = state.accent.color.toUpperCase();
     accentHighlightSelect.value = state.accent.highlight ? 'soft' : 'off';
@@ -3934,10 +3934,10 @@ here</textarea>
         backdropStyleSelect.value = 'off';
         backdropStrengthInput.value = 50;
         backdropStrengthVal.textContent = '50';
-        state.accent = { color:'#2f5bea', highlight:true };
+        state.accent = { color:'#2f5bea', highlight:false };
         accentColorInput.value = '#2f5bea';
         accentColorHex.textContent = '#2F5BEA';
-        accentHighlightSelect.value = 'soft';
+        accentHighlightSelect.value = 'off';
         state.badge = 'plain';
         state.badgeColor = '#fff3c4';
         document.querySelectorAll('#badgeSeg button').forEach(b=>b.classList.toggle('active', b.dataset.v==='plain'));
@@ -4190,7 +4190,7 @@ here</textarea>
   function applyScheme(sc){
     state.bg = sc.bgType === 'glow' ? { type:'glow', color:sc.bg, glow:sc.glow, image:null } : { type:'color', color:sc.bg, image:null };
     state.decor = { shape:null, color:null };
-    state.headlineColor = sc.text; state.subtitleColor = sc.sub; state.accent = { color:sc.accent, highlight:true };
+    state.headlineColor = sc.text; state.subtitleColor = sc.sub; state.accent = { color:sc.accent, highlight:false };
     // show the accent: mark the last word unless the user already marked one
     if ((state.headline || '').indexOf('*') === -1 && /\s/.test((state.headline || '').trim())) state.headline = state.headline.replace(/(\S+)(\s*)$/, '*$1*$2');
     syncUI(); redraw();
