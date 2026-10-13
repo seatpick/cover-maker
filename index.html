@@ -571,8 +571,9 @@ textarea.wizard-text{resize:vertical;min-height:46px;}
   color:var(--ink-dim);
   margin-bottom:6px;
 }
-.row{display:flex;gap:10px;}
-.row .field{flex:1;margin-bottom:0;}
+.row{display:flex;flex-wrap:wrap;gap:10px;}
+.row .field{flex:1;margin-bottom:0;min-width:0;}
+.colorfield .hex{white-space:nowrap;}
 
 input[type="text"],textarea,select{
   width:100%;
@@ -1223,7 +1224,7 @@ here</textarea>
               <p class="fineprint" style="margin-top:6px;"><span id="headlineCount"></span> Tip: wrap one word in *asterisks* to give it the accent color.</p>
             </div>
             <div class="row">
-              <div class="field">
+              <div class="field" style="flex:1 1 100%;">
                 <label for="fontSelect">Font</label>
                 <select id="fontSelect"></select>
               </div>
@@ -1386,7 +1387,7 @@ here</textarea>
               <input type="text" id="subtitle" maxlength="140" placeholder="A short supporting line">
             </div>
             <div class="row">
-              <div class="field">
+              <div class="field" style="flex:1 1 100%;">
                 <label for="subtitleFontSelect">Font</label>
                 <select id="subtitleFontSelect"></select>
               </div>
