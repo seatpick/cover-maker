@@ -71,13 +71,6 @@
   font-display:block;
 }
 @font-face{
-  font-family:'Rubik Wet Paint';
-  src:url(data:font/woff2;base64,__GRAFFITI_BASE64__) format('woff2');
-  font-weight:400;
-  font-style:normal;
-  font-display:block;
-}
-@font-face{
   font-family:'Lobster';
   src:url(data:font/woff2;base64,__LOBSTER_BASE64__) format('woff2');
   font-weight:400;
@@ -626,6 +619,22 @@ input[type="color"]::-webkit-color-swatch{border-radius:5px;border:none;}
 .undo-btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:5px 14px;font:inherit;font-weight:600;cursor:pointer;}
 .undo-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
 .undo-btn:disabled{opacity:.4;cursor:default;}
+.check-actions{display:flex;align-items:center;gap:10px;margin:2px 0 10px;}
+.check-score{font-size:12px;font-weight:700;color:var(--accent);margin-left:8px;}
+.check-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;}
+@media (max-width:1100px){ .check-list{grid-template-columns:1fr;} }
+.check-list li{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;line-height:1.35;}
+.check-list .dot{flex:none;width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;margin-top:1px;}
+.check-list .ok .dot{background:#16a34a;} .check-list .warn .dot{background:#f59e0b;} .check-list .bad .dot{background:#dc2626;} .check-list .tip .dot{background:#9aa1bd;}
+.check-list b{display:block;font-size:12.5px;color:var(--ink);}
+.check-list span.d{color:var(--ink-dim);}
+.canvas-shell.squint #stage{filter:blur(9px);}
+.wheel-wrap{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;}
+.wheel-side{flex:1;min-width:150px;}
+.wheel-chips{display:flex;gap:6px;margin-top:6px;}
+.wheel-chips span{flex:1;border-radius:8px;height:34px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:1px solid rgba(0,0,0,.08);}
+#wheelSvg circle.hue{cursor:pointer;}
+
 
 
 
@@ -919,6 +928,7 @@ input[type="text"]:focus,textarea:focus,select:focus{outline:none;border-color:v
       <div class="wizard-step">
         <label class="wizard-step-label">Headline</label>
         <textarea class="wizard-text" id="wizardHeadline" maxlength="140" placeholder="Your headline&hellip;"></textarea>
+        <p class="fineprint" id="wizardCount" style="margin-top:4px;">Short hero titles read best (aim for 40 characters or fewer).</p>
       </div>
       <div class="wizard-step">
         <label class="wizard-step-label">Subtitle (optional)</label>
@@ -935,6 +945,23 @@ input[type="text"]:focus,textarea:focus,select:focus{outline:none;border-color:v
           <button class="wizard-chip" type="button" data-pillar="education">Buyer Education</button>
         </div>
         <p class="fineprint" id="wizardPillarHint" style="margin-top:6px;">Pick the kind of post. The look is matched to it.</p>
+      </div>
+      <div class="wizard-step">
+        <label class="wizard-step-label">Colour harmony</label>
+        <div class="wizard-chips" id="wizardHarmony">
+          <button class="wizard-chip active" type="button" data-harmony="auto">Auto</button>
+          <button class="wizard-chip" type="button" data-harmony="neighbors">Neighbours (calm)</button>
+          <button class="wizard-chip" type="button" data-harmony="opposite">Opposites (pop)</button>
+          <button class="wizard-chip" type="button" data-harmony="neutral">Neutral + 1 colour</button>
+        </div>
+      </div>
+      <div class="wizard-step">
+        <label class="wizard-step-label">Team or artist colours (optional)</label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:6px;"><input type="checkbox" id="wizardBrandOn"> Use their own colours: fans recognise them before reading a word</label>
+        <div class="colorfield">
+          <input type="color" id="wizardBrandA" value="#1d3d8f"><span class="hex">Background</span>
+          <input type="color" id="wizardBrandB" value="#f2b705" style="margin-left:10px;"><span class="hex">Accent</span>
+        </div>
       </div>
       <div class="wizard-step">
         <label class="wizard-step-label">Topic (optional)</label>
@@ -993,6 +1020,20 @@ input[type="text"]:focus,textarea:focus,select:focus{outline:none;border-color:v
       <div class="status-bar ok" id="statusBar">
         <span id="statusText">Adjust the panel, then export.</span>
         <span class="size-fig" id="sizeFig"></span>
+      </div>
+
+      <div class="stage-frame mock-frame" id="checkFrame">
+        <div class="section-head">
+          <h2 class="mock-title">Cover checklist <span class="check-score" id="checkScore"></span></h2>
+          <span class="chev">&#9662;</span>
+        </div>
+        <div class="section-body">
+          <div class="check-actions">
+            <button type="button" class="undo-btn" id="squintBtn" title="Blur the preview. If the title disappears, the contrast is too low.">Squint test</button>
+            <span class="fineprint" id="squintHint" style="display:none;">If the title disappears, the contrast is too low.</span>
+          </div>
+          <ul class="check-list" id="checkList"></ul>
+        </div>
       </div>
 
       <div class="stage-frame mock-frame collapsed" id="mockFrame">
@@ -1070,6 +1111,37 @@ input[type="text"]:focus,textarea:focus,select:focus{outline:none;border-color:v
         </div>
       </div>
 
+      <div class="section collapsed" id="sec-wheel">
+        <div class="section-head">
+          <h2>Colour wheel</h2>
+          <span class="chev">&#9662;</span>
+        </div>
+        <div class="section-body">
+          <p class="fineprint" style="margin:0 0 8px;">Neighbours = calm. Opposites = pop. Pick a colour, then a harmony: you get one background, one title colour and one accent.</p>
+          <div class="wheel-wrap">
+            <svg id="wheelSvg" viewBox="0 0 200 200" width="190" height="190" role="img" aria-label="Colour wheel"></svg>
+            <div class="wheel-side">
+              <div class="field"><label>Harmony</label>
+                <div class="seg" id="wheelModeSeg">
+                  <button type="button" data-v="neighbors" class="active">Neighbours</button>
+                  <button type="button" data-v="opposite">Opposites</button>
+                  <button type="button" data-v="neutral">Neutral + 1</button>
+                </div></div>
+              <div class="field"><label>Background</label>
+                <div class="seg" id="wheelToneSeg">
+                  <button type="button" data-v="dark" class="active">Dark</button>
+                  <button type="button" data-v="light">Light</button>
+                </div></div>
+              <div class="field"><label for="wheelHue">Fine-tune colour</label>
+                <input type="range" id="wheelHue" min="0" max="359" value="220"></div>
+              <div class="wheel-chips" id="wheelChips"></div>
+            </div>
+          </div>
+          <p class="fineprint" id="wheelHint" style="margin:8px 0 0;"></p>
+          <button class="btn ghost" type="button" id="wheelFromBg" style="margin-top:8px;">Use my current background colour</button>
+        </div>
+      </div>
+
       <div class="section" id="sec-images">
         <div class="section-head">
           <h2>3. Your images</h2>
@@ -1140,7 +1212,7 @@ input[type="text"]:focus,textarea:focus,select:focus{outline:none;border-color:v
               <label for="headline">Headline text</label>
               <textarea id="headline" maxlength="140">Your headline
 here</textarea>
-              <p class="fineprint" style="margin-top:6px;">Tip: wrap one word in *asterisks* to give it the accent color.</p>
+              <p class="fineprint" style="margin-top:6px;"><span id="headlineCount"></span> Tip: wrap one word in *asterisks* to give it the accent color.</p>
             </div>
             <div class="row">
               <div class="field">
@@ -1373,6 +1445,7 @@ here</textarea>
 (function(){
   const LIMIT_BYTES = 350000;
   const W = 1200, H = 500;
+  let lastLayout = null;   // text block bounds from the last render (used by the checklist)
   const MOBILE_CROP_RATIO = 4/3; // approximate card-thumbnail crop; update once the real ratio is known
 
   const stage = document.getElementById('stage');
@@ -1421,7 +1494,6 @@ here</textarea>
     playfair: { label:'Playfair Display - Elegant Serif', family:'Playfair Display', uppercase:false },
     marker:   { label:'Permanent Marker - Brush',    family:'Permanent Marker', uppercase:false },
     caveat:   { label:'Caveat - Handwritten',        family:'Caveat',        uppercase:false },
-    graffiti: { label:'Rubik Wet Paint - Graffiti',  family:'Rubik Wet Paint', uppercase:false },
     lobster:  { label:'Lobster - Retro Groovy Script', family:'Lobster',      uppercase:false },
     baloo2:   { label:'Baloo 2 - Chunky Rounded Bold', family:'Baloo 2',      uppercase:true },
     wixDisplay:  { label:'Wix Madefor Display - Modern Light', family:'Wix Display',    uppercase:false },
@@ -1972,6 +2044,19 @@ here</textarea>
         blob(W*0.55,H*1.0,H*1.0,'rgba(255,214,196,0.9)');
       }
     },
+    creamCircles: {
+      label:'Cream & Cobalt',
+      swatch:'#2255F0',
+      text:'#111111', sub:'#4a4a4a',
+      draw(c){
+        c.fillStyle = '#F6F3EC'; c.fillRect(0,0,W,H);
+        c.fillStyle = '#2255F0'; c.beginPath(); c.arc(W*1.04, H*1.22, H*0.72, 0, Math.PI*2); c.fill();
+        c.beginPath(); c.arc(W*0.03, -H*0.06, H*0.34, 0, Math.PI*2); c.fill();
+        c.strokeStyle = '#111'; c.lineWidth = 1.5; c.beginPath(); c.arc(W*0.93, H*0.38, H*0.42, 0, Math.PI*2); c.stroke();
+        c.fillStyle = '#111';
+        for (let i=0;i<4;i++) for (let j=0;j<4;j++){ c.beginPath(); c.arc(40+i*18, H-90+j*18, 1.8, 0, Math.PI*2); c.fill(); }
+      }
+    },
     cobaltBlock: {
       label:'Cobalt Block',
       swatch:'#2F5BEA',
@@ -2106,6 +2191,7 @@ here</textarea>
       return segs;
     });
     const headlineLines = lineSegs.map(s => s.map(x => x.t).join(''));
+    let hMax = 0; headlineLines.forEach(l => { hMax = Math.max(hMax, c.measureText(l).width); });
     const lineHeight = size * (state.effect === 'twoTone' ? 0.92 : 1.06);
 
     const headlineAscentMetrics = c.measureText(headlineLines[0] || 'Hg');
@@ -2144,6 +2230,7 @@ here</textarea>
     else startY = (H - totalVisualHeight)/2 + headlineAscent;
 
     const xPos = state.align === 'left' ? leftX : W/2;
+    lastLayout = { left: state.align === 'left', x: xPos, w: Math.max(hMax, subMaxW), y0: startY - headlineAscent, h: totalVisualHeight, lines: headlineLines.length };
     c.textAlign = state.align === 'left' ? 'left' : 'center';
     c.direction = FONTS[state.font].rtl ? 'rtl' : 'ltr';
 
@@ -3497,14 +3584,62 @@ here</textarea>
     };
   }
 
+  // Colour-wheel harmonies (from the cover-design principles): one background, one title colour, one accent.
+  //   neighbors = calm, opposite = pop (lightness kept apart so it never vibrates), neutral = black/cream + one bright colour
+  function harmonyScheme(hue, mode, tone){
+    const Hh = d => (hue + d + 360) % 360;
+    let bg, bgType = 'color', glow = null, text, accent, subBase;
+    if (tone === 'light'){
+      text = SLATE; subBase = '#4b5070';
+      if (mode === 'neutral'){ bg = '#F6F3EC'; accent = hslToHex(hue, 0.85, 0.42); }
+      else { bg = hslToHex(hue, 0.55, 0.93); accent = mode === 'neighbors' ? hslToHex(Hh(30), 0.65, 0.34) : hslToHex(Hh(180), 0.75, 0.36); }
+    } else {
+      text = '#ffffff'; subBase = '#c4c9e2';
+      if (mode === 'neutral'){ bg = '#121212'; accent = hslToHex(hue, 0.92, 0.58); }
+      else {
+        bg = hslToHex(hue, 0.5, 0.13);
+        if (mode === 'neighbors'){ bgType = 'glow'; glow = hslToHex(Hh(30), 0.7, 0.45); accent = hslToHex(Hh(35), 0.7, 0.72); }
+        else accent = hslToHex(Hh(180), 0.9, 0.64);
+      }
+    }
+    accent = mixToContrast(accent, bg, 4.5);
+    return { bg, bgType, glow, text, accent, sub: mixToContrast(subBase, bg, 4.5) };
+  }
+  function specFromScheme(sc, styleIdx, accentWord){
+    const st = TYPE_STYLES[styleIdx % TYPE_STYLES.length];
+    return {
+      bg:sc.bg, bgType:sc.bgType, glow:sc.glow, font:st.font, fontSize:st.size,
+      headlineColor:sc.text, subtitleColor:sc.sub, accentColor:sc.accent, accentHighlight:true,
+      subtitleFont:st.subFont, subtitleSize:st.subSize, subtitleGap:st.gap, tracking:st.tracking,
+      effect:'none', effectColor:sc.accent, effectStrength:40, tilt:0,
+      caps:!!st.caps, subCaps:!!st.subCaps, accentWord: accentWord === undefined ? !!st.accentWord : accentWord,
+      align:'center', vAlign:'middle', badge:'plain', badgeColor:'#fff3c4',
+      decorShape:null, backdrop:{ style:'off', strength:50 }
+    };
+  }
+
   const DEFAULT_TPL = 'f8'; // Ink wash
   // interleave so neighbouring cards differ in hue (the list is stored hue-sorted)
   const GALLERY_ORDER = [DEFAULT_TPL].concat(GALLERY_IDS.filter(id => id !== DEFAULT_TPL)
     .map((id,i,arr) => ({ id, k:(i*7) % arr.length })).sort((a,b) => a.k - b.k).map(x => x.id));
-  const TEMPLATES = GALLERY_ORDER.map((id,i) => {
-    const p = PALETTE_BY_ID[id];
-    return Object.assign({}, TPL_DEFAULTS, specFrom(p.c, i === 0 ? 'glow' : autoMode(p.c, i), i === 0 ? 0 : i + 1), { key:id, name:p.name, palette:p.c });
-  });
+  const TEMPLATES = (() => {
+    const base = GALLERY_ORDER.map((id,i) => {
+      const p = PALETTE_BY_ID[id];
+      return Object.assign({}, TPL_DEFAULTS, specFrom(p.c, i === 0 ? 'glow' : autoMode(p.c, i), i === 0 ? 0 : i + 1), { key:id, name:p.name, palette:p.c });
+    });
+    // starter templates, one per principle in the cover-design deck
+    const mk = (key, name, sc, styleIdx) => Object.assign({}, TPL_DEFAULTS, specFromScheme(sc, styleIdx, true), { key, name, palette:[sc.bgType === 'preset' ? '#F6F3EC' : sc.bg, sc.text, sc.accent] });
+    const starters = [
+      mk('p-neutral',  'Neutral + 1 colour', harmonyScheme(48,  'neutral',   'dark'),  9),
+      mk('p-neighbor', 'Neighbours (calm)',  harmonyScheme(150, 'neighbors', 'dark'),  0),
+      mk('p-opposite', 'Opposites (pop)',    harmonyScheme(228, 'opposite',  'dark'),  8),
+      mk('p-club',     'Club gold & navy',   { bg:'#EDB200', bgType:'color', glow:null, text:'#0B2A6B', accent:'#0B2A6B', sub:'#0B2A6B' }, 6),
+      mk('p-cream',    'Cream & cobalt',     { bg:'creamCircles', bgType:'preset', glow:null, text:'#111111', accent:'#2255F0', sub:'#4a4a4a' }, 9),
+      mk('p-light',    'Light opposites',    harmonyScheme(18,  'opposite',  'light'), 10)
+    ];
+    starters[3].accentWord = false;   // single-colour club look: title and accent are the same navy
+    return [base[0]].concat(starters, base.slice(1));
+  })();
 
   function applyTpl(tpl, btn, keepMarks){
     // accent word: presets that use it mark the last word; the rest show the headline plain
@@ -3598,7 +3733,7 @@ here</textarea>
     btn.dataset.key = tpl.key;
     btn.style.background = tpl.bgType === 'glow'
       ? `radial-gradient(circle at 85% 0%, ${tpl.glow}aa, transparent 62%), ${tpl.bg}`
-      : tpl.bg;
+      : tpl.bgType === 'preset' ? PRESETS[tpl.bg].swatch : tpl.bg;
     const dots = tpl.palette.slice(0,5).map(c => `<i style="background:${c}"></i>`).join('');
     btn.innerHTML = `<span class="tpl-name" style="color:${tpl.headlineColor}">${tpl.name}</span><span class="tpl-dots">${dots}</span>`;
     btn.addEventListener('click', () => applyTpl(tpl, btn));
@@ -3871,7 +4006,7 @@ here</textarea>
   };
   const VIBE_MODES = { light:['white','tint'], dark:['navy','glow'], bold:['bold'] };
 
-  let wizardPillar = null, wizardTopic = null, wizardVibe = 'auto';
+  let wizardPillar = null, wizardTopic = null, wizardVibe = 'auto', wizardHarmony = 'auto';
   const wizardOverlay = document.getElementById('wizardOverlay');
   const wizardBuildBtn = document.getElementById('wizardBuildBtn');
   const wizardPillarHint = document.getElementById('wizardPillarHint');
@@ -3904,6 +4039,17 @@ here</textarea>
       if (!was) chip.classList.add('active');
     });
   });
+  document.querySelectorAll('#wizardHarmony .wizard-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#wizardHarmony .wizard-chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active'); wizardHarmony = chip.dataset.harmony;
+    });
+  });
+  document.getElementById('wizardHeadline').addEventListener('input', e => {
+    const n = e.target.value.replace(/\*/g,'').trim().length, el = document.getElementById('wizardCount');
+    el.textContent = n + ' characters' + (n > 40 ? ' - shorter reads better (aim for 40 or fewer).' : '. Short hero titles read best.');
+    el.style.color = n > 60 ? '#dc2626' : n > 40 ? '#b45309' : '';
+  });
   document.querySelectorAll('#wizardVibes .wizard-chip').forEach(chip => {
     chip.addEventListener('click', () => {
       document.querySelectorAll('#wizardVibes .wizard-chip').forEach(c=>c.classList.remove('active'));
@@ -3920,7 +4066,18 @@ here</textarea>
     const pool = wizardPool(topic);
     const pick = pick1(pool);
     const modes = wizardVibe === 'auto' ? P.modes : (VIBE_MODES[wizardVibe] || P.modes);
-    const spec = specFrom(pick.c, pick1(modes), pick1(P.styles));
+    let spec;
+    const brandOn = document.getElementById('wizardBrandOn').checked;
+    if (brandOn){
+      // the team's / artist's own colours, used as given: background = primary, accent = secondary
+      const A = document.getElementById('wizardBrandA').value, B = document.getElementById('wizardBrandB').value, txt = textOn(A);
+      spec = specFromScheme({ bg:A, bgType:'color', glow:null, text:txt, accent:mixToContrast(B, A, 4.5), sub:mixToContrast(txt === '#ffffff' ? '#d8dcee' : '#3a3f5c', A, 4.5) }, pick1(P.styles), true);
+    } else if (wizardHarmony !== 'auto'){
+      const hue = hslOf(accentSource(pick.c)).h, tone = wizardVibe === 'light' ? 'light' : 'dark';
+      spec = specFromScheme(harmonyScheme(hue, wizardHarmony, tone), pick1(P.styles), true);
+    } else {
+      spec = specFrom(pick.c, pick1(modes), pick1(P.styles));
+    }
 
     // headline / subtitle are always the user's own words, never generated
     const wizHeadline = document.getElementById('wizardHeadline').value.trim();
@@ -4003,6 +4160,117 @@ here</textarea>
     }
   });
 
+  // ---------- colour wheel: pick a colour + a harmony, get background / title / accent ----------
+  const wheelSvg = document.getElementById('wheelSvg');
+  let wheelHue = 220, wheelMode = 'neighbors', wheelTone = 'dark';
+  const WHEEL_HINTS = {
+    neighbors:'Neighbours sit next to each other on the wheel: calm and harmonious.',
+    opposite:'Opposites pop. One is the background, the other a small accent. Lightness is kept apart so they do not flicker.',
+    neutral:'Black or cream plus one bright colour. Hard to get wrong.'
+  };
+  const rgbHex = (r,g,b) => '#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join('');
+  function textOn(hex){ return contrastRatio(hex,'#ffffff') >= contrastRatio(hex,'#111111') ? '#ffffff' : '#111111'; }
+  function drawWheel(){
+    const near = Math.round(wheelHue/30) % 12, partner = wheelMode === 'opposite' ? [(near+6)%12] : wheelMode === 'neighbors' ? [(near+11)%12,(near+1)%12] : [];
+    let h = '';
+    for (let i = 0; i < 12; i++){
+      const a = i*30*Math.PI/180, cx = 100 + 68*Math.sin(a), cy = 100 - 68*Math.cos(a), col = hslToHex(i*30, 0.82, 0.52);
+      const isSel = i === near, isPar = partner.indexOf(i) > -1;
+      h += `<circle class="hue" data-h="${i*30}" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${isSel ? 15 : 13}" fill="${col}" stroke="${isSel ? '#1b1f3b' : isPar ? '#1b1f3b' : 'none'}" stroke-width="${isSel ? 3 : 2}" ${isPar ? 'stroke-dasharray="3 3"' : ''}><title>${i*30} degrees</title></circle>`;
+    }
+    h += '<text x="100" y="97" text-anchor="middle" font-size="12" font-weight="800" fill="#1b1f3b" font-family="Figtree UI,sans-serif">Colour</text><text x="100" y="112" text-anchor="middle" font-size="12" font-weight="800" fill="#1b1f3b" font-family="Figtree UI,sans-serif">wheel</text>';
+    wheelSvg.innerHTML = h;
+    const sc = harmonyScheme(wheelHue, wheelMode, wheelTone);
+    document.getElementById('wheelChips').innerHTML = [['background', sc.bg], ['title', sc.text], ['accent', sc.accent]]
+      .map(([n, c]) => `<span style="background:${c};color:${textOn(c)}">${n}</span>`).join('');
+    document.getElementById('wheelHint').textContent = WHEEL_HINTS[wheelMode];
+    return sc;
+  }
+  function applyScheme(sc){
+    state.bg = sc.bgType === 'glow' ? { type:'glow', color:sc.bg, glow:sc.glow, image:null } : { type:'color', color:sc.bg, image:null };
+    state.decor = { shape:null, color:null };
+    state.headlineColor = sc.text; state.subtitleColor = sc.sub; state.accent = { color:sc.accent, highlight:true };
+    // show the accent: mark the last word unless the user already marked one
+    if ((state.headline || '').indexOf('*') === -1 && /\s/.test((state.headline || '').trim())) state.headline = state.headline.replace(/(\S+)(\s*)$/, '*$1*$2');
+    syncUI(); redraw();
+  }
+  function wheelApply(){ applyScheme(drawWheel()); }
+  wheelSvg.addEventListener('click', e => {
+    const c = e.target.closest('circle.hue'); if (!c) return;
+    wheelHue = parseInt(c.dataset.h, 10); document.getElementById('wheelHue').value = wheelHue; wheelApply();
+  });
+  document.getElementById('wheelHue').addEventListener('input', e => { wheelHue = parseInt(e.target.value, 10); wheelApply(); });
+  [['wheelModeSeg', v => wheelMode = v], ['wheelToneSeg', v => wheelTone = v]].forEach(([id, set]) => {
+    const el = document.getElementById(id);
+    el.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+      el.querySelectorAll('button').forEach(x => x.classList.remove('active')); b.classList.add('active'); set(b.dataset.v); wheelApply();
+    }));
+  });
+  document.getElementById('wheelFromBg').addEventListener('click', () => {
+    let hex = state.bg && state.bg.color;
+    if (!hex){ try { const d = ctx.getImageData(24, 24, 1, 1).data; hex = rgbHex(d[0], d[1], d[2]); } catch (e) { return; } }
+    wheelHue = Math.round(hslOf(hex).h); document.getElementById('wheelHue').value = wheelHue; wheelApply();
+  });
+  drawWheel();
+
+  // ---------- cover checklist (the 10 principles from the cover-design deck), live ----------
+  const FONT_KIND = {
+    serif:['playfair','shipporiMincho','alfaSlabOne'],
+    script:['pacifico','marker','caveat','lobster','sriracha','kalam'],
+    display:['anton','bebas','archivo','bagelFatOne','metalMania','titanOne','bungee','luckiestGuy','bangers','chewy']
+  };
+  const fontKind = key => key === 'system' ? 'sans serif' : FONT_KIND.serif.indexOf(key) > -1 ? 'serif' : FONT_KIND.script.indexOf(key) > -1 ? 'script' : FONT_KIND.display.indexOf(key) > -1 ? 'display' : 'sans serif';
+  function sampleBgColours(){
+    try {
+      const L = lastLayout; if (!L) return null;
+      const cx = L.left ? L.x + L.w/2 : L.x, x0 = cx - L.w/2 - 28, x1 = cx + L.w/2 + 28, y0 = L.y0 - 24, y1 = L.y0 + L.h + 24, ym = (y0+y1)/2;
+      const pts = [[x0,y0],[x1,y0],[x0,y1],[x1,y1],[x0,ym],[x1,ym],[cx,y0],[cx,y1]];
+      return pts.map(([x,y]) => { const d = ctx.getImageData(Math.max(6,Math.min(W-7,Math.round(x))), Math.max(6,Math.min(H-7,Math.round(y))), 1, 1).data; return rgbHex(d[0],d[1],d[2]); });
+    } catch (e) { return null; }
+  }
+  function runChecks(){
+    const items = [], plain = (state.headline || '').replace(/\*/g,'').replace(/\n/g,' ').trim(), n = plain.length, hasSub = !!(state.subtitle || '').trim();
+    const L = lastLayout, mobileW = MOBILE_CROP_RATIO*H, bgs = sampleBgColours();
+    const add = (s, t, d) => items.push({ s, t, d });
+    add(n <= 40 ? 'ok' : n <= 60 ? 'warn' : 'bad', '01 Short title', n + ' characters. ' + (n <= 40 ? 'A hero title, not the full article title.' : 'Shorten it to a hero title (about 40 or fewer).'));
+    add(!hasSub || state.subtitleGap >= state.subtitleSize ? 'ok' : 'warn', '02 Spacing', !hasSub || state.subtitleGap >= state.subtitleSize ? 'Room between the lines.' : 'Add room between the title and subtitle.');
+    let safe = 'ok', safeD = 'Everything is inside the template margins.';
+    if (L){ const edge = L.left ? L.x + L.w : L.x + L.w/2, limit = (W + mobileW)/2 - 14;
+      if (L.h > H - 120 || edge > limit || (L.left ? L.x : L.x - L.w/2) < (W - mobileW)/2 + 14){ safe = 'warn'; safeD = 'Text is close to the edge of the card crop. Shorten it or make it smaller.'; } }
+    add(safe, '03 Safe zone', safeD);
+    add(state.tilt === 0 ? 'ok' : 'bad', '04 Alignment', state.tilt === 0 ? 'Straight and lined up (' + (state.align === 'left' ? 'one edge' : 'one centre') + ').' : 'Set tilt back to 0: keep text straight.');
+    const cols = {}; cols[state.headlineColor.toLowerCase()] = 1; if (hasSub && hslOf(state.subtitleColor).s > 0.35) cols[state.subtitleColor.toLowerCase()] = 1; if ((state.headline || '').indexOf('*') > -1) cols[state.accent.color.toLowerCase()] = 1;
+    let combos = 'ok', comboD = 'Background plus ' + Object.keys(cols).length + ' text colour' + (Object.keys(cols).length > 1 ? 's' : '') + ': they belong together.';
+    if (Object.keys(cols).length > 2){ combos = 'warn'; comboD = 'More than three colours start to compete. Use one title colour and one accent.'; }
+    if (bgs && (state.headline || '').indexOf('*') > -1){ const a = hslOf(state.accent.color), b = hslOf(bgs[0]), dh = Math.abs(a.h - b.h), dh2 = Math.min(dh, 360 - dh);
+      if (dh2 > 120 && a.s > 0.55 && b.s > 0.55 && Math.abs(relLum(state.accent.color) - relLum(bgs[0])) < 0.12){ combos = 'warn'; comboD = 'Bright opposites with the same lightness can flicker. Make one lighter or darker.'; } }
+    if (fontKind(state.font) === 'script'){ combos = combos === 'ok' ? 'warn' : combos; comboD = 'Script fonts are hard to read. Use one only if the brand does.'; }
+    add(combos, '05 Colour combos', comboD);
+    if (bgs){ let worst = 99; bgs.forEach(c => { worst = Math.min(worst, contrastRatio(state.headlineColor, c)); });
+      if (hasSub) bgs.forEach(c => { worst = Math.min(worst, contrastRatio(state.subtitleColor, c)); });
+      add(worst >= 4.5 ? 'ok' : worst >= 3 ? 'warn' : 'bad', '06 Contrast', worst >= 4.5 ? 'Readable at a glance (' + worst.toFixed(1) + ':1).' : 'Low contrast (' + worst.toFixed(1) + ':1). Light text on dark, or dark on light.'); }
+    else add('tip', '06 Contrast', 'Use the squint test to check it.');
+    add(!hasSub || state.subtitleSize <= state.fontSize*0.62 ? 'ok' : 'warn', '07 Hierarchy', !hasSub || state.subtitleSize <= state.fontSize*0.62 ? 'One main line, subtitle smaller.' : 'Make the subtitle clearly smaller than the title.');
+    add(state.effect === 'none' ? 'ok' : 'warn', '08 No extra effects', state.effect === 'none' ? 'Flat and straight.' : 'An effect is on. Flat usually looks cleaner.');
+    items.push({ s: document.querySelector('.tpl-card.active') ? 'ok' : 'tip', t:'09 Template first', d:'Same layout and proportions: start from a template.' });
+    items.push({ s:'tip', t:'10 On brand', d:'Borrow the event\u2019s own colours and font style.' });
+    return items;
+  }
+  const checkListEl = document.getElementById('checkList'), checkScoreEl = document.getElementById('checkScore'), headlineCountEl = document.getElementById('headlineCount');
+  function renderChecks(){
+    const items = runChecks(), auto = items.slice(0, 8), good = auto.filter(i => i.s === 'ok').length;
+    checkScoreEl.textContent = good + '/8';
+    checkListEl.innerHTML = items.map(i => `<li class="${i.s}"><span class="dot">${i.s === 'ok' ? '&#10003;' : i.s === 'warn' ? '!' : i.s === 'bad' ? '&times;' : 'i'}</span><span><b>${i.t}</b><span class="d">${i.d}</span></span></li>`).join('');
+    const n = (state.headline || '').replace(/\*/g,'').replace(/\n/g,' ').trim().length;
+    headlineCountEl.textContent = n + ' characters' + (n > 40 ? ' (shorter reads better).' : '.');
+    headlineCountEl.style.color = n > 60 ? '#dc2626' : n > 40 ? '#b45309' : '';
+  }
+  let checkTimer = null; const scheduleChecks = () => { clearTimeout(checkTimer); checkTimer = setTimeout(renderChecks, 90); };
+  document.getElementById('squintBtn').addEventListener('click', () => {
+    const on = document.querySelector('.canvas-shell').classList.toggle('squint');
+    document.getElementById('squintHint').style.display = on ? 'inline' : 'none';
+  });
+
   // ---------- font picker: every option previewed in its own font, using the current headline ----------
   const fontPickers = [];
   function makeFontPicker(select, bold){
@@ -4038,7 +4306,7 @@ here</textarea>
         if (key === 'system') sm.style.fontStyle = 'italic';
         if (key !== 'system' && FONTS[key].uppercase) sm.style.textTransform = 'uppercase';
         if (bold()) sm.style.webkitTextStroke = '0.03em currentColor';
-        const lb = document.createElement('span'); lb.className = 'fp-label'; lb.textContent = o.textContent;
+        const lb = document.createElement('span'); lb.className = 'fp-label'; lb.textContent = o.textContent + ' \u00b7 ' + fontKind(key) + (fontKind(key) === 'script' ? ' (only if the brand uses it)' : '');
         it.appendChild(sm); it.appendChild(lb);
         it.addEventListener('click', () => { select.value = key; select.dispatchEvent(new Event('change', { bubbles:true })); sync(); close(); });
         list.appendChild(it);
@@ -4060,7 +4328,7 @@ here</textarea>
   makeFontPicker(fontSelect, () => state.bold);
   makeFontPicker(subtitleFontSelect, () => state.subBold);
   const _redrawBase = redraw;
-  redraw = function(){ _redrawBase(); fontPickers.forEach(p => p.sync()); trackChange(); };
+  redraw = function(){ _redrawBase(); fontPickers.forEach(p => p.sync()); trackChange(); scheduleChecks(); };
 
   // ---------- eyedropper: pick a colour from anywhere on screen (another tab, window, image) ----------
   if (window.EyeDropper){
@@ -4099,7 +4367,6 @@ here</textarea>
       document.fonts.load('400 100px "Playfair Display"'),
       document.fonts.load('400 100px "Permanent Marker"'),
       document.fonts.load('400 100px Caveat'),
-      document.fonts.load('400 100px "Rubik Wet Paint"'),
       document.fonts.load('400 100px Lobster'),
       document.fonts.load('800 100px "Baloo 2"'),
       document.fonts.load('400 100px "Figtree XB"'),

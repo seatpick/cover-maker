@@ -16,8 +16,7 @@ runtime (everything — including all 13 display fonts — is inlined).
 - `template.html` — the actual source. Edit this one.
 - `fonts/*.b64` — base64 of each embedded font (all Google Fonts, OFL
   license): `anton`, `bebas`, `archivo`, `fredoka`, `chewy`, `bangers`,
-  `pacifico`, `playfair`, `marker` (Permanent Marker), `caveat`, `graffiti`
-  (Rubik Wet Paint), `heebo-latin`/`heebo-hebrew`, `cairo-latin`/`cairo-arabic`.
+  `pacifico`, `playfair`, `marker` (Permanent Marker), `caveat`, `heebo-latin`/`heebo-hebrew`, `cairo-latin`/`cairo-arabic`.
 - `artifact.html` — generated bare fragment (no doctype/head/body — the
   Claude Artifact tool supplies its own skeleton). Publish this one via
   the Artifact tool.
@@ -183,8 +182,7 @@ A separate upload, independent of background choice. Has:
 ## Fonts
 
 Older display fonts: Anton, Bebas Neue, Archivo Black, Fredoka, Chewy,
-Bangers, Pacifico, Playfair Display, Permanent Marker, Caveat, Rubik Wet
-Paint, Lobster, Baloo 2, Heebo and Cairo (the last two for Hebrew/Arabic),
+Bangers, Pacifico, Playfair Display, Permanent Marker, Caveat, Lobster, Baloo 2, Heebo and Cairo (the last two for Hebrew/Arabic),
 plus Bagel Fat One, Metal Mania, Sriracha, Titan One, Bungee, Kalam,
 Luckiest Guy and Alfa Slab One (free look-alikes of marketplace references).
 
@@ -297,6 +295,9 @@ single greedy word-wrap would.
 
 ## Modern redesign: palettes, type styles, accent word
 
+- **Design principles (from the "Cover Design 101" deck)**: a Colour wheel section (`harmonyScheme`: neighbours / opposites / neutral + 1, light or dark; one background, one title colour, one accent; opposites keep lightness apart), a live Cover checklist under the preview (`runChecks`, 8 auto checks + 2 reminders, samples the real background for contrast, Squint test blur), six starter templates (`p-*`, right after the default card), the "Cream & Cobalt" background, a headline character counter, serif/sans/display/script tags in the font picker, and in the wizard a Colour harmony choice plus optional team/artist colours (used exactly as given).
+- **Removed**: the Rubik Wet Paint (graffiti) font.
+
 - **Undo**: button under the preview (and Ctrl/Cmd+Z when not typing in a field). `redraw` is wrapped to snapshot the whole `state` after each change (`trackChange`); changes within 500 ms merge into one step, up to 50 steps. `syncUI()` re-syncs every control after a restore. Uploaded photos/logos are kept by reference. History resets on page reload.
 
 - **Bold**: a Weight (Regular/Bold) select under both Headline and Subtitle fonts (`state.bold`, `state.subBold`). Most embedded fonts are single-weight, so bold is a faux-bold: a same-colour stroke added after each `fillText` (`setBold`, 3.2% of font size for the headline, 4.5% for the subtitle).
@@ -370,7 +371,6 @@ over budget the tool shows a warning with a one-click "switch to WEBP".
        .replace('__PLAYFAIR_BASE64__', load_b64('fonts/playfair.b64'))
        .replace('__MARKER_BASE64__', load_b64('fonts/marker.b64'))
        .replace('__CAVEAT_BASE64__', load_b64('fonts/caveat.b64'))
-       .replace('__GRAFFITI_BASE64__', load_b64('fonts/graffiti.b64'))
        .replace('__HEEBO_LATIN_BASE64__', load_b64('fonts/heebo-latin.b64'))
        .replace('__HEEBO_HEBREW_BASE64__', load_b64('fonts/heebo-hebrew.b64'))
        .replace('__CAIRO_LATIN_BASE64__', load_b64('fonts/cairo-latin.b64'))
