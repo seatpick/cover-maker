@@ -2150,8 +2150,8 @@ here</textarea>
     } else if (state.bg.type === 'glow'){
       c.fillStyle = state.bg.color;
       c.fillRect(0,0,W,H);
-      softBlob(c, W*0.84, H*0.05, 560, state.bg.glow);
-      softBlob(c, W*0.06, H*1.02, 430, state.bg.glow);
+      softBlob(c, W*0.9, H*0.0, 380, state.bg.glow);
+      softBlob(c, W*0.03, H*1.05, 300, state.bg.glow);
     } else if (preset){
       preset.draw(c);
     }
@@ -3558,7 +3558,7 @@ here</textarea>
     const sub = mixToContrast(subBase, bg, 4.5);
     return { bg, bgType, glow, text, accent, sub };
   }
-  const GALLERY_MODES = ['white','navy','tint','glow','bold','white','tint','navy','glow','white'];
+  const GALLERY_MODES = ['white','navy','tint','bold','white','tint','navy','glow','white','tint'];
   function autoMode(colors, i){ return GALLERY_MODES[i % GALLERY_MODES.length]; }
 
   // Five straight-set, modern type pairings with real hierarchy: heavy/large headline, lighter small subtitle.
@@ -3607,7 +3607,7 @@ here</textarea>
       if (mode === 'neutral'){ bg = '#121212'; accent = hslToHex(hue, 0.92, 0.58); }
       else {
         bg = hslToHex(hue, 0.5, 0.13);
-        if (mode === 'neighbors'){ bgType = 'glow'; glow = hslToHex(Hh(30), 0.7, 0.45); accent = hslToHex(Hh(35), 0.7, 0.72); }
+        if (mode === 'neighbors') accent = hslToHex(Hh(35), 0.7, 0.72);
         else accent = hslToHex(Hh(180), 0.9, 0.64);
       }
     }
@@ -3634,7 +3634,7 @@ here</textarea>
   const TEMPLATES = (() => {
     const base = GALLERY_ORDER.map((id,i) => {
       const p = PALETTE_BY_ID[id];
-      return Object.assign({}, TPL_DEFAULTS, specFrom(p.c, i === 0 ? 'glow' : autoMode(p.c, i), i === 0 ? 0 : i + 1), { key:id, name:p.name, palette:p.c });
+      return Object.assign({}, TPL_DEFAULTS, specFrom(p.c, i === 0 ? 'navy' : autoMode(p.c, i), i === 0 ? 0 : i + 1), { key:id, name:p.name, palette:p.c });
     });
     // starter templates, one per principle in the cover-design deck
     const mk = (key, name, sc, styleIdx) => Object.assign({}, TPL_DEFAULTS, specFromScheme(sc, styleIdx, true), { key, name, palette:[sc.bgType === 'preset' ? '#F6F3EC' : sc.bg, sc.text, sc.accent] });
@@ -4001,19 +4001,19 @@ here</textarea>
   // preferred background modes, and the topics whose colours suit it when no topic is picked.
   const PILLARS = {
     sports:    { hint:'Poster capitals on deep or bold colour. Built to feel like match day.',
-                 styles:[6,7,8,9], modes:['navy','glow','bold'], topics:['football','basketball','baseball','hockey','soccer','motorsport'] },
+                 styles:[6,7,8,9], modes:['navy','bold'], topics:['football','basketball','baseball','hockey','soccer','motorsport'] },
     seasonal:  { hint:'Big, high-contrast capitals on dark. Playoffs, finals, one-off events.',
-                 styles:[7,6,5,8], modes:['navy','glow'], topics:['football','basketball','baseball','boxing','motorsport'] },
+                 styles:[7,6,5,8], modes:['navy','bold'], topics:['football','basketball','baseball','boxing','motorsport'] },
     concerts:  { hint:'Vivid colour with a highlighted word. Tours, festivals, line-ups.',
-                 styles:[1,3,8,5], modes:['glow','bold','tint'], topics:['pop','kpop','edm','latin','rock','indie'] },
+                 styles:[1,3,8,5], modes:['bold','tint','navy'], topics:['pop','kpop','edm','latin','rock','indie'] },
     city:      { hint:'Calm, editorial and airy. Venue and city guides.',
                  styles:[4,10,0,11], modes:['white','tint','navy'], topics:['indie','tennis','country','hockey'] },
     trust:     { hint:'Clean sentence case on white or soft tint. Reviews and safety.',
                  styles:[0,2,5,1], modes:['white','tint'], topics:['hockey','edm','tennis'] },
     education: { hint:'Friendly and clear, with a highlighted word. How-to and explainers.',
-                 styles:[2,3,1,0], modes:['tint','white','glow'], topics:['soccer','tennis','indie','pop'] }
+                 styles:[2,3,1,0], modes:['tint','white'], topics:['soccer','tennis','indie','pop'] }
   };
-  const VIBE_MODES = { light:['white','tint'], dark:['navy','glow'], bold:['bold'] };
+  const VIBE_MODES = { light:['white','tint'], dark:['navy'], bold:['bold'] };
 
   let wizardPillar = null, wizardTopic = null, wizardVibe = 'auto', wizardHarmony = 'auto';
   const wizardOverlay = document.getElementById('wizardOverlay');
