@@ -297,6 +297,8 @@ single greedy word-wrap would.
 
 ## Modern redesign: palettes, type styles, accent word
 
+- **Undo**: button under the preview (and Ctrl/Cmd+Z when not typing in a field). `redraw` is wrapped to snapshot the whole `state` after each change (`trackChange`); changes within 500 ms merge into one step, up to 50 steps. `syncUI()` re-syncs every control after a restore. Uploaded photos/logos are kept by reference. History resets on page reload.
+
 - **Bold**: a Weight (Regular/Bold) select under both Headline and Subtitle fonts (`state.bold`, `state.subBold`). Most embedded fonts are single-weight, so bold is a faux-bold: a same-colour stroke added after each `fillText` (`setBold`, 3.2% of font size for the headline, 4.5% for the subtitle).
 - **Font picker**: the Font selects are replaced by a custom picker (`makeFontPicker`) that lists every font previewed with the current headline text. The native `<select>` stays hidden as the source of truth.
 

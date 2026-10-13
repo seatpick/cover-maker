@@ -623,6 +623,10 @@ input[type="color"]::-webkit-color-swatch{border-radius:5px;border:none;}
 .fp-label{display:block;font-size:11px;color:var(--ink-dim);margin-top:2px;font-family:'Figtree UI',system-ui,sans-serif;}
 
 .eyedrop svg{width:16px;height:16px;}
+.undo-btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:5px 14px;font:inherit;font-weight:600;cursor:pointer;}
+.undo-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+.undo-btn:disabled{opacity:.4;cursor:default;}
+
 
 
 .slider-row{display:flex;align-items:center;gap:10px;}
@@ -982,6 +986,7 @@ input[type="text"]:focus,textarea:focus,select:focus{outline:none;border-color:v
         </div>
         <div class="stage-meta">
           <span>1200 &times; 500 px</span>
+          <button type="button" class="undo-btn" id="undoBtn" title="Undo (Ctrl/Cmd+Z)" disabled>&#8630; Undo</button>
           <label><input type="checkbox" id="guideToggle"> Show safe zone</label>
         </div>
       </div>
@@ -3934,6 +3939,70 @@ here</textarea>
     wizardOverlay.style.display = 'none';
   });
 
+  // ---------- undo: snapshot the whole state after each change, restore + re-sync the controls ----------
+  const undoStack = [];
+  const undoBtn = document.getElementById('undoBtn');
+  const _imgIds = new WeakMap(); let _imgN = 0;
+  const isPlain = o => o && typeof o === 'object' && (Array.isArray(o) || Object.getPrototypeOf(o) === Object.prototype);
+  const cloneState = o => isPlain(o) ? (Array.isArray(o) ? o.map(cloneState) : Object.fromEntries(Object.entries(o).map(([k,v]) => [k, cloneState(v)]))) : o;
+  const serState = () => JSON.stringify(state, (k, v) => {
+    if (v && typeof v === 'object' && !isPlain(v)){ if (!_imgIds.has(v)) _imgIds.set(v, ++_imgN); return 'obj#' + _imgIds.get(v); }
+    return v;
+  });
+  let lastSnap = null, lastSer = null, lastChange = 0, restoring = false;
+
+  function syncUI(){
+    const $ = id => document.getElementById(id);
+    const setV = (id, v) => { const el = $(id); if (el) el.value = v; };
+    $('headline').value = state.headline; $('subtitle').value = state.subtitle;
+    setV('fontSelect', state.font); setV('subtitleFontSelect', state.subtitleFont);
+    setV('boldSelect', state.bold ? 'on' : 'off'); setV('subBoldSelect', state.subBold ? 'on' : 'off');
+    setV('capsSelect', state.caps ? 'on' : 'off'); setV('subCapsSelect', state.subCaps ? 'on' : 'off');
+    [['headlineColor', state.headlineColor], ['subtitleColor', state.subtitleColor], ['accentColor', state.accent.color], ['effectColor', state.effectColor], ['badgeColor', state.badgeColor]]
+      .forEach(([id, v]) => { setV(id, v); const h = $(id + 'Hex'); if (h) h.textContent = String(v).toUpperCase(); });
+    setV('accentHighlight', state.accent.highlight ? 'soft' : 'off');
+    [['fontSize', state.fontSize, 'px'], ['subtitleSize', state.subtitleSize, 'px'], ['subtitleGap', state.subtitleGap, 'px'], ['effectStrength', state.effectStrength, ''], ['tiltSlider', state.tilt, ''], ['backdropStrength', state.backdrop.strength, ''], ['logoSize', state.logo.size, 'px']]
+      .forEach(([id, v, u]) => { setV(id, v); const l = $(id === 'tiltSlider' ? 'tiltVal' : id + 'Val'); if (l) l.textContent = v + u; });
+    setV('effectSelect', state.effect); setV('backdropStyle', state.backdrop.style);
+    [['alignSeg', state.align], ['vAlignSeg', state.vAlign], ['badgeSeg', state.badge]].forEach(([id, v]) =>
+      document.querySelectorAll('#' + id + ' button').forEach(b => b.classList.toggle('active', b.dataset.v === v)));
+    document.querySelectorAll('.swatch, .color-chip').forEach(x => x.classList.remove('active'));
+    if (state.bg.type === 'preset'){ const sw = document.querySelector('.swatch[data-key="' + state.bg.key + '"]'); if (sw) sw.classList.add('active'); }
+    if (state.bg.type !== 'image'){ uploadBtn.classList.remove('has-file'); uploadBtn.textContent = 'Upload a photo...'; }
+    $('logoControls').style.display = state.logo.image ? 'flex' : 'none';
+    clearTemplateActive(); updateCanvasMode();
+  }
+
+  function undo(){
+    if (!undoStack.length) return;
+    const snap = undoStack.pop();
+    restoring = true;
+    Object.keys(state).forEach(k => delete state[k]);
+    Object.assign(state, cloneState(snap));
+    syncUI(); redraw();
+    restoring = false;
+    lastSnap = cloneState(state); lastSer = serState(); lastChange = 0;
+    undoBtn.disabled = !undoStack.length;
+  }
+  function trackChange(){
+    if (restoring) return;
+    const ser = serState();
+    if (lastSer === null){ lastSnap = cloneState(state); lastSer = ser; return; }
+    if (ser === lastSer) return;
+    const now = Date.now();
+    if (now - lastChange > 500){ undoStack.push(lastSnap); if (undoStack.length > 50) undoStack.shift(); }
+    lastChange = now; lastSnap = cloneState(state); lastSer = ser;
+    undoBtn.disabled = !undoStack.length;
+  }
+  undoBtn.addEventListener('click', undo);
+  document.addEventListener('keydown', e => {
+    if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key.toLowerCase() === 'z'){
+      const t = e.target && e.target.tagName;
+      if (t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT') return;   // native text undo wins while typing
+      e.preventDefault(); undo();
+    }
+  });
+
   // ---------- font picker: every option previewed in its own font, using the current headline ----------
   const fontPickers = [];
   function makeFontPicker(select, bold){
@@ -3991,7 +4060,7 @@ here</textarea>
   makeFontPicker(fontSelect, () => state.bold);
   makeFontPicker(subtitleFontSelect, () => state.subBold);
   const _redrawBase = redraw;
-  redraw = function(){ _redrawBase(); fontPickers.forEach(p => p.sync()); };
+  redraw = function(){ _redrawBase(); fontPickers.forEach(p => p.sync()); trackChange(); };
 
   // ---------- eyedropper: pick a colour from anywhere on screen (another tab, window, image) ----------
   if (window.EyeDropper){
